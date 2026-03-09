@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Legara Behavioral Health Platform</title>
+<meta name="description" content="Talk to the Legara team about expanding behavioral health capacity at your FQHC. Schedule a conversation or reach out directly.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Legara"></a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="for-health-centers.html">For Health Centers</a></li>
+    <li><a href="become-a-provider.html">Become a Provider</a></li>
+    <li><a href="contact.html" class="nav-cta active">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="section-label">Get in Touch</div>
+  <div class="section-headline">Let's talk about what Legara can do for your organization.</div>
+  <p class="section-body">Whether you're an FQHC exploring behavioral health capacity options, a clinician interested in joining our network, or just want to learn more — we'd like to hear from you.</p>
+</div>
+
+<!-- CONTACT SECTION -->
+<section class="content-section">
+  <div class="contact-grid">
+    <div>
+      <div class="section-headline" style="font-size: clamp(28px, 3vw, 36px);">Start a conversation.</div>
+      <p class="section-body" style="margin-bottom: 40px;">Fill out the form and a member of our team will be in touch within one business day. Or reach out directly using the contact information below.</p>
+
+      <!-- Direct contact -->
+      <div style="margin-bottom: 48px;">
+        <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px;">
+          <div class="feature-icon" style="width: 44px; height: 44px; font-size: 18px;">&#9993;</div>
+          <div>
+            <div style="font-weight: 600; color: var(--charcoal); margin-bottom: 2px;">Email</div>
+            <a href="mailto:contact@golegara.com" style="font-size: 15px; color: var(--green); text-decoration: none;">contact@golegara.com</a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px;">
+          <div class="feature-icon" style="width: 44px; height: 44px; font-size: 18px;">&#128222;</div>
+          <div>
+            <div style="font-weight: 600; color: var(--charcoal); margin-bottom: 2px;">Phone</div>
+            <a href="tel:7604797860" style="font-size: 15px; color: var(--green); text-decoration: none;">760-479-7860</a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div class="feature-icon" style="width: 44px; height: 44px; font-size: 18px;">&#127758;</div>
+          <div>
+            <div style="font-weight: 600; color: var(--charcoal); margin-bottom: 2px;">Website</div>
+            <span style="font-size: 15px; color: var(--slate);">www.golegara.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust signals -->
+      <div class="contact-trust" style="margin-top: 0;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); margin-bottom: 8px;">Currently</div>
+        <div class="trust-item"><div class="trust-dot"></div>Serving 9 FQHC partners in California</div>
+        <div class="trust-item"><div class="trust-dot"></div>950+ patient encounters per week</div>
+        <div class="trust-item"><div class="trust-dot"></div>35+ behavioral health clinicians in network</div>
+        <div class="trust-item"><div class="trust-dot"></div>Full productivity in 4–6 weeks from deployment</div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="contact-form" style="background: var(--green-pale); border: 1px solid var(--border); border-radius: 16px; padding: 40px;">
+      <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--charcoal); margin-bottom: 24px;">Send us a message</div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>First Name</label>
+          <input type="text" placeholder="Jane" style="background: var(--white);">
+        </div>
+        <div class="form-field">
+          <label>Last Name</label>
+          <input type="text" placeholder="Smith" style="background: var(--white);">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Organization</label>
+        <input type="text" placeholder="Your health center or organization" style="background: var(--white);">
+      </div>
+      <div class="form-field">
+        <label>Email</label>
+        <input type="email" placeholder="jane@healthcenter.org" style="background: var(--white);">
+      </div>
+      <div class="form-field">
+        <label>Phone (optional)</label>
+        <input type="tel" placeholder="(555) 555-5555" style="background: var(--white);">
+      </div>
+      <div class="form-field">
+        <label>I am a...</label>
+        <select style="background: var(--white);">
+          <option value="" disabled selected>Select one</option>
+          <option>Health center / FQHC leader</option>
+          <option>Behavioral health clinician</option>
+          <option>FQHC association or partner</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Message</label>
+        <textarea placeholder="Tell us what you're looking for or how we can help..." style="background: var(--white);"></textarea>
+      </div>
+      <button class="btn-primary" style="text-align: center; width: 100%;">Send Message</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK LINKS -->
+<section class="content-section-alt">
+  <div style="text-align: center; max-width: 720px; margin: 0 auto;">
+    <div class="section-headline" style="font-size: clamp(28px, 3vw, 36px); max-width: 100%;">Not sure where to start?</div>
+    <p class="section-body" style="max-width: 100%; margin: 0 auto 40px; text-align: center;">Here are the most common next steps for people exploring Legara.</p>
+  </div>
+
+  <div class="info-cards" style="max-width: 960px; margin: 0 auto;">
+    <div class="info-card" style="text-align: center;">
+      <div class="info-card-icon" style="margin: 0 auto 20px;">&#127973;</div>
+      <h3>I run an FQHC</h3>
+      <p style="margin-bottom: 20px;">See how Legara expands behavioral health capacity and the financial case for the encounter-based model.</p>
+      <a href="for-health-centers.html" class="btn-secondary">For Health Centers &rarr;</a>
+    </div>
+    <div class="info-card" style="text-align: center;">
+      <div class="info-card-icon" style="margin: 0 auto 20px;">&#129658;</div>
+      <h3>I'm a clinician</h3>
+      <p style="margin-bottom: 20px;">Learn about joining Legara's provider network — independent practice with full operational support.</p>
+      <a href="become-a-provider.html" class="btn-secondary">Become a Provider &rarr;</a>
+    </div>
+    <div class="info-card" style="text-align: center;">
+      <div class="info-card-icon" style="margin: 0 auto 20px;">&#129309;</div>
+      <h3>I represent an association or PCA</h3>
+      <p style="margin-bottom: 20px;">We partner with FQHC associations and primary care associations to bring behavioral health capacity to their member organizations.</p>
+      <a href="mailto:contact@golegara.com" class="btn-secondary">Let's Connect &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="img/logo.png" alt="Legara"></div>
+      <p class="footer-about">Expanding access to behavioral health care in the communities that need it most.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="for-health-centers.html">For Health Centers</a>
+      <a href="become-a-provider.html">Become a Provider</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About Legara</a>
+      <a href="partners.html">Our Partners</a>
+      <a href="press.html">Press</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="mailto:contact@golegara.com">contact@golegara.com</a>
+      <a href="tel:7604797860">760-479-7860</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>&copy; 2026 Legara, Inc. All rights reserved.</div>
+    <div>Serving California's safety-net communities.</div>
+  </div>
+</footer>
+
+</body>
+</html>
