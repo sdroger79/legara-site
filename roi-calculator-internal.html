@@ -1003,10 +1003,10 @@
 // ═══ ROI CALCULATOR ENGINE ═══
 
 const DEFAULTS = {
-  lcsw_lmft: { salary: 135000, encPerHour: 1.5, label: 'LCSW / LMFT', encNote: '1.5/hr (therapy)', legaraRate: 155 },
-  psychologist: { salary: 155000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)', legaraRate: 165 },
-  pmhnp: { salary: 200000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)', legaraRate: 165 },
-  psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)', legaraRate: 165 }
+  lcsw_lmft: { salary: 135000, encPerHour: 1.0, label: 'LCSW / LMFT', encNote: '1.0/hr (therapy)', legaraRate: 155 },
+  psychologist: { salary: 155000, encPerHour: 1.0, label: 'Psychologist', encNote: '1.0/hr (therapy)', legaraRate: 165 },
+  pmhnp: { salary: 200000, encPerHour: 1.5, label: 'PMHNP', encNote: '1.5/hr (psychiatry)', legaraRate: 165 },
+  psychiatrist: { salary: 330000, encPerHour: 1.5, label: 'Psychiatrist', encNote: '1.5/hr (psychiatry)', legaraRate: 165 }
 };
 const SUPPORT_STAFF_COST = 11000; // 0.25 FTE PSR @ ~$44K
 const LEGARA_RAMP_MONTHS = 5; // credential 3 + panel build 2 (overlapping, faster)
@@ -1073,6 +1073,8 @@ function calculate() {
   const legaraRate = DEFAULTS[currentType].legaraRate;
 
   // ─── CORE UTILIZATION MATH ───
+  // Encounter rate reflects realistic internal hire throughput (1.0/hr therapy, 1.5/hr psychiatry)
+  // Legara's higher provider efficiency (1.5/hr, 2.5/hr) is baked into their per-encounter rate
   const fullyLoaded = salary * multiplier;
   const benefitsCost = fullyLoaded - salary;
   const supportCost = SUPPORT_STAFF_COST;
@@ -1107,7 +1109,11 @@ function calculate() {
     phaseEnc(panelBuildMonths, RAMP_PRODUCTIVITY.panelBuild) +
     phaseEnc(internalFullProdMonths, 1.0);
 
-  const internalCostYear1 = fullyLoaded + supportCost + recruiterFee; // full salary + support + recruiter (paid in full year 1)
+  // Salary only starts after hire (post-recruit), so prorate to months on payroll
+  const monthsOnPayroll = Math.max(12 - recruitMonths, 0);
+  const proratedSalary = fullyLoaded * (monthsOnPayroll / 12);
+  const proratedSupport = supportCost * (monthsOnPayroll / 12);
+  const internalCostYear1 = proratedSalary + proratedSupport + recruiterFee;
   const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
 
   // ─── YEAR 1: LEGARA ───
@@ -1149,10 +1155,12 @@ function calculate() {
   document.getElementById('legaraCPE').textContent = '$' + legaraRate;
   document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths);
 
-  // Comparison cards — Year 1
-  document.getElementById('cmpSalary').textContent = fmt(salary);
-  document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
-  document.getElementById('cmpSupport').textContent = fmt(supportCost);
+  // Comparison cards — Year 1 (prorated to months on payroll)
+  const proratedBaseSalary = salary * (monthsOnPayroll / 12);
+  const proratedBenefits = benefitsCost * (monthsOnPayroll / 12);
+  document.getElementById('cmpSalary').textContent = fmt(proratedBaseSalary) + ' (' + Math.round(monthsOnPayroll) + ' mo)';
+  document.getElementById('cmpBenefits').textContent = fmt(proratedBenefits);
+  document.getElementById('cmpSupport').textContent = fmt(proratedSupport);
   document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
   document.getElementById('cmpRamp').textContent = Math.round(internalFullProdMonths) + ' of 12 mo at full productivity';
   document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1);

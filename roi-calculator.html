@@ -902,10 +902,10 @@
 // ═══ ROI CALCULATOR ENGINE (PUBLIC / GATED) ═══
 
 const DEFAULTS = {
-  lcsw_lmft: { salary: 135000, encPerHour: 1.5, label: 'LCSW / LMFT', encNote: '1.5/hr (therapy)' },
-  psychologist: { salary: 155000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
-  pmhnp: { salary: 200000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)' },
-  psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)' }
+  lcsw_lmft: { salary: 135000, encPerHour: 1.0, label: 'LCSW / LMFT', encNote: '1.0/hr (therapy)' },
+  psychologist: { salary: 155000, encPerHour: 1.0, label: 'Psychologist', encNote: '1.0/hr (therapy)' },
+  pmhnp: { salary: 200000, encPerHour: 1.5, label: 'PMHNP', encNote: '1.5/hr (psychiatry)' },
+  psychiatrist: { salary: 330000, encPerHour: 1.5, label: 'Psychiatrist', encNote: '1.5/hr (psychiatry)' }
 };
 
 const SUPPORT_STAFF_COST = 11000;
@@ -991,6 +991,8 @@ function calculate() {
   const encPerHour = DEFAULTS[currentType].encPerHour;
 
   // ─── CORE UTILIZATION MATH ───
+  // Encounter rate reflects realistic internal hire throughput (1.0/hr therapy, 1.5/hr psychiatry)
+  // Legara's higher provider efficiency is baked into their per-encounter rate
   const fullyLoaded = salary * multiplier;
   const benefitsCost = fullyLoaded - salary;
   const supportCost = SUPPORT_STAFF_COST;
@@ -1022,7 +1024,11 @@ function calculate() {
     phaseEnc(panelBuildMonths, RAMP_PRODUCTIVITY.panelBuild) +
     phaseEnc(internalFullProdMonths, 1.0);
 
-  const internalCostYear1 = fullyLoaded + supportCost + recruiterFee;
+  // Salary only starts after hire (post-recruit), so prorate to months on payroll
+  const monthsOnPayroll = Math.max(12 - recruitMonths, 0);
+  const proratedSalary = fullyLoaded * (monthsOnPayroll / 12);
+  const proratedSupport = supportCost * (monthsOnPayroll / 12);
+  const internalCostYear1 = proratedSalary + proratedSupport + recruiterFee;
   const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
 
   // ─── LOST REVENUE (encounter gap vs faster Legara ramp) ───
