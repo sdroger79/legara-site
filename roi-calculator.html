@@ -898,6 +898,7 @@
   </div>
 </footer>
 
+<script src="js/tracking.js"></script>
 <script>
 // ═══ ROI CALCULATOR ENGINE (PUBLIC / GATED) ═══
 
@@ -934,6 +935,12 @@ const BAKED = {
 };
 
 let currentType = 'lcsw_lmft';
+let lastCalc = {};
+
+function getHubspotCookie() {
+  var match = document.cookie.match(/hubspotutk=([^;]+)/);
+  return match ? match[1] : '';
+}
 
 // ─── GA EVENT HELPER ───
 function trackEvent(action, category, label, value) {
@@ -1040,6 +1047,16 @@ function calculate() {
   const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
   const lostPPSRevenue = encounterGapYear1 * ppsRate;
 
+  // ─── SAVINGS (for HubSpot submission) ───
+  const legaraCostYear1 = legaraEnc1 * 165;
+  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * Math.min(totalRampMonths / 12, 1) * 0.5);
+  const internalCostSteady = fullyLoaded + supportCost + turnoverReplacementCost;
+  const legaraCostSteady = fullYearEncounters * 165;
+  const year1Savings = (internalCostYear1 - legaraCostYear1) * count;
+  const year2Savings = (internalCostSteady - legaraCostSteady) * count;
+  const total3Yr = year1Savings + year2Savings + year2Savings;
+  lastCalc = { year1Savings: Math.round(year1Savings), total3Yr: Math.round(total3Yr) };
+
   // ─── UPDATE UI ───
 
   // Hero — show internal true CPE (the shock number)
@@ -1123,27 +1140,26 @@ function calculate() {
 // ─── LEAD FORM HANDLER ───
 function submitLeadForm(e) {
   e.preventDefault();
-  const form = e.target;
-  const data = {
-    name: form.name.value,
-    title: form.title.value,
-    org: form.org.value,
-    email: form.email.value,
-    phone: form.phone.value,
-    provider_type: currentType,
-    salary: document.getElementById('salary').value,
-    internal_cpe: document.getElementById('internalCPE').textContent
-  };
+  var form = e.target;
+  var fullName = (form.name.value || '').trim();
+  var nameParts = fullName.split(' ');
+  var firstName = nameParts[0] || '';
+  var lastName = nameParts.slice(1).join(' ') || '';
 
   // Track form submission in GA
-  trackEvent('lead_form_submit', 'ROI Calculator', data.org, 1);
+  trackEvent('lead_form_submit', 'ROI Calculator', form.org.value, 1);
 
   // Send to GA as a conversion event
   if (typeof gtag === 'function') {
     gtag('event', 'generate_lead', {
       event_category: 'ROI Calculator',
-      event_label: data.org + ' | ' + data.email,
+      event_label: form.org.value + ' | ' + form.email.value,
       value: 1
+    });
+    gtag('event', 'roi_form_submit', {
+      provider_type: currentType,
+      form_name: 'roi_calculator_gate',
+      calculator_version: 'public'
     });
   }
 
@@ -1151,8 +1167,34 @@ function submitLeadForm(e) {
   document.getElementById('leadFormContainer').style.display = 'none';
   document.getElementById('leadFormSuccess').style.display = 'block';
 
-  // Log to console for now (can be replaced with webhook/email API)
-  console.log('ROI Lead:', JSON.stringify(data));
+  // Submit to HubSpot Forms API
+  fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/23567105-e94f-457a-9b1f-f5990ee77821', {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fields: [
+        { objectTypeId: '0-1', name: 'firstname', value: firstName },
+        { objectTypeId: '0-1', name: 'lastname', value: lastName },
+        { objectTypeId: '0-1', name: 'email', value: form.email.value || '' },
+        { objectTypeId: '0-1', name: 'company', value: form.org.value || '' },
+        { objectTypeId: '0-1', name: 'jobtitle', value: form.title.value || '' },
+        { objectTypeId: '0-1', name: 'phone', value: form.phone.value || '' },
+        { objectTypeId: '0-1', name: 'roi_provider_type', value: currentType },
+        { objectTypeId: '0-1', name: 'roi_organization_name', value: form.org.value || '' },
+        { objectTypeId: '0-1', name: 'roi_number_of_providers', value: String(document.getElementById('providerCount').value || '1') },
+        { objectTypeId: '0-1', name: 'roi_annual_salary', value: String(document.getElementById('salary').value || '0') },
+        { objectTypeId: '0-1', name: 'roi_year_1_savings', value: String(lastCalc.year1Savings || 0) },
+        { objectTypeId: '0-1', name: 'roi_3year_savings', value: String(lastCalc.total3Yr || 0) },
+        { objectTypeId: '0-1', name: 'roi_calculator_version', value: 'public' }
+      ],
+      context: {
+        hutk: getHubspotCookie(),
+        pageUri: window.location.href,
+        pageName: 'ROI Calculator'
+      }
+    })
+  }).catch(function(err) { console.error('HubSpot submission error:', err); });
 }
 
 // Run on load

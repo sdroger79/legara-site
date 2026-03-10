@@ -84,44 +84,53 @@
 
     <!-- Form -->
     <div class="contact-form" style="background: var(--green-pale); border: 1px solid var(--border); border-radius: 16px; padding: 40px;">
-      <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--charcoal); margin-bottom: 24px;">Send us a message</div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>First Name</label>
-          <input type="text" placeholder="Jane" style="background: var(--white);">
-        </div>
-        <div class="form-field">
-          <label>Last Name</label>
-          <input type="text" placeholder="Smith" style="background: var(--white);">
-        </div>
+      <div id="contactFormContainer">
+        <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--charcoal); margin-bottom: 24px;">Send us a message</div>
+        <form id="contactForm" onsubmit="submitContactForm(event)">
+          <div class="form-row">
+            <div class="form-field">
+              <label>First Name <span style="color: #c0392b;">*</span></label>
+              <input type="text" name="firstname" placeholder="Jane" required style="background: var(--white);">
+            </div>
+            <div class="form-field">
+              <label>Last Name</label>
+              <input type="text" name="lastname" placeholder="Smith" style="background: var(--white);">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Organization <span style="color: #c0392b;">*</span></label>
+            <input type="text" name="company" placeholder="Your health center or organization" required style="background: var(--white);">
+          </div>
+          <div class="form-field">
+            <label>Email <span style="color: #c0392b;">*</span></label>
+            <input type="email" name="email" placeholder="jane@healthcenter.org" required style="background: var(--white);">
+          </div>
+          <div class="form-field">
+            <label>Phone (optional)</label>
+            <input type="tel" name="phone" placeholder="(555) 555-5555" style="background: var(--white);">
+          </div>
+          <div class="form-field">
+            <label>I am a...</label>
+            <select name="persona" style="background: var(--white);">
+              <option value="" disabled selected>Select one</option>
+              <option value="Health center / FQHC leader">Health center / FQHC leader</option>
+              <option value="Behavioral health clinician">Behavioral health clinician</option>
+              <option value="FQHC association or partner">FQHC association or partner</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Message</label>
+            <textarea name="message" placeholder="Tell us what you're looking for or how we can help..." style="background: var(--white);"></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="text-align: center; width: 100%;">Send Message</button>
+        </form>
       </div>
-      <div class="form-field">
-        <label>Organization</label>
-        <input type="text" placeholder="Your health center or organization" style="background: var(--white);">
+      <div id="contactFormSuccess" style="display: none; text-align: center; padding: 40px 20px;">
+        <div style="font-size: 48px; margin-bottom: 16px; color: var(--green);">&#10003;</div>
+        <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px;">Message sent!</div>
+        <p style="font-size: 15px; color: var(--slate); line-height: 1.6;">Thank you for reaching out. A member of our team will be in touch within one business day.</p>
       </div>
-      <div class="form-field">
-        <label>Email</label>
-        <input type="email" placeholder="jane@healthcenter.org" style="background: var(--white);">
-      </div>
-      <div class="form-field">
-        <label>Phone (optional)</label>
-        <input type="tel" placeholder="(555) 555-5555" style="background: var(--white);">
-      </div>
-      <div class="form-field">
-        <label>I am a...</label>
-        <select style="background: var(--white);">
-          <option value="" disabled selected>Select one</option>
-          <option>Health center / FQHC leader</option>
-          <option>Behavioral health clinician</option>
-          <option>FQHC association or partner</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label>Message</label>
-        <textarea placeholder="Tell us what you're looking for or how we can help..." style="background: var(--white);"></textarea>
-      </div>
-      <button class="btn-primary" style="text-align: center; width: 100%;">Send Message</button>
     </div>
   </div>
 </section>
@@ -188,6 +197,67 @@
     <div>Serving California's safety-net communities.</div>
   </div>
 </footer>
+
+<script src="js/tracking.js"></script>
+<script>
+function getHubspotCookie() {
+  var match = document.cookie.match(/hubspotutk=([^;]+)/);
+  return match ? match[1] : '';
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  var form = e.target;
+  var firstName = form.firstname.value || '';
+  var lastName = form.lastname.value || '';
+  var email = form.email.value || '';
+  var company = form.company.value || '';
+  var phone = form.phone.value || '';
+  var persona = form.persona.value || '';
+  var message = form.message.value || '';
+
+  // Append persona to message if selected
+  var fullMessage = message;
+  if (persona) {
+    fullMessage = '[' + persona + '] ' + message;
+  }
+
+  // GA tracking
+  if (typeof gtag === 'function') {
+    gtag('event', 'contact_form_submit', {
+      event_category: 'Contact',
+      event_label: company,
+      form_name: 'contact_us'
+    });
+  }
+
+  // Show success state
+  document.getElementById('contactFormContainer').style.display = 'none';
+  document.getElementById('contactFormSuccess').style.display = 'block';
+
+  // Submit to HubSpot Forms API
+  fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/04650f5e-2d9d-40ed-972c-0046197fc34f', {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fields: [
+        { objectTypeId: '0-1', name: 'firstname', value: firstName },
+        { objectTypeId: '0-1', name: 'lastname', value: lastName },
+        { objectTypeId: '0-1', name: 'email', value: email },
+        { objectTypeId: '0-1', name: 'company', value: company },
+        { objectTypeId: '0-1', name: 'phone', value: phone },
+        { objectTypeId: '0-1', name: 'message', value: fullMessage }
+      ],
+      context: {
+        hutk: getHubspotCookie(),
+        pageUri: window.location.href,
+        pageName: 'Contact'
+      }
+    })
+  }).catch(function(err) { console.error('HubSpot submission error:', err); });
+}
+</script>
 
 </body>
 </html>
