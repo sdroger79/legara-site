@@ -335,20 +335,106 @@ section {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 16px;
-  padding: 40px;
-  width: 340px;
+  padding: 36px 32px 28px;
+  width: 420px;
+  max-width: 90%;
   color: white;
 }
 
-.hero-card-label {
+.hero-card.hero-card-wide { width: 420px; }
+
+/* ── Transform card layout ── */
+.hero-transform-label {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 20px;
+  opacity: 0.5;
+  margin-bottom: 14px;
 }
 
+.hero-transform-label-after {
+  opacity: 0.85;
+  color: #fff;
+}
+
+.hero-transform-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hero-transform-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.hero-transform-item.faded {
+  opacity: 0.45;
+}
+
+.hero-transform-item.bright {
+  opacity: 1;
+}
+
+.transform-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.hero-transform-item.faded .transform-num {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,0.5);
+}
+
+.transform-desc {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 300;
+  opacity: 0.85;
+}
+
+.hero-transform-item.faded .transform-desc {
+  opacity: 0.7;
+}
+
+.transform-aside {
+  font-size: 11px;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.hero-transform-arrow {
+  text-align: center;
+  font-size: 24px;
+  margin: 16px 0 12px;
+  opacity: 0.4;
+}
+
+.hero-card-cta {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+.hero-card-cta:hover {
+  color: #fff;
+}
+
+/* Legacy stat classes (kept for other pages) */
 .hero-stat { margin-bottom: 28px; }
 
 .hero-stat-num {
@@ -1175,7 +1261,8 @@ footer {
   .page-header { padding: 120px 40px 60px; }
   .hero { grid-template-columns: 1fr; }
   .hero-left { padding: 80px 40px; }
-  .hero-right { min-height: 400px; }
+  .hero-right { min-height: 400px; padding: 40px 24px; }
+  .hero-card.hero-card-wide { width: 100%; max-width: 420px; }
   .problem-grid { grid-template-columns: 1fr; gap: 40px; }
   .pillars { grid-template-columns: 1fr; }
   .outcomes-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1211,6 +1298,9 @@ footer {
   }
   .hero-left { padding: 60px 24px; }
   .hero h1 { letter-spacing: -1px; }
+  .transform-num { font-size: 18px; min-width: 76px; }
+  .transform-desc { font-size: 12px; }
+  .hero-card { padding: 28px 24px 20px; }
   .outcomes-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
   .proof-bar { padding: 16px 24px; gap: 20px; }
