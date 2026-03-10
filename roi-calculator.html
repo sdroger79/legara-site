@@ -65,11 +65,11 @@
 
 .provider-toggle button {
   flex: 1;
-  padding: 12px 16px;
+  padding: 12px 10px;
   border: none;
   background: var(--off-white);
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--slate);
   cursor: pointer;
@@ -658,6 +658,7 @@
     <div class="calc-inputs">
       <div class="calc-section-title">Provider Type</div>
       <div class="provider-toggle">
+        <button onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
         <button class="active" onclick="setProviderType('psychologist')">Psychologist</button>
         <button onclick="setProviderType('pmhnp')">PMHNP</button>
         <button onclick="setProviderType('psychiatrist')">Psychiatrist</button>
@@ -668,71 +669,16 @@
         <label>Base annual salary <span class="field-hint">before benefits</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
-          <input type="number" id="salary" class="has-prefix" value="110000" onchange="calculate()" oninput="calculate()">
-        </div>
-      </div>
-      <div class="calc-row">
-        <div class="calc-field">
-          <label>Fully loaded multiplier</label>
-          <div class="input-group">
-            <input type="number" id="loadedMultiplier" class="has-suffix" value="1.4" step="0.05" onchange="calculate()" oninput="calculate()">
-            <span class="input-suffix">&times;</span>
-          </div>
-        </div>
-        <div class="calc-field">
-          <label>Number of providers</label>
-          <input type="number" id="providerCount" value="1" min="1" onchange="calculate()" oninput="calculate()">
-        </div>
-      </div>
-
-      <div class="calc-section-title">Recruitment &amp; Ramp</div>
-      <div class="calc-row">
-        <div class="calc-field">
-          <label>Recruiter / placement fee</label>
-          <div class="input-group">
-            <span class="input-prefix">$</span>
-            <input type="number" id="recruiterFee" class="has-prefix" value="8000" onchange="calculate()" oninput="calculate()">
-          </div>
-        </div>
-        <div class="calc-field">
-          <label>Annual turnover rate</label>
-          <div class="input-group">
-            <input type="number" id="turnoverRate" class="has-suffix" value="30" step="1" onchange="calculate()" oninput="calculate()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-      </div>
-      <div class="calc-row">
-        <div class="calc-field">
-          <label>Recruitment time <span class="field-hint">months</span></label>
-          <input type="number" id="recruitTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
-        </div>
-        <div class="calc-field">
-          <label>Onboarding &amp; training <span class="field-hint">weeks</span></label>
-          <input type="number" id="onboardWeeks" value="3" step="1" onchange="calculate()" oninput="calculate()">
-        </div>
-      </div>
-      <div class="calc-row">
-        <div class="calc-field">
-          <label>FQHC credentialing <span class="field-hint">months</span></label>
-          <input type="number" id="credentialTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
-        </div>
-        <div class="calc-field">
-          <label>Payer paneling <span class="field-hint">months</span></label>
-          <input type="number" id="payerPanelTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+          <input type="number" id="salary" class="has-prefix" value="155000" onchange="calculate()" oninput="calculate()">
         </div>
       </div>
       <div class="calc-field">
-        <label>Panel build to full productivity <span class="field-hint">months</span></label>
-        <input type="number" id="panelBuildTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+        <label>Number of providers</label>
+        <input type="number" id="providerCount" value="1" min="1" onchange="calculate()" oninput="calculate()">
       </div>
 
-      <div class="calc-section-title">Utilization Reality</div>
+      <div class="calc-section-title">Utilization</div>
       <div class="calc-row">
-        <div class="calc-field">
-          <label>Scheduled clinical hrs/wk <span class="field-hint">of 40</span></label>
-          <input type="number" id="scheduledHours" value="32" step="1" onchange="calculate()" oninput="calculate()">
-        </div>
         <div class="calc-field">
           <label>Open/unfilled slot rate</label>
           <div class="input-group">
@@ -740,18 +686,12 @@
             <span class="input-suffix">%</span>
           </div>
         </div>
-      </div>
-      <div class="calc-row">
         <div class="calc-field">
           <label>No-show / late-cancel rate</label>
           <div class="input-group">
             <input type="number" id="noShowRate" class="has-suffix" value="18" step="1" onchange="calculate()" oninput="calculate()">
             <span class="input-suffix">%</span>
           </div>
-        </div>
-        <div class="calc-field">
-          <label>PTO + sick + CME <span class="field-hint">days/yr</span></label>
-          <input type="number" id="ptoDays" value="30" step="1" onchange="calculate()" oninput="calculate()">
         </div>
       </div>
 
@@ -762,6 +702,10 @@
           <span class="input-prefix">$</span>
           <input type="number" id="ppsRate" class="has-prefix" value="230" step="5" onchange="calculate()" oninput="calculate()">
         </div>
+      </div>
+
+      <div style="margin-top: 24px; padding: 16px; background: var(--off-white); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">
+        <strong style="color: var(--slate);">Built-in assumptions:</strong> 1.4× benefits multiplier, $8K recruiter fee, 30% annual turnover, 3-month recruitment, 3-week onboarding, 3-month credentialing, 3-month payer paneling, 3-month panel build, 32 clinical hrs/wk, 30 days PTO/sick/CME.
       </div>
     </div>
 
@@ -830,12 +774,12 @@
         <div class="timeline-bar-group">
           <div class="timeline-bar-label">
             <span>Legara</span>
-            <span class="timeline-bar-months" id="legaraMonths">~5 months</span>
+            <span class="timeline-bar-months" id="legaraMonths">5 months (at $0 cost)</span>
           </div>
           <div class="timeline-bar-track">
-            <div class="timeline-bar-segments">
-              <div class="timeline-bar-segment credential" style="width: 50%;">Credentialing</div>
-              <div class="timeline-bar-segment panel" style="width: 50%;">Panel build</div>
+            <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
+              <div class="timeline-bar-segment credential" style="width: 60%;">Credentialing</div>
+              <div class="timeline-bar-segment panel" style="width: 40%;">Panel build</div>
             </div>
           </div>
         </div>
@@ -880,7 +824,7 @@
       </div>
 
       <div class="assumptions" style="margin-top: 16px;">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff at 0.25 FTE (~$11K/yr). Benefits multiplier 1.4×. Recruiter fee $8K. 30% annual turnover. Ramp: 3-month recruit, 3-week onboard, 3-month credential, 3-month payer panel, 3-month panel build. 32 clinical hrs/wk, 30 days PTO. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
       </div>
     </div>
   </div>
@@ -928,13 +872,28 @@
 // ═══ ROI CALCULATOR ENGINE (PUBLIC / GATED) ═══
 
 const DEFAULTS = {
-  psychologist: { salary: 110000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
-  pmhnp: { salary: 220000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)' },
+  lcsw_lmft: { salary: 135000, encPerHour: 1.5, label: 'LCSW / LMFT', encNote: '1.5/hr (therapy)' },
+  psychologist: { salary: 155000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
+  pmhnp: { salary: 200000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)' },
   psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)' }
 };
 
 const SUPPORT_STAFF_COST = 11000;
 const LEGARA_RAMP_MONTHS = 5;
+
+// Baked-in assumptions for public version
+const BAKED = {
+  loadedMultiplier: 1.4,
+  recruiterFee: 8000,
+  turnoverRate: 0.30,
+  recruitMonths: 3,
+  onboardWeeks: 3,
+  credentialMonths: 3,
+  payerPanelMonths: 3,
+  panelBuildMonths: 3,
+  scheduledHours: 32,
+  ptoDays: 30
+};
 
 let currentType = 'psychologist';
 
@@ -977,19 +936,19 @@ function fmtNum(n) {
 let calcCount = 0;
 function calculate() {
   const salary = parseFloat(document.getElementById('salary').value) || 0;
-  const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
+  const multiplier = BAKED.loadedMultiplier;
   const count = parseInt(document.getElementById('providerCount').value) || 1;
-  const recruiterFee = parseFloat(document.getElementById('recruiterFee').value) || 0;
-  const turnover = (parseFloat(document.getElementById('turnoverRate').value) || 0) / 100;
-  const recruitMonths = parseFloat(document.getElementById('recruitTime').value) || 0;
-  const onboardWeeks = parseFloat(document.getElementById('onboardWeeks').value) || 0;
-  const credentialMonths = parseFloat(document.getElementById('credentialTime').value) || 0;
-  const payerPanelMonths = parseFloat(document.getElementById('payerPanelTime').value) || 0;
-  const panelBuildMonths = parseFloat(document.getElementById('panelBuildTime').value) || 0;
-  const scheduledHours = parseFloat(document.getElementById('scheduledHours').value) || 32;
+  const recruiterFee = BAKED.recruiterFee;
+  const turnover = BAKED.turnoverRate;
+  const recruitMonths = BAKED.recruitMonths;
+  const onboardWeeks = BAKED.onboardWeeks;
+  const credentialMonths = BAKED.credentialMonths;
+  const payerPanelMonths = BAKED.payerPanelMonths;
+  const panelBuildMonths = BAKED.panelBuildMonths;
+  const scheduledHours = BAKED.scheduledHours;
   const openSlotRate = (parseFloat(document.getElementById('openSlotRate').value) || 0) / 100;
   const noShowRate = (parseFloat(document.getElementById('noShowRate').value) || 0) / 100;
-  const ptoDays = parseFloat(document.getElementById('ptoDays').value) || 0;
+  const ptoDays = BAKED.ptoDays;
   const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
   const encPerHour = DEFAULTS[currentType].encPerHour;
 
@@ -1068,13 +1027,17 @@ function calculate() {
     }
   });
 
+  // Proportional Legara bar (relative to internal timeline)
+  const legaraPct = totalRampMonths > 0 ? Math.round(LEGARA_RAMP_MONTHS / totalRampMonths * 100) : 50;
+  document.getElementById('legaraTimeline').style.width = legaraPct + '%';
+
   // Waterfall
   const waterfallData = [
     { label: 'Base salary', value: salary },
     { label: 'Benefits & taxes', value: benefitsCost },
     { label: 'Support staff', value: supportCost },
     { label: 'Recruiter fee', value: recruiterFee },
-    { label: 'Lost PPS revenue', value: lostPPSRevenue }
+    { label: 'Total encounter revenue', value: lostPPSRevenue }
   ];
   const maxWaterfall = Math.max(...waterfallData.map(d => d.value));
   const wf = document.getElementById('waterfallBars');
@@ -1085,7 +1048,7 @@ function calculate() {
       <div class="waterfall-item">
         <div class="waterfall-item-label">${d.label}</div>
         <div class="waterfall-item-bar">
-          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Lost PPS revenue' ? ' background: var(--red);' : ''}"></div>
+          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Total encounter revenue' ? ' background: var(--red);' : ''}"></div>
         </div>
         <div class="waterfall-item-value">${fmtShort(d.value)}</div>
       </div>`;
