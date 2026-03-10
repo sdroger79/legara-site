@@ -672,9 +672,36 @@
           <input type="number" id="salary" class="has-prefix" value="155000" onchange="calculate()" oninput="calculate()">
         </div>
       </div>
-      <div class="calc-field">
-        <label>Number of providers</label>
-        <input type="number" id="providerCount" value="1" min="1" onchange="calculate()" oninput="calculate()">
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Benefits &amp; tax multiplier <span class="field-hint">typically 1.3–1.5×</span></label>
+          <div class="input-group">
+            <input type="number" id="loadedMultiplier" class="has-suffix" value="1.4" step="0.05" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">&times;</span>
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>Number of providers</label>
+          <input type="number" id="providerCount" value="1" min="1" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="calc-section-title">Recruitment</div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Recruiter / placement fee</label>
+          <div class="input-group">
+            <span class="input-prefix">$</span>
+            <input type="number" id="recruiterFee" class="has-prefix" value="8000" onchange="calculate()" oninput="calculate()">
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>Annual turnover rate</label>
+          <div class="input-group">
+            <input type="number" id="turnoverRate" class="has-suffix" value="30" step="1" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
       </div>
 
       <div class="calc-section-title">Utilization</div>
@@ -697,7 +724,7 @@
 
       <div class="calc-section-title">Revenue</div>
       <div class="calc-field">
-        <label>PPS reimbursement per encounter <span class="field-hint">varies by FQHC</span></label>
+        <label>Total encounter revenue <span class="field-hint">PPS + copays + secondaries</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
           <input type="number" id="ppsRate" class="has-prefix" value="230" step="5" onchange="calculate()" oninput="calculate()">
@@ -705,7 +732,7 @@
       </div>
 
       <div style="margin-top: 24px; padding: 16px; background: var(--off-white); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">
-        <strong style="color: var(--slate);">Built-in assumptions:</strong> 1.4× benefits multiplier, $8K recruiter fee, 30% annual turnover, 3-month recruitment, 3-week onboarding, 3-month credentialing, 3-month payer paneling, 3-month panel build, 32 clinical hrs/wk, 30 days PTO/sick/CME.
+        <strong style="color: var(--slate);">Built-in assumptions:</strong> 3-month recruitment, 3-week onboarding, 3-month credentialing, 3-month payer paneling, 3-month panel build, 32 clinical hrs/wk, 30 days PTO/sick/CME.
       </div>
     </div>
 
@@ -824,7 +851,7 @@
       </div>
 
       <div class="assumptions" style="margin-top: 16px;">
-        <strong>Assumptions:</strong> Support staff at 0.25 FTE (~$11K/yr). Benefits multiplier 1.4×. Recruiter fee $8K. 30% annual turnover. Ramp: 3-month recruit, 3-week onboard, 3-month credential, 3-month payer panel, 3-month panel build. 32 clinical hrs/wk, 30 days PTO. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff at 0.25 FTE (~$11K/yr). Ramp timeline: 3-month recruit, 3-week onboard, 3-month credential, 3-month payer panel, 3-month panel build. 32 scheduled clinical hrs/wk, 30 days PTO/sick/CME. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
       </div>
     </div>
   </div>
@@ -936,10 +963,10 @@ function fmtNum(n) {
 let calcCount = 0;
 function calculate() {
   const salary = parseFloat(document.getElementById('salary').value) || 0;
-  const multiplier = BAKED.loadedMultiplier;
+  const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
   const count = parseInt(document.getElementById('providerCount').value) || 1;
-  const recruiterFee = BAKED.recruiterFee;
-  const turnover = BAKED.turnoverRate;
+  const recruiterFee = parseFloat(document.getElementById('recruiterFee').value) || 0;
+  const turnover = (parseFloat(document.getElementById('turnoverRate').value) || 0) / 100;
   const recruitMonths = BAKED.recruitMonths;
   const onboardWeeks = BAKED.onboardWeeks;
   const credentialMonths = BAKED.credentialMonths;

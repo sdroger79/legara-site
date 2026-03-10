@@ -758,7 +758,7 @@
 
       <div class="calc-section-title">Revenue</div>
       <div class="calc-field">
-        <label>PPS reimbursement per encounter <span class="field-hint">varies by FQHC</span></label>
+        <label>Total encounter revenue <span class="field-hint">PPS + copays + secondaries</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
           <input type="number" id="ppsRate" class="has-prefix" value="230" step="5" onchange="calculate()" oninput="calculate()">
@@ -948,7 +948,7 @@
       </div>
 
       <div class="assumptions">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $165/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $165/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
       </div>
 
       <div class="calc-cta">
