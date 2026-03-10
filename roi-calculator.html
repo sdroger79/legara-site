@@ -755,7 +755,7 @@
           </div>
         </div>
         <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
-          <strong>Why so high?</strong> You pay full salary for 12 months, but your provider only reaches full productivity after <span id="cpeRampMonthsNote">~11</span> months of recruiting, onboarding, credentialing, and panel building. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state.
+          <strong>Why so high?</strong> Recruiting takes ~3 months before you're even on payroll. Then once hired, your provider still needs <span id="cpeRampMonthsNote">~8</span> months of onboarding, credentialing, and panel building before reaching full productivity. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state — while 9 months of salary, benefits, and overhead are already running.
         </div>
       </div>
 
@@ -779,7 +779,7 @@
           <span class="compare-line-value" id="cmpRecruiter">$0</span>
         </div>
         <div class="compare-line">
-          <span class="compare-line-label">Dead ramp cost</span>
+          <span class="compare-line-label">Productive months</span>
           <span class="compare-line-value" id="cmpRamp" style="color: #c0392b; font-weight: 600;">$0</span>
         </div>
         <div class="compare-total">
@@ -1049,7 +1049,7 @@ function calculate() {
     : 'first-year cost per encounter (internal hire)';
   document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1 * count);
   document.getElementById('encCount').textContent = fmtNum(internalEnc1 * count);
-  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths);
+  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths - recruitMonths);
 
   // Internal hire cost card
   document.getElementById('cmpSalary').textContent = fmt(salary);

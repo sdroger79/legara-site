@@ -785,7 +785,7 @@
           </div>
         </div>
         <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
-          <strong>Why so high?</strong> You pay full salary for 12 months, but your provider only reaches full productivity after <span id="cpeRampMonthsNote">~11</span> months of recruiting, onboarding, credentialing, and panel building. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state.
+          <strong>Why so high?</strong> Recruiting takes ~3 months before you're even on payroll. Then once hired, your provider still needs <span id="cpeRampMonthsNote">~8</span> months of onboarding, credentialing, and panel building before reaching full productivity. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state — while 9 months of salary, benefits, and overhead are already running.
         </div>
       </div>
 
@@ -810,7 +810,7 @@
             <span class="compare-line-value" id="cmpRecruiter">$0</span>
           </div>
           <div class="compare-line">
-            <span class="compare-line-label">Dead ramp cost</span>
+            <span class="compare-line-label">Productive months</span>
             <span class="compare-line-value" id="cmpRamp">$0</span>
           </div>
           <div class="compare-total">
@@ -920,7 +920,7 @@
           </div>
         </div>
         <div style="margin-top: 12px; font-size: 11px; color: var(--mist); text-align: center;">
-          Year 1 internal CPE is inflated by salary paid during <span id="cpeRampNote">~11</span> months of ramp with zero revenue.
+          Year 1 internal CPE is inflated by ~<span id="cpeRampNote">8</span> months of post-hire ramp with limited patient volume, plus 3 months of recruiting before any hire is made.
         </div>
       </div>
 
@@ -951,7 +951,7 @@
       </div>
 
       <div class="assumptions">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $<span id="legaraRateNote">155</span>/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $<span id="legaraRateNote">155</span>/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. No salary cost during recruitment phase. Internal ramp cost = salary paid post-hire during months of limited patient volume. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
       </div>
 
       <div class="calc-cta">
@@ -1092,7 +1092,7 @@ function calculate() {
   const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
 
   // ─── YEAR 1: INTERNAL HIRE (graduated ramp) ───
-  // You pay full salary all 12 months; encounters ramp up gradually through each phase
+  // Salary starts post-recruit (9 of 12 months); encounters ramp up gradually through each phase
   const internalFullProdMonths = Math.max(12 - totalRampMonths, 0);
 
   // Helper: encounters during a phase = weeks × enc/week × productivity%, with pro-rata PTO
@@ -1153,7 +1153,7 @@ function calculate() {
     : 'first-year savings per provider';
   document.getElementById('internalCPE').textContent = fmt(internalCPE1);
   document.getElementById('legaraCPE').textContent = '$' + legaraRate;
-  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths);
+  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths - recruitMonths);
 
   // Comparison cards — Year 1 (prorated to months on payroll)
   const proratedBaseSalary = salary * (monthsOnPayroll / 12);
@@ -1227,7 +1227,7 @@ function calculate() {
   document.getElementById('cpeY1Legara').textContent = '$' + legaraRate;
   document.getElementById('cpeY2Legara').textContent = '$' + legaraRate;
   document.getElementById('cpeY3Legara').textContent = '$' + legaraRate;
-  document.getElementById('cpeRampNote').textContent = '~' + Math.round(totalRampMonths);
+  document.getElementById('cpeRampNote').textContent = Math.round(totalRampMonths - recruitMonths);
 
   // 3-Year — show real numbers (can be negative in Year 2-3 for low-salary providers)
   document.getElementById('yr1Savings').textContent = fmtShort(year1Savings);
