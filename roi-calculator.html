@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GC0KH378ZK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GC0KH378ZK');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Calculator | Legara Behavioral Health Platform</title>
+<meta name="description" content="Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model. See your real cost per encounter, annual savings, and 3-year ROI.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+/* ═══ ROI CALCULATOR STYLES ═══ */
+
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 48px;
+  align-items: start;
+}
+
+.calc-inputs {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.calc-results {
+  position: sticky;
+  top: 88px;
+}
+
+.calc-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calc-section-title:not(:first-child) {
+  margin-top: 32px;
+}
+
+/* Provider type toggle */
+.provider-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.provider-toggle button {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: var(--off-white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 1px solid var(--border);
+}
+
+.provider-toggle button:last-child { border-right: none; }
+
+.provider-toggle button.active {
+  background: var(--green);
+  color: var(--white);
+  font-weight: 600;
+}
+
+.provider-toggle button:hover:not(.active) {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+/* Input fields */
+.calc-field {
+  margin-bottom: 16px;
+}
+
+.calc-field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  margin-bottom: 6px;
+}
+
+.calc-field .field-hint {
+  font-size: 11px;
+  color: var(--mist);
+  font-weight: 400;
+}
+
+.calc-field input[type="number"],
+.calc-field input[type="text"] {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--charcoal);
+  background: var(--off-white);
+  transition: border-color 0.2s;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.calc-field input::-webkit-outer-spin-button,
+.calc-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.calc-field input:focus {
+  border-color: var(--green-mid);
+}
+
+.calc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Input group with prefix/suffix */
+.input-group {
+  position: relative;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--mist);
+  pointer-events: none;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--mist);
+  pointer-events: none;
+}
+
+.input-group .has-prefix {
+  padding-left: 28px;
+}
+
+.input-group .has-suffix {
+  padding-right: 40px;
+}
+
+/* ═══ RESULTS PANEL ═══ */
+
+.results-hero {
+  background: var(--green);
+  border-radius: 16px;
+  padding: 36px;
+  color: white;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.results-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.12) 0%, transparent 60%);
+}
+
+.results-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.results-hero-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 16px;
+}
+
+.results-hero-savings {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.results-hero-sub {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+
+.results-hero-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.results-hero-stat {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.results-hero-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.results-hero-stat-label {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* Comparison cards */
+.results-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.compare-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.compare-card.legara {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.compare-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin-bottom: 16px;
+}
+
+.compare-card.legara .compare-card-label {
+  color: var(--green);
+}
+
+.compare-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.compare-card.legara .compare-line {
+  border-color: rgba(26,107,74,0.15);
+}
+
+.compare-line:last-child { border-bottom: none; }
+
+.compare-line-label {
+  color: var(--slate);
+  font-weight: 400;
+}
+
+.compare-line-value {
+  font-weight: 600;
+  color: var(--charcoal);
+  font-size: 14px;
+}
+
+.compare-total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.compare-card.legara .compare-total {
+  border-color: var(--green);
+}
+
+.compare-total-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--slate);
+}
+
+.compare-total-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.compare-card.legara .compare-total-value {
+  color: var(--green);
+}
+
+/* Timeline comparison */
+.timeline-compare {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.timeline-compare-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin-bottom: 20px;
+}
+
+.timeline-bar-group {
+  margin-bottom: 20px;
+}
+
+.timeline-bar-group:last-child { margin-bottom: 0; }
+
+.timeline-bar-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline-bar-months {
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.timeline-bar-track {
+  height: 32px;
+  background: var(--off-white);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.timeline-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  transition: width 0.5s ease;
+}
+
+.timeline-bar-fill.internal {
+  background: var(--charcoal);
+}
+
+.timeline-bar-fill.legara {
+  background: var(--green);
+}
+
+.timeline-bar-segments {
+  display: flex;
+  height: 100%;
+}
+
+.timeline-bar-segment {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: width 0.5s ease;
+}
+
+.timeline-bar-segment.recruit { background: #4a5e54; }
+.timeline-bar-segment.onboard { background: #3a7a5a; }
+.timeline-bar-segment.credential { background: #2d8a62; }
+.timeline-bar-segment.panel { background: #1a6b4a; }
+.timeline-bar-segment.payer { background: #156040; }
+
+.timeline-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.timeline-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--mist);
+}
+
+.timeline-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* Cost waterfall */
+.waterfall {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.waterfall-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin-bottom: 20px;
+}
+
+.waterfall-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.waterfall-item:last-child { margin-bottom: 0; }
+
+.waterfall-item-label {
+  font-size: 13px;
+  color: var(--slate);
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.waterfall-item-bar {
+  flex: 1;
+  height: 24px;
+  background: var(--off-white);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.waterfall-item-fill {
+  height: 100%;
+  background: var(--charcoal);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  min-width: 2px;
+}
+
+.waterfall-item-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 3-year view */
+.three-year {
+  background: var(--charcoal);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+}
+
+.three-year-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.three-year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.three-year-item {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.three-year-item-year {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.three-year-item-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.three-year-item-label {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+.three-year-total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+
+.three-year-total-label {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.three-year-total-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--white);
+}
+
+/* Assumptions note */
+.assumptions {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--mist);
+  line-height: 1.6;
+}
+
+.assumptions strong {
+  color: var(--slate);
+}
+
+/* CTA */
+.calc-cta {
+  margin-top: 24px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .calc-layout {
+    grid-template-columns: 1fr;
+  }
+  .calc-results {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .calc-inputs { padding: 24px; }
+  .results-hero { padding: 24px; }
+  .results-hero-savings { font-size: 36px; }
+  .results-compare { grid-template-columns: 1fr; }
+  .three-year-grid { grid-template-columns: 1fr; }
+  .calc-row { grid-template-columns: 1fr; }
+  .provider-toggle { flex-direction: column; }
+  .provider-toggle button { border-right: none; border-bottom: 1px solid var(--border); }
+  .provider-toggle button:last-child { border-bottom: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Legara"></a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="for-health-centers.html">For Health Centers</a></li>
+    <li><a href="become-a-provider.html">Become a Provider</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="section-label">ROI Calculator</div>
+  <div class="section-headline">The true cost of internal hiring vs. Legara.</div>
+  <p class="section-body">Most FQHCs underestimate the real cost of employed behavioral health providers by 40–60%. This calculator shows you the full picture — including the costs that never make it into a budget forecast.</p>
+</div>
+
+<!-- CALCULATOR -->
+<section class="content-section">
+  <div class="calc-layout">
+
+    <!-- LEFT: INPUTS -->
+    <div class="calc-inputs">
+      <div class="calc-section-title">Provider Type</div>
+      <div class="provider-toggle">
+        <button class="active" onclick="setProviderType('psychologist')">Psychologist</button>
+        <button onclick="setProviderType('pmhnp')">PMHNP</button>
+        <button onclick="setProviderType('psychiatrist')">Psychiatrist</button>
+      </div>
+
+      <div class="calc-section-title">Compensation</div>
+      <div class="calc-field">
+        <label>Base annual salary <span class="field-hint">before benefits</span></label>
+        <div class="input-group">
+          <span class="input-prefix">$</span>
+          <input type="number" id="salary" class="has-prefix" value="110000" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Fully loaded multiplier</label>
+          <div class="input-group">
+            <input type="number" id="loadedMultiplier" class="has-suffix" value="1.4" step="0.05" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">&times;</span>
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>Number of providers</label>
+          <input type="number" id="providerCount" value="1" min="1" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="calc-section-title">Recruitment &amp; Ramp</div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Recruiter / placement fee</label>
+          <div class="input-group">
+            <span class="input-prefix">$</span>
+            <input type="number" id="recruiterFee" class="has-prefix" value="8000" onchange="calculate()" oninput="calculate()">
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>Annual turnover rate</label>
+          <div class="input-group">
+            <input type="number" id="turnoverRate" class="has-suffix" value="30" step="1" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Recruitment time <span class="field-hint">months</span></label>
+          <input type="number" id="recruitTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+        <div class="calc-field">
+          <label>Onboarding &amp; training <span class="field-hint">weeks</span></label>
+          <input type="number" id="onboardWeeks" value="3" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>FQHC credentialing <span class="field-hint">months</span></label>
+          <input type="number" id="credentialTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+        <div class="calc-field">
+          <label>Payer paneling <span class="field-hint">months</span></label>
+          <input type="number" id="payerPanelTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+      <div class="calc-field">
+        <label>Panel build to full productivity <span class="field-hint">months</span></label>
+        <input type="number" id="panelBuildTime" value="3" step="1" onchange="calculate()" oninput="calculate()">
+      </div>
+
+      <div class="calc-section-title">Utilization Reality</div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>Scheduled clinical hrs/wk <span class="field-hint">of 40</span></label>
+          <input type="number" id="scheduledHours" value="32" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+        <div class="calc-field">
+          <label>Open/unfilled slot rate</label>
+          <div class="input-group">
+            <input type="number" id="openSlotRate" class="has-suffix" value="15" step="1" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-field">
+          <label>No-show / late-cancel rate</label>
+          <div class="input-group">
+            <input type="number" id="noShowRate" class="has-suffix" value="18" step="1" onchange="calculate()" oninput="calculate()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>PTO + sick + CME <span class="field-hint">days/yr</span></label>
+          <input type="number" id="ptoDays" value="30" step="1" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="calc-section-title">Revenue</div>
+      <div class="calc-field">
+        <label>PPS reimbursement per encounter <span class="field-hint">varies by FQHC</span></label>
+        <div class="input-group">
+          <span class="input-prefix">$</span>
+          <input type="number" id="ppsRate" class="has-prefix" value="230" step="5" onchange="calculate()" oninput="calculate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="calc-results">
+
+      <!-- Hero savings -->
+      <div class="results-hero">
+        <div class="results-hero-label">Annual Savings with Legara</div>
+        <div class="results-hero-savings" id="annualSavings">$0</div>
+        <div class="results-hero-sub" id="savingsContext">per provider per year</div>
+        <div class="results-hero-row">
+          <div class="results-hero-stat">
+            <div class="results-hero-stat-num" id="internalCPE">$0</div>
+            <div class="results-hero-stat-label">Internal cost/encounter</div>
+          </div>
+          <div class="results-hero-stat">
+            <div class="results-hero-stat-num" id="legaraCPE">$165</div>
+            <div class="results-hero-stat-label">Legara cost/encounter</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side by side comparison -->
+      <div class="results-compare">
+        <div class="compare-card">
+          <div class="compare-card-label">Internal Hire</div>
+          <div class="compare-line">
+            <span class="compare-line-label">Base salary</span>
+            <span class="compare-line-value" id="cmpSalary">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Benefits &amp; taxes</span>
+            <span class="compare-line-value" id="cmpBenefits">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Support staff (0.25 FTE)</span>
+            <span class="compare-line-value" id="cmpSupport">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Recruiter (turnover-adj.)</span>
+            <span class="compare-line-value" id="cmpRecruiter">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Dead ramp cost</span>
+            <span class="compare-line-value" id="cmpRamp">$0</span>
+          </div>
+          <div class="compare-total">
+            <span class="compare-total-label">True annual cost</span>
+            <span class="compare-total-value" id="cmpTotalInternal">$0</span>
+          </div>
+        </div>
+        <div class="compare-card legara">
+          <div class="compare-card-label">Legara Model</div>
+          <div class="compare-line">
+            <span class="compare-line-label">Cost per encounter</span>
+            <span class="compare-line-value">$165</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Support staff</span>
+            <span class="compare-line-value" style="color: var(--green);">Included</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Recruitment cost</span>
+            <span class="compare-line-value" style="color: var(--green);">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Cost during ramp</span>
+            <span class="compare-line-value" style="color: var(--green);">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Turnover risk</span>
+            <span class="compare-line-value" style="color: var(--green);">&lt;3%</span>
+          </div>
+          <div class="compare-total">
+            <span class="compare-total-label">Annual cost</span>
+            <span class="compare-total-value" id="cmpTotalLegara">$0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline comparison -->
+      <div class="timeline-compare">
+        <div class="timeline-compare-label">Time to First Revenue</div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Internal Hire</span>
+            <span class="timeline-bar-months" id="internalMonths">12 months</span>
+          </div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments" id="internalTimeline">
+            </div>
+          </div>
+        </div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Legara</span>
+            <span class="timeline-bar-months" id="legaraMonths">4–6 months</span>
+          </div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments">
+              <div class="timeline-bar-segment credential" style="width: 50%;">Credentialing</div>
+              <div class="timeline-bar-segment panel" style="width: 50%;">Panel build</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-legend">
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #4a5e54;"></div>Recruit</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #3a7a5a;"></div>Onboard</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #2d8a62;"></div>Credential</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #156040;"></div>Payer panel</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #1a6b4a;"></div>Panel build</div>
+        </div>
+      </div>
+
+      <!-- Where money goes -->
+      <div class="waterfall">
+        <div class="waterfall-label">Where Your Money Actually Goes (Internal Hire)</div>
+        <div id="waterfallBars"></div>
+      </div>
+
+      <!-- 3-Year View -->
+      <div class="three-year">
+        <div class="three-year-label">3-Year Cumulative Savings</div>
+        <div class="three-year-grid">
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 1</div>
+            <div class="three-year-item-value" id="yr1Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 2</div>
+            <div class="three-year-item-value" id="yr2Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 3</div>
+            <div class="three-year-item-value" id="yr3Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+        </div>
+        <div class="three-year-total">
+          <div class="three-year-total-label">Total 3-Year Savings</div>
+          <div class="three-year-total-value" id="total3Yr">$0</div>
+        </div>
+      </div>
+
+      <div class="assumptions">
+        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $165/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+      </div>
+
+      <div class="calc-cta">
+        <a href="contact.html" class="btn-primary" style="margin-top: 24px;">Talk to Our Team About Your ROI</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="section-headline">Ready to see what Legara can do for your health center?</div>
+  <p>No FTE commitment. No capital outlay. Just behavioral health capacity — on demand.</p>
+  <a href="contact.html" class="btn-primary">Get in Touch</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="img/logo.png" alt="Legara"></div>
+      <p class="footer-about">Behavioral health capacity for FQHCs. Encounter-based. Clinician-powered. Mission-aligned.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="for-health-centers.html">For Health Centers</a>
+      <a href="become-a-provider.html">Become a Provider</a>
+      <a href="roi-calculator.html">ROI Calculator</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="press.html">Press</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="contact.html">Contact</a>
+      <a href="https://www.linkedin.com/company/legara" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 Legara, Inc. All rights reserved.</span>
+    <span>Encinitas, CA</span>
+  </div>
+</footer>
+
+<script>
+// ═══ ROI CALCULATOR ENGINE ═══
+
+const DEFAULTS = {
+  psychologist: { salary: 110000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
+  pmhnp: { salary: 220000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)' },
+  psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)' }
+};
+
+const LEGARA_COST_PER_ENC = 165;
+const LEGARA_TURNOVER = 0.03;
+const SUPPORT_STAFF_COST = 11000; // 0.25 FTE PSR @ ~$44K
+const LEGARA_CREDENTIAL_MONTHS = 3;
+const LEGARA_PANEL_MONTHS = 3;
+
+let currentType = 'psychologist';
+
+function setProviderType(type) {
+  currentType = type;
+  const d = DEFAULTS[type];
+  document.getElementById('salary').value = d.salary;
+
+  // Update toggle buttons
+  document.querySelectorAll('.provider-toggle button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+
+  calculate();
+}
+
+function fmt(n) {
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (n >= 10000) return '$' + Math.round(n).toLocaleString();
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function fmtShort(n) {
+  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1000) return '$' + (n / 1000).toFixed(0) + 'K';
+  return '$' + Math.round(n);
+}
+
+function calculate() {
+  const salary = parseFloat(document.getElementById('salary').value) || 0;
+  const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
+  const count = parseInt(document.getElementById('providerCount').value) || 1;
+  const recruiterFee = parseFloat(document.getElementById('recruiterFee').value) || 0;
+  const turnover = (parseFloat(document.getElementById('turnoverRate').value) || 0) / 100;
+  const recruitMonths = parseFloat(document.getElementById('recruitTime').value) || 0;
+  const onboardWeeks = parseFloat(document.getElementById('onboardWeeks').value) || 0;
+  const credentialMonths = parseFloat(document.getElementById('credentialTime').value) || 0;
+  const payerPanelMonths = parseFloat(document.getElementById('payerPanelTime').value) || 0;
+  const panelBuildMonths = parseFloat(document.getElementById('panelBuildTime').value) || 0;
+  const scheduledHours = parseFloat(document.getElementById('scheduledHours').value) || 32;
+  const openSlotRate = (parseFloat(document.getElementById('openSlotRate').value) || 0) / 100;
+  const noShowRate = (parseFloat(document.getElementById('noShowRate').value) || 0) / 100;
+  const ptoDays = parseFloat(document.getElementById('ptoDays').value) || 0;
+  const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
+  const encPerHour = DEFAULTS[currentType].encPerHour;
+
+  // ─── INTERNAL HIRE MATH ───
+
+  // Fully loaded annual cost
+  const fullyLoaded = salary * multiplier;
+  const benefitsCost = fullyLoaded - salary;
+
+  // Support staff
+  const supportCost = SUPPORT_STAFF_COST;
+
+  // Recruiter cost amortized by turnover
+  const recruiterAnnualized = recruiterFee * turnover;
+
+  // Available weeks (52 - PTO weeks)
+  const ptoWeeks = ptoDays / 5;
+  const availableWeeks = 52 - ptoWeeks;
+
+  // Effective encounters per week
+  const effectiveHours = scheduledHours * (1 - openSlotRate);
+  const encountersBeforeNoShow = effectiveHours * encPerHour;
+  const effectiveEncPerWeek = encountersBeforeNoShow * (1 - noShowRate);
+
+  // Annual encounters
+  const annualEncounters = effectiveEncPerWeek * availableWeeks;
+
+  // Ramp timeline — months with overlapping phases
+  // Recruit → Onboard → Credential + Payer Panel (can partially overlap) → Panel Build
+  const onboardMonths = onboardWeeks / 4.33;
+  // Credential and payer panel can overlap ~50%
+  const credPanelMonths = Math.max(credentialMonths, payerPanelMonths) + Math.min(credentialMonths, payerPanelMonths) * 0.5;
+  const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
+
+  // Dead ramp cost: salary paid during months before full revenue
+  // First year: portion of year spent ramping = salaried cost with minimal/no revenue
+  const rampFraction = Math.min(totalRampMonths / 12, 1);
+  const deadRampCost = fullyLoaded * rampFraction * 0.7; // ~70% dead cost during ramp (partial revenue in later phases)
+
+  // Year 1 total internal cost (per provider)
+  const internalYear1 = fullyLoaded + supportCost + recruiterAnnualized + deadRampCost;
+
+  // Steady state (Year 2+) — no ramp but still turnover risk
+  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * (totalRampMonths / 12) * 0.7);
+  const internalSteadyState = fullyLoaded + supportCost + turnoverReplacementCost;
+
+  // Internal cost per encounter (steady state, conservative)
+  const internalCPE = annualEncounters > 0 ? internalSteadyState / annualEncounters : 0;
+
+  // ─── LEGARA MATH ───
+
+  // Legara annual cost = encounters × $165
+  const legaraAnnualCost = annualEncounters * LEGARA_COST_PER_ENC;
+
+  // ─── SAVINGS ───
+
+  const year1Savings = (internalYear1 - legaraAnnualCost) * count;
+  const year2Savings = (internalSteadyState - legaraAnnualCost) * count;
+  const year3Savings = (internalSteadyState - legaraAnnualCost) * count;
+  const total3Yr = year1Savings + year2Savings + year3Savings;
+  const annualSavingsSteady = (internalSteadyState - legaraAnnualCost) * count;
+
+  // ─── UPDATE UI ───
+
+  // Hero
+  document.getElementById('annualSavings').textContent = fmt(Math.max(annualSavingsSteady, 0));
+  document.getElementById('savingsContext').textContent = count > 1
+    ? `across ${count} providers per year`
+    : 'per provider per year';
+  document.getElementById('internalCPE').textContent = fmt(internalCPE);
+  document.getElementById('legaraCPE').textContent = '$165';
+
+  // Comparison cards
+  document.getElementById('cmpSalary').textContent = fmt(salary);
+  document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
+  document.getElementById('cmpSupport').textContent = fmt(supportCost);
+  document.getElementById('cmpRecruiter').textContent = fmt(recruiterAnnualized);
+  document.getElementById('cmpRamp').textContent = fmt(deadRampCost);
+  document.getElementById('cmpTotalInternal').textContent = fmt(internalYear1);
+  document.getElementById('cmpTotalLegara').textContent = fmt(legaraAnnualCost);
+
+  // Timeline
+  const maxMonths = Math.max(totalRampMonths, LEGARA_CREDENTIAL_MONTHS + LEGARA_PANEL_MONTHS);
+  document.getElementById('internalMonths').textContent = Math.round(totalRampMonths) + ' months';
+  document.getElementById('legaraMonths').textContent = (LEGARA_CREDENTIAL_MONTHS + LEGARA_PANEL_MONTHS) + ' months (at $0 cost)';
+
+  // Internal timeline segments
+  const totalForBar = recruitMonths + onboardMonths + credentialMonths + payerPanelMonths + panelBuildMonths;
+  const tl = document.getElementById('internalTimeline');
+  tl.innerHTML = '';
+  const segments = [
+    { label: 'Recruit', months: recruitMonths, cls: 'recruit' },
+    { label: 'Onboard', months: onboardMonths, cls: 'onboard' },
+    { label: 'Credential', months: credentialMonths, cls: 'credential' },
+    { label: 'Payer', months: payerPanelMonths, cls: 'payer' },
+    { label: 'Panel', months: panelBuildMonths, cls: 'panel' }
+  ];
+  segments.forEach(s => {
+    if (s.months > 0) {
+      const div = document.createElement('div');
+      div.className = 'timeline-bar-segment ' + s.cls;
+      div.style.width = (s.months / totalForBar * 100) + '%';
+      div.textContent = s.label;
+      tl.appendChild(div);
+    }
+  });
+
+  // Waterfall bars
+  const waterfallData = [
+    { label: 'Base salary', value: salary },
+    { label: 'Benefits & taxes', value: benefitsCost },
+    { label: 'Support staff', value: supportCost },
+    { label: 'Recruiter (adj.)', value: recruiterAnnualized },
+    { label: 'Dead ramp cost', value: deadRampCost }
+  ];
+  const maxWaterfall = Math.max(...waterfallData.map(d => d.value));
+  const wf = document.getElementById('waterfallBars');
+  wf.innerHTML = '';
+  waterfallData.forEach(d => {
+    const pct = maxWaterfall > 0 ? (d.value / maxWaterfall * 100) : 0;
+    wf.innerHTML += `
+      <div class="waterfall-item">
+        <div class="waterfall-item-label">${d.label}</div>
+        <div class="waterfall-item-bar">
+          <div class="waterfall-item-fill" style="width: ${pct}%;"></div>
+        </div>
+        <div class="waterfall-item-value">${fmtShort(d.value)}</div>
+      </div>`;
+  });
+
+  // 3-Year
+  document.getElementById('yr1Savings').textContent = fmtShort(Math.max(year1Savings, 0));
+  document.getElementById('yr2Savings').textContent = fmtShort(Math.max(year2Savings, 0));
+  document.getElementById('yr3Savings').textContent = fmtShort(Math.max(year3Savings, 0));
+  document.getElementById('total3Yr').textContent = fmt(Math.max(total3Yr, 0));
+
+  // Notes
+  document.getElementById('encRateNote').textContent = DEFAULTS[currentType].encNote;
+  document.getElementById('ppsNote').textContent = ppsRate;
+}
+
+// Run on load
+calculate();
+</script>
+
+</body>
+</html>
