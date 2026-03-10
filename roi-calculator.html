@@ -168,7 +168,7 @@
 }
 
 .input-group .has-prefix {
-  padding-left: 28px;
+  padding-left: 32px;
 }
 
 .input-group .has-suffix {
@@ -967,10 +967,8 @@ const DEFAULTS = {
 };
 
 const LEGARA_COST_PER_ENC = 165;
-const LEGARA_TURNOVER = 0.03;
 const SUPPORT_STAFF_COST = 11000; // 0.25 FTE PSR @ ~$44K
-const LEGARA_CREDENTIAL_MONTHS = 3;
-const LEGARA_PANEL_MONTHS = 3;
+const LEGARA_RAMP_MONTHS = 5; // credential 3 + panel build 2 (overlapping, faster)
 
 let currentType = 'psychologist';
 
@@ -978,19 +976,13 @@ function setProviderType(type) {
   currentType = type;
   const d = DEFAULTS[type];
   document.getElementById('salary').value = d.salary;
-
-  // Update toggle buttons
-  document.querySelectorAll('.provider-toggle button').forEach(btn => {
-    btn.classList.remove('active');
-  });
+  document.querySelectorAll('.provider-toggle button').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
-
   calculate();
 }
 
 function fmt(n) {
-  if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
-  if (n >= 10000) return '$' + Math.round(n).toLocaleString();
+  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
   return '$' + Math.round(n).toLocaleString();
 }
 
@@ -1018,101 +1010,95 @@ function calculate() {
   const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
   const encPerHour = DEFAULTS[currentType].encPerHour;
 
-  // ─── INTERNAL HIRE MATH ───
-
-  // Fully loaded annual cost
+  // ─── CORE UTILIZATION MATH ───
   const fullyLoaded = salary * multiplier;
   const benefitsCost = fullyLoaded - salary;
-
-  // Support staff
   const supportCost = SUPPORT_STAFF_COST;
-
-  // Recruiter cost amortized by turnover
-  const recruiterAnnualized = recruiterFee * turnover;
-
-  // Available weeks (52 - PTO weeks)
   const ptoWeeks = ptoDays / 5;
-  const availableWeeks = 52 - ptoWeeks;
-
-  // Effective encounters per week
+  const availableWeeksPerYear = 52 - ptoWeeks;
   const effectiveHours = scheduledHours * (1 - openSlotRate);
-  const encountersBeforeNoShow = effectiveHours * encPerHour;
-  const effectiveEncPerWeek = encountersBeforeNoShow * (1 - noShowRate);
+  const effectiveEncPerWeek = effectiveHours * encPerHour * (1 - noShowRate);
+  const fullYearEncounters = effectiveEncPerWeek * availableWeeksPerYear;
 
-  // Annual encounters
-  const annualEncounters = effectiveEncPerWeek * availableWeeks;
-
-  // Ramp timeline — months with overlapping phases
-  // Recruit → Onboard → Credential + Payer Panel (can partially overlap) → Panel Build
+  // ─── INTERNAL HIRE RAMP TIMELINE ───
   const onboardMonths = onboardWeeks / 4.33;
-  // Credential and payer panel can overlap ~50%
-  const credPanelMonths = Math.max(credentialMonths, payerPanelMonths) + Math.min(credentialMonths, payerPanelMonths) * 0.5;
+  // Sequential: Recruit → Onboard → then credential + payer panel (partial overlap) → panel build
+  const credPanelOverlap = Math.min(credentialMonths, payerPanelMonths) * 0.5;
+  const credPanelMonths = credentialMonths + payerPanelMonths - credPanelOverlap;
   const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
 
-  // Dead ramp cost: salary paid during months before full revenue
-  // First year: portion of year spent ramping = salaried cost with minimal/no revenue
-  const rampFraction = Math.min(totalRampMonths / 12, 1);
-  const deadRampCost = fullyLoaded * rampFraction * 0.7; // ~70% dead cost during ramp (partial revenue in later phases)
+  // ─── YEAR 1: INTERNAL HIRE ───
+  // You pay full salary + benefits all 12 months, but only get encounters for productive months
+  const internalProductiveMonths1 = Math.max(12 - totalRampMonths, 0);
+  const internalProductiveWeeks1 = internalProductiveMonths1 * 4.33;
+  const internalPTOWeeks1 = ptoWeeks * (internalProductiveMonths1 / 12); // pro-rata PTO
+  const internalAvailWeeks1 = Math.max(internalProductiveWeeks1 - internalPTOWeeks1, 0);
+  const internalEnc1 = effectiveEncPerWeek * internalAvailWeeks1;
 
-  // Year 1 total internal cost (per provider)
-  const internalYear1 = fullyLoaded + supportCost + recruiterAnnualized + deadRampCost;
+  const internalCostYear1 = fullyLoaded + supportCost + recruiterFee; // full salary + support + recruiter (paid in full year 1)
+  const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
 
-  // Steady state (Year 2+) — no ramp but still turnover risk
-  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * (totalRampMonths / 12) * 0.7);
-  const internalSteadyState = fullyLoaded + supportCost + turnoverReplacementCost;
+  // ─── YEAR 1: LEGARA ───
+  // $0 during ramp (credential + panel build ≈ 5 months), then pay per encounter
+  const legaraProductiveMonths1 = Math.max(12 - LEGARA_RAMP_MONTHS, 0);
+  const legaraProductiveWeeks1 = legaraProductiveMonths1 * 4.33;
+  const legaraPTOWeeks1 = ptoWeeks * (legaraProductiveMonths1 / 12);
+  const legaraAvailWeeks1 = Math.max(legaraProductiveWeeks1 - legaraPTOWeeks1, 0);
+  const legaraEnc1 = effectiveEncPerWeek * legaraAvailWeeks1;
+  const legaraCostYear1 = legaraEnc1 * LEGARA_COST_PER_ENC;
 
-  // Internal cost per encounter (steady state, conservative)
-  const internalCPE = annualEncounters > 0 ? internalSteadyState / annualEncounters : 0;
+  // ─── YEAR 2+ STEADY STATE ───
+  // Internal: full year salary + benefits + support + turnover replacement cost (amortized)
+  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * Math.min(totalRampMonths / 12, 1) * 0.5);
+  const internalCostSteady = fullyLoaded + supportCost + turnoverReplacementCost;
+  const internalCPESteady = fullYearEncounters > 0 ? internalCostSteady / fullYearEncounters : 0;
 
-  // ─── LEGARA MATH ───
-
-  // Legara annual cost = encounters × $165
-  const legaraAnnualCost = annualEncounters * LEGARA_COST_PER_ENC;
+  // Legara: full year encounters × $165
+  const legaraCostSteady = fullYearEncounters * LEGARA_COST_PER_ENC;
 
   // ─── SAVINGS ───
-
-  const year1Savings = (internalYear1 - legaraAnnualCost) * count;
-  const year2Savings = (internalSteadyState - legaraAnnualCost) * count;
-  const year3Savings = (internalSteadyState - legaraAnnualCost) * count;
+  const year1Savings = (internalCostYear1 - legaraCostYear1) * count;
+  const year2Savings = (internalCostSteady - legaraCostSteady) * count;
+  const year3Savings = year2Savings;
   const total3Yr = year1Savings + year2Savings + year3Savings;
-  const annualSavingsSteady = (internalSteadyState - legaraAnnualCost) * count;
+
+  // ─── LOST REVENUE: encounters Legara delivers in Year 1 that internal can't ───
+  const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
+  const lostPPSRevenue = encounterGapYear1 * ppsRate;
 
   // ─── UPDATE UI ───
 
-  // Hero
-  document.getElementById('annualSavings').textContent = fmt(Math.max(annualSavingsSteady, 0));
+  // Hero — show Year 1 savings (always the strongest case)
+  document.getElementById('annualSavings').textContent = fmt(Math.max(year1Savings, 0));
   document.getElementById('savingsContext').textContent = count > 1
-    ? `across ${count} providers per year`
-    : 'per provider per year';
-  document.getElementById('internalCPE').textContent = fmt(internalCPE);
+    ? 'first-year savings across ' + count + ' providers'
+    : 'first-year savings per provider';
+  document.getElementById('internalCPE').textContent = fmt(internalCPE1);
   document.getElementById('legaraCPE').textContent = '$165';
 
-  // Comparison cards
+  // Comparison cards — Year 1
   document.getElementById('cmpSalary').textContent = fmt(salary);
   document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
   document.getElementById('cmpSupport').textContent = fmt(supportCost);
-  document.getElementById('cmpRecruiter').textContent = fmt(recruiterAnnualized);
-  document.getElementById('cmpRamp').textContent = fmt(deadRampCost);
-  document.getElementById('cmpTotalInternal').textContent = fmt(internalYear1);
-  document.getElementById('cmpTotalLegara').textContent = fmt(legaraAnnualCost);
+  document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
+  document.getElementById('cmpRamp').textContent = Math.round(internalProductiveMonths1) + ' of 12 mo productive';
+  document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1);
+  document.getElementById('cmpTotalLegara').textContent = fmt(legaraCostYear1);
 
   // Timeline
-  const maxMonths = Math.max(totalRampMonths, LEGARA_CREDENTIAL_MONTHS + LEGARA_PANEL_MONTHS);
   document.getElementById('internalMonths').textContent = Math.round(totalRampMonths) + ' months';
-  document.getElementById('legaraMonths').textContent = (LEGARA_CREDENTIAL_MONTHS + LEGARA_PANEL_MONTHS) + ' months (at $0 cost)';
+  document.getElementById('legaraMonths').textContent = LEGARA_RAMP_MONTHS + ' months (at $0 cost)';
 
-  // Internal timeline segments
   const totalForBar = recruitMonths + onboardMonths + credentialMonths + payerPanelMonths + panelBuildMonths;
   const tl = document.getElementById('internalTimeline');
   tl.innerHTML = '';
-  const segments = [
+  [
     { label: 'Recruit', months: recruitMonths, cls: 'recruit' },
     { label: 'Onboard', months: onboardMonths, cls: 'onboard' },
     { label: 'Credential', months: credentialMonths, cls: 'credential' },
     { label: 'Payer', months: payerPanelMonths, cls: 'payer' },
     { label: 'Panel', months: panelBuildMonths, cls: 'panel' }
-  ];
-  segments.forEach(s => {
+  ].forEach(s => {
     if (s.months > 0) {
       const div = document.createElement('div');
       div.className = 'timeline-bar-segment ' + s.cls;
@@ -1122,13 +1108,13 @@ function calculate() {
     }
   });
 
-  // Waterfall bars
+  // Waterfall — Year 1 true cost breakdown
   const waterfallData = [
     { label: 'Base salary', value: salary },
     { label: 'Benefits & taxes', value: benefitsCost },
     { label: 'Support staff', value: supportCost },
-    { label: 'Recruiter (adj.)', value: recruiterAnnualized },
-    { label: 'Dead ramp cost', value: deadRampCost }
+    { label: 'Recruiter fee', value: recruiterFee },
+    { label: 'Lost PPS revenue', value: lostPPSRevenue }
   ];
   const maxWaterfall = Math.max(...waterfallData.map(d => d.value));
   const wf = document.getElementById('waterfallBars');
@@ -1139,17 +1125,26 @@ function calculate() {
       <div class="waterfall-item">
         <div class="waterfall-item-label">${d.label}</div>
         <div class="waterfall-item-bar">
-          <div class="waterfall-item-fill" style="width: ${pct}%;"></div>
+          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Lost PPS revenue' ? ' background: var(--red);' : ''}"></div>
         </div>
         <div class="waterfall-item-value">${fmtShort(d.value)}</div>
       </div>`;
   });
 
-  // 3-Year
-  document.getElementById('yr1Savings').textContent = fmtShort(Math.max(year1Savings, 0));
-  document.getElementById('yr2Savings').textContent = fmtShort(Math.max(year2Savings, 0));
-  document.getElementById('yr3Savings').textContent = fmtShort(Math.max(year3Savings, 0));
-  document.getElementById('total3Yr').textContent = fmt(Math.max(total3Yr, 0));
+  // 3-Year — show real numbers (can be negative in Year 2-3 for low-salary providers)
+  document.getElementById('yr1Savings').textContent = fmtShort(year1Savings);
+  document.getElementById('yr2Savings').textContent = fmtShort(year2Savings);
+  document.getElementById('yr3Savings').textContent = fmtShort(year3Savings);
+  document.getElementById('total3Yr').textContent = fmt(total3Yr);
+
+  // Color code 3-year values
+  ['yr1Savings', 'yr2Savings', 'yr3Savings'].forEach((id, i) => {
+    const val = [year1Savings, year2Savings, year3Savings][i];
+    const el = document.getElementById(id);
+    el.style.color = val >= 0 ? 'var(--accent)' : 'rgba(255,255,255,0.4)';
+  });
+  const t3el = document.getElementById('total3Yr');
+  t3el.style.color = total3Yr >= 0 ? 'var(--white)' : 'rgba(255,255,255,0.5)';
 
   // Notes
   document.getElementById('encRateNote').textContent = DEFAULTS[currentType].encNote;
