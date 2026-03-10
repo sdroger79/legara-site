@@ -11,7 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROI Calculator | Legara Behavioral Health Platform</title>
+<title>ROI Calculator (Internal) | Legara Behavioral Health Platform</title>
 <meta name="description" content="Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model. See your real cost per encounter, annual savings, and 3-year ROI.">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
@@ -768,49 +768,78 @@
     <!-- RIGHT: RESULTS -->
     <div class="calc-results">
 
-      <!-- Hero — internal hire true cost (no Legara details) -->
+      <!-- Hero savings -->
       <div class="results-hero">
-        <div class="results-hero-label">Your True Cost Per Encounter</div>
-        <div class="results-hero-savings" id="internalCPE">$0</div>
-        <div class="results-hero-sub" id="cpeContext">first-year cost per encounter (internal hire)</div>
+        <div class="results-hero-label">Annual Savings with Legara</div>
+        <div class="results-hero-savings" id="annualSavings">$0</div>
+        <div class="results-hero-sub" id="savingsContext">per provider per year</div>
         <div class="results-hero-row">
           <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="cmpTotalInternal">$0</div>
-            <div class="results-hero-stat-label">Year 1 true cost</div>
+            <div class="results-hero-stat-num" id="internalCPE">$0</div>
+            <div class="results-hero-stat-label">Internal cost/encounter</div>
           </div>
           <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="encCount">0</div>
-            <div class="results-hero-stat-label">Year 1 encounters</div>
+            <div class="results-hero-stat-num" id="legaraCPE">$165</div>
+            <div class="results-hero-stat-label">Legara cost/encounter</div>
           </div>
         </div>
       </div>
 
-      <!-- Internal hire cost breakdown -->
-      <div class="compare-card" style="margin-bottom: 16px;">
-        <div class="compare-card-label">The Real Cost of an Internal Hire</div>
-        <div class="compare-line">
-          <span class="compare-line-label">Base salary</span>
-          <span class="compare-line-value" id="cmpSalary">$0</span>
+      <!-- Side by side comparison -->
+      <div class="results-compare">
+        <div class="compare-card">
+          <div class="compare-card-label">Internal Hire</div>
+          <div class="compare-line">
+            <span class="compare-line-label">Base salary</span>
+            <span class="compare-line-value" id="cmpSalary">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Benefits &amp; taxes</span>
+            <span class="compare-line-value" id="cmpBenefits">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Support staff (0.25 FTE)</span>
+            <span class="compare-line-value" id="cmpSupport">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Recruiter (turnover-adj.)</span>
+            <span class="compare-line-value" id="cmpRecruiter">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Dead ramp cost</span>
+            <span class="compare-line-value" id="cmpRamp">$0</span>
+          </div>
+          <div class="compare-total">
+            <span class="compare-total-label">True annual cost</span>
+            <span class="compare-total-value" id="cmpTotalInternal">$0</span>
+          </div>
         </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Benefits &amp; taxes</span>
-          <span class="compare-line-value" id="cmpBenefits">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Support staff (0.25 FTE)</span>
-          <span class="compare-line-value" id="cmpSupport">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Recruiter / placement</span>
-          <span class="compare-line-value" id="cmpRecruiter">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Dead ramp cost</span>
-          <span class="compare-line-value" id="cmpRamp" style="color: #c0392b; font-weight: 600;">$0</span>
-        </div>
-        <div class="compare-total">
-          <span class="compare-total-label">True Year 1 cost</span>
-          <span class="compare-total-value" id="cmpTotalInternalCard">$0</span>
+        <div class="compare-card legara">
+          <div class="compare-card-label">Legara Model</div>
+          <div class="compare-line">
+            <span class="compare-line-label">Cost per encounter</span>
+            <span class="compare-line-value">$165</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Support staff</span>
+            <span class="compare-line-value" style="color: var(--green);">Included</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Recruitment cost</span>
+            <span class="compare-line-value" style="color: var(--green);">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Cost during ramp</span>
+            <span class="compare-line-value" style="color: var(--green);">$0</span>
+          </div>
+          <div class="compare-line">
+            <span class="compare-line-label">Turnover risk</span>
+            <span class="compare-line-value" style="color: var(--green);">&lt;3%</span>
+          </div>
+          <div class="compare-total">
+            <span class="compare-total-label">Annual cost</span>
+            <span class="compare-total-value" id="cmpTotalLegara">$0</span>
+          </div>
         </div>
       </div>
 
@@ -830,7 +859,7 @@
         <div class="timeline-bar-group">
           <div class="timeline-bar-label">
             <span>Legara</span>
-            <span class="timeline-bar-months" id="legaraMonths">~5 months</span>
+            <span class="timeline-bar-months" id="legaraMonths">4–6 months</span>
           </div>
           <div class="timeline-bar-track">
             <div class="timeline-bar-segments">
@@ -850,37 +879,42 @@
 
       <!-- Where money goes -->
       <div class="waterfall">
-        <div class="waterfall-label">Where Your Money Actually Goes</div>
+        <div class="waterfall-label">Where Your Money Actually Goes (Internal Hire)</div>
         <div id="waterfallBars"></div>
       </div>
 
-      <!-- GATED: Legara comparison CTA -->
-      <div id="gatedCTA" style="background: var(--green); border-radius: 16px; padding: 40px 32px; text-align: center; color: white; position: relative; overflow: hidden;">
-        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.12) 0%, transparent 60%);"></div>
-        <div style="position: relative; z-index: 1;">
-          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px;">See the Full Comparison</div>
-          <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 8px;">What if you didn't have to carry any of this cost?</div>
-          <p style="font-size: 14px; opacity: 0.8; margin-bottom: 24px; line-height: 1.5;">Get your personalized ROI report showing exactly how Legara's encounter-based model compares — including cost per encounter, 3-year savings projection, and lost revenue recovery.</p>
-          <div id="leadFormContainer">
-            <form id="leadForm" onsubmit="submitLeadForm(event)" style="text-align: left; max-width: 340px; margin: 0 auto;">
-              <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none;" onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
-              <input type="text" name="title" placeholder="Title" style="width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none;" onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
-              <input type="text" name="org" placeholder="Organization" required style="width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none;" onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
-              <input type="email" name="email" placeholder="Work email" required style="width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none;" onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
-              <input type="tel" name="phone" placeholder="Phone (optional)" style="width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 16px; outline: none;" onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
-              <button type="submit" style="width: 100%; padding: 14px; background: white; color: var(--green); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Get My Full ROI Report</button>
-            </form>
+      <!-- 3-Year View -->
+      <div class="three-year">
+        <div class="three-year-label">3-Year Cumulative Savings</div>
+        <div class="three-year-grid">
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 1</div>
+            <div class="three-year-item-value" id="yr1Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
           </div>
-          <div id="leadFormSuccess" style="display: none;">
-            <div style="font-size: 40px; margin-bottom: 12px;">&#10003;</div>
-            <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Thank you!</div>
-            <p style="font-size: 14px; opacity: 0.8;">We'll send your personalized ROI report and reach out to schedule a brief call to walk through the results.</p>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 2</div>
+            <div class="three-year-item-value" id="yr2Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
           </div>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 3</div>
+            <div class="three-year-item-value" id="yr3Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+        </div>
+        <div class="three-year-total">
+          <div class="three-year-total-label">Total 3-Year Savings</div>
+          <div class="three-year-total-value" id="total3Yr">$0</div>
         </div>
       </div>
 
-      <div class="assumptions" style="margin-top: 16px;">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+      <div class="assumptions">
+        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $165/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. PPS rate of $<span id="ppsNote">230</span>/encounter. All figures are estimates — actual results vary by organization.
+      </div>
+
+      <div class="calc-cta">
+        <a href="contact.html" class="btn-primary" style="margin-top: 24px;">Talk to Our Team About Your ROI</a>
       </div>
     </div>
   </div>
@@ -925,7 +959,7 @@
 </footer>
 
 <script>
-// ═══ ROI CALCULATOR ENGINE (PUBLIC / GATED) ═══
+// ═══ ROI CALCULATOR ENGINE ═══
 
 const DEFAULTS = {
   psychologist: { salary: 110000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
@@ -933,8 +967,9 @@ const DEFAULTS = {
   psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)' }
 };
 
-const SUPPORT_STAFF_COST = 11000;
-const LEGARA_RAMP_MONTHS = 5;
+const LEGARA_COST_PER_ENC = 165;
+const SUPPORT_STAFF_COST = 11000; // 0.25 FTE PSR @ ~$44K
+const LEGARA_RAMP_MONTHS = 5; // credential 3 + panel build 2 (overlapping, faster)
 
 let currentType = 'psychologist';
 
@@ -942,7 +977,7 @@ let currentType = 'psychologist';
 function trackEvent(action, category, label, value) {
   if (typeof gtag === 'function') {
     gtag('event', action, {
-      event_category: category || 'ROI Calculator',
+      event_category: category || 'ROI Calculator Internal',
       event_label: label || '',
       value: value || 0
     });
@@ -955,7 +990,7 @@ function setProviderType(type) {
   document.getElementById('salary').value = d.salary;
   document.querySelectorAll('.provider-toggle button').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
-  trackEvent('provider_type_change', 'ROI Calculator', type);
+  trackEvent('provider_type_change', 'ROI Calculator Internal', type);
   calculate();
 }
 
@@ -970,11 +1005,6 @@ function fmtShort(n) {
   return '$' + Math.round(n);
 }
 
-function fmtNum(n) {
-  return Math.round(n).toLocaleString();
-}
-
-let calcCount = 0;
 function calculate() {
   const salary = parseFloat(document.getElementById('salary').value) || 0;
   const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
@@ -1005,45 +1035,68 @@ function calculate() {
 
   // ─── INTERNAL HIRE RAMP TIMELINE ───
   const onboardMonths = onboardWeeks / 4.33;
+  // Sequential: Recruit → Onboard → then credential + payer panel (partial overlap) → panel build
   const credPanelOverlap = Math.min(credentialMonths, payerPanelMonths) * 0.5;
   const credPanelMonths = credentialMonths + payerPanelMonths - credPanelOverlap;
   const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
 
   // ─── YEAR 1: INTERNAL HIRE ───
+  // You pay full salary + benefits all 12 months, but only get encounters for productive months
   const internalProductiveMonths1 = Math.max(12 - totalRampMonths, 0);
   const internalProductiveWeeks1 = internalProductiveMonths1 * 4.33;
-  const internalPTOWeeks1 = ptoWeeks * (internalProductiveMonths1 / 12);
+  const internalPTOWeeks1 = ptoWeeks * (internalProductiveMonths1 / 12); // pro-rata PTO
   const internalAvailWeeks1 = Math.max(internalProductiveWeeks1 - internalPTOWeeks1, 0);
   const internalEnc1 = effectiveEncPerWeek * internalAvailWeeks1;
-  const internalCostYear1 = fullyLoaded + supportCost + recruiterFee;
+
+  const internalCostYear1 = fullyLoaded + supportCost + recruiterFee; // full salary + support + recruiter (paid in full year 1)
   const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
 
-  // ─── LOST REVENUE (encounter gap vs faster Legara ramp) ───
+  // ─── YEAR 1: LEGARA ───
+  // $0 during ramp (credential + panel build ≈ 5 months), then pay per encounter
   const legaraProductiveMonths1 = Math.max(12 - LEGARA_RAMP_MONTHS, 0);
   const legaraProductiveWeeks1 = legaraProductiveMonths1 * 4.33;
   const legaraPTOWeeks1 = ptoWeeks * (legaraProductiveMonths1 / 12);
   const legaraAvailWeeks1 = Math.max(legaraProductiveWeeks1 - legaraPTOWeeks1, 0);
   const legaraEnc1 = effectiveEncPerWeek * legaraAvailWeeks1;
+  const legaraCostYear1 = legaraEnc1 * LEGARA_COST_PER_ENC;
+
+  // ─── YEAR 2+ STEADY STATE ───
+  // Internal: full year salary + benefits + support + turnover replacement cost (amortized)
+  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * Math.min(totalRampMonths / 12, 1) * 0.5);
+  const internalCostSteady = fullyLoaded + supportCost + turnoverReplacementCost;
+  const internalCPESteady = fullYearEncounters > 0 ? internalCostSteady / fullYearEncounters : 0;
+
+  // Legara: full year encounters × $165
+  const legaraCostSteady = fullYearEncounters * LEGARA_COST_PER_ENC;
+
+  // ─── SAVINGS ───
+  const year1Savings = (internalCostYear1 - legaraCostYear1) * count;
+  const year2Savings = (internalCostSteady - legaraCostSteady) * count;
+  const year3Savings = year2Savings;
+  const total3Yr = year1Savings + year2Savings + year3Savings;
+
+  // ─── LOST REVENUE: encounters Legara delivers in Year 1 that internal can't ───
   const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
   const lostPPSRevenue = encounterGapYear1 * ppsRate;
 
   // ─── UPDATE UI ───
 
-  // Hero — show internal true CPE (the shock number)
+  // Hero — show Year 1 savings (always the strongest case)
+  document.getElementById('annualSavings').textContent = fmt(Math.max(year1Savings, 0));
+  document.getElementById('savingsContext').textContent = count > 1
+    ? 'first-year savings across ' + count + ' providers'
+    : 'first-year savings per provider';
   document.getElementById('internalCPE').textContent = fmt(internalCPE1);
-  document.getElementById('cpeContext').textContent = count > 1
-    ? 'first-year cost per encounter across ' + count + ' providers'
-    : 'first-year cost per encounter (internal hire)';
-  document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1 * count);
-  document.getElementById('encCount').textContent = fmtNum(internalEnc1 * count);
+  document.getElementById('legaraCPE').textContent = '$165';
 
-  // Internal hire cost card
+  // Comparison cards — Year 1
   document.getElementById('cmpSalary').textContent = fmt(salary);
   document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
   document.getElementById('cmpSupport').textContent = fmt(supportCost);
   document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
   document.getElementById('cmpRamp').textContent = Math.round(internalProductiveMonths1) + ' of 12 mo productive';
-  document.getElementById('cmpTotalInternalCard').textContent = fmt(internalCostYear1);
+  document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1);
+  document.getElementById('cmpTotalLegara').textContent = fmt(legaraCostYear1);
 
   // Timeline
   document.getElementById('internalMonths').textContent = Math.round(totalRampMonths) + ' months';
@@ -1068,7 +1121,7 @@ function calculate() {
     }
   });
 
-  // Waterfall
+  // Waterfall — Year 1 true cost breakdown
   const waterfallData = [
     { label: 'Base salary', value: salary },
     { label: 'Benefits & taxes', value: benefitsCost },
@@ -1091,50 +1144,24 @@ function calculate() {
       </div>`;
   });
 
+  // 3-Year — show real numbers (can be negative in Year 2-3 for low-salary providers)
+  document.getElementById('yr1Savings').textContent = fmtShort(year1Savings);
+  document.getElementById('yr2Savings').textContent = fmtShort(year2Savings);
+  document.getElementById('yr3Savings').textContent = fmtShort(year3Savings);
+  document.getElementById('total3Yr').textContent = fmt(total3Yr);
+
+  // Color code 3-year values
+  ['yr1Savings', 'yr2Savings', 'yr3Savings'].forEach((id, i) => {
+    const val = [year1Savings, year2Savings, year3Savings][i];
+    const el = document.getElementById(id);
+    el.style.color = val >= 0 ? 'var(--accent)' : 'rgba(255,255,255,0.4)';
+  });
+  const t3el = document.getElementById('total3Yr');
+  t3el.style.color = total3Yr >= 0 ? 'var(--white)' : 'rgba(255,255,255,0.5)';
+
   // Notes
   document.getElementById('encRateNote').textContent = DEFAULTS[currentType].encNote;
   document.getElementById('ppsNote').textContent = ppsRate;
-
-  // Track engagement (fire on 3rd+ calculation to avoid noise from initial load)
-  calcCount++;
-  if (calcCount === 3) {
-    trackEvent('calculator_engaged', 'ROI Calculator', currentType, Math.round(internalCPE1));
-  }
-}
-
-// ─── LEAD FORM HANDLER ───
-function submitLeadForm(e) {
-  e.preventDefault();
-  const form = e.target;
-  const data = {
-    name: form.name.value,
-    title: form.title.value,
-    org: form.org.value,
-    email: form.email.value,
-    phone: form.phone.value,
-    provider_type: currentType,
-    salary: document.getElementById('salary').value,
-    internal_cpe: document.getElementById('internalCPE').textContent
-  };
-
-  // Track form submission in GA
-  trackEvent('lead_form_submit', 'ROI Calculator', data.org, 1);
-
-  // Send to GA as a conversion event
-  if (typeof gtag === 'function') {
-    gtag('event', 'generate_lead', {
-      event_category: 'ROI Calculator',
-      event_label: data.org + ' | ' + data.email,
-      value: 1
-    });
-  }
-
-  // Show success state
-  document.getElementById('leadFormContainer').style.display = 'none';
-  document.getElementById('leadFormSuccess').style.display = 'block';
-
-  // Log to console for now (can be replaced with webhook/email API)
-  console.log('ROI Lead:', JSON.stringify(data));
 }
 
 // Run on load
