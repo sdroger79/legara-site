@@ -658,8 +658,8 @@
     <div class="calc-inputs">
       <div class="calc-section-title">Provider Type</div>
       <div class="provider-toggle">
-        <button onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
-        <button class="active" onclick="setProviderType('psychologist')">Psychologist</button>
+        <button class="active" onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
+        <button onclick="setProviderType('psychologist')">Psychologist</button>
         <button onclick="setProviderType('pmhnp')">PMHNP</button>
         <button onclick="setProviderType('psychiatrist')">Psychiatrist</button>
       </div>
@@ -669,7 +669,7 @@
         <label>Base annual salary <span class="field-hint">before benefits</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
-          <input type="number" id="salary" class="has-prefix" value="155000" onchange="calculate()" oninput="calculate()">
+          <input type="number" id="salary" class="has-prefix" value="135000" onchange="calculate()" oninput="calculate()">
         </div>
       </div>
       <div class="calc-row">
@@ -780,9 +780,12 @@
             <div class="results-hero-stat-label">Internal cost/encounter</div>
           </div>
           <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="legaraCPE">$165</div>
+            <div class="results-hero-stat-num" id="legaraCPE">$155</div>
             <div class="results-hero-stat-label">Legara cost/encounter</div>
           </div>
+        </div>
+        <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
+          <strong>Why so high?</strong> You pay full salary for 12 months, but your provider only reaches full productivity after <span id="cpeRampMonthsNote">~11</span> months of recruiting, onboarding, credentialing, and panel building. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state.
         </div>
       </div>
 
@@ -819,7 +822,7 @@
           <div class="compare-card-label">Legara Model</div>
           <div class="compare-line">
             <span class="compare-line-label">Cost per encounter</span>
-            <span class="compare-line-value">$165</span>
+            <span class="compare-line-value" id="cmpLegaraRate">$155</span>
           </div>
           <div class="compare-line">
             <span class="compare-line-label">Support staff</span>
@@ -897,7 +900,7 @@
             <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;" id="cpeY1Internal">$0</span>
           </div>
           <div style="background: var(--green-pale); border: 1px solid var(--green); border-radius: 6px; padding: 12px; text-align: center;">
-            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);">$165</span>
+            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);" id="cpeY1Legara">$155</span>
           </div>
 
           <div style="font-size: 13px; font-weight: 500; color: var(--slate);">Year 2</div>
@@ -905,7 +908,7 @@
             <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--charcoal);" id="cpeY2Internal">$0</span>
           </div>
           <div style="background: var(--green-pale); border: 1px solid var(--green); border-radius: 6px; padding: 12px; text-align: center;">
-            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);">$165</span>
+            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);" id="cpeY2Legara">$155</span>
           </div>
 
           <div style="font-size: 13px; font-weight: 500; color: var(--slate);">Year 3</div>
@@ -913,7 +916,7 @@
             <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--charcoal);" id="cpeY3Internal">$0</span>
           </div>
           <div style="background: var(--green-pale); border: 1px solid var(--green); border-radius: 6px; padding: 12px; text-align: center;">
-            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);">$165</span>
+            <span style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--green);" id="cpeY3Legara">$155</span>
           </div>
         </div>
         <div style="margin-top: 12px; font-size: 11px; color: var(--mist); text-align: center;">
@@ -948,7 +951,7 @@
       </div>
 
       <div class="assumptions">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $165/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $<span id="legaraRateNote">155</span>/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. Internal ramp cost = salary paid during months of zero/partial revenue. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
       </div>
 
       <div class="calc-cta">
@@ -1000,17 +1003,23 @@
 // ═══ ROI CALCULATOR ENGINE ═══
 
 const DEFAULTS = {
-  lcsw_lmft: { salary: 135000, encPerHour: 1.5, label: 'LCSW / LMFT', encNote: '1.5/hr (therapy)' },
-  psychologist: { salary: 155000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)' },
-  pmhnp: { salary: 200000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)' },
-  psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)' }
+  lcsw_lmft: { salary: 135000, encPerHour: 1.5, label: 'LCSW / LMFT', encNote: '1.5/hr (therapy)', legaraRate: 155 },
+  psychologist: { salary: 155000, encPerHour: 1.5, label: 'Psychologist', encNote: '1.5/hr (therapy)', legaraRate: 165 },
+  pmhnp: { salary: 200000, encPerHour: 2.5, label: 'PMHNP', encNote: '2.5/hr (psychiatry)', legaraRate: 165 },
+  psychiatrist: { salary: 330000, encPerHour: 2.5, label: 'Psychiatrist', encNote: '2.5/hr (psychiatry)', legaraRate: 165 }
 };
-
-const LEGARA_COST_PER_ENC = 165;
 const SUPPORT_STAFF_COST = 11000; // 0.25 FTE PSR @ ~$44K
 const LEGARA_RAMP_MONTHS = 5; // credential 3 + panel build 2 (overlapping, faster)
 
-let currentType = 'psychologist';
+// Graduated ramp: partial productivity during later ramp phases
+const RAMP_PRODUCTIVITY = {
+  recruit: 0,      // not hired yet
+  onboard: 0,      // orientation & training
+  credPanel: 0.25, // limited panels active, seeing some patients
+  panelBuild: 0.65 // most panels active, building caseload
+};
+
+let currentType = 'lcsw_lmft';
 
 // ─── GA EVENT HELPER ───
 function trackEvent(action, category, label, value) {
@@ -1061,6 +1070,7 @@ function calculate() {
   const ptoDays = parseFloat(document.getElementById('ptoDays').value) || 0;
   const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
   const encPerHour = DEFAULTS[currentType].encPerHour;
+  const legaraRate = DEFAULTS[currentType].legaraRate;
 
   // ─── CORE UTILIZATION MATH ───
   const fullyLoaded = salary * multiplier;
@@ -1079,13 +1089,23 @@ function calculate() {
   const credPanelMonths = credentialMonths + payerPanelMonths - credPanelOverlap;
   const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
 
-  // ─── YEAR 1: INTERNAL HIRE ───
-  // You pay full salary + benefits all 12 months, but only get encounters for productive months
-  const internalProductiveMonths1 = Math.max(12 - totalRampMonths, 0);
-  const internalProductiveWeeks1 = internalProductiveMonths1 * 4.33;
-  const internalPTOWeeks1 = ptoWeeks * (internalProductiveMonths1 / 12); // pro-rata PTO
-  const internalAvailWeeks1 = Math.max(internalProductiveWeeks1 - internalPTOWeeks1, 0);
-  const internalEnc1 = effectiveEncPerWeek * internalAvailWeeks1;
+  // ─── YEAR 1: INTERNAL HIRE (graduated ramp) ───
+  // You pay full salary all 12 months; encounters ramp up gradually through each phase
+  const internalFullProdMonths = Math.max(12 - totalRampMonths, 0);
+
+  // Helper: encounters during a phase = weeks × enc/week × productivity%, with pro-rata PTO
+  function phaseEnc(months, productivity) {
+    const weeks = months * 4.33;
+    const pto = ptoWeeks * (months / 12);
+    return effectiveEncPerWeek * Math.max(weeks - pto, 0) * productivity;
+  }
+
+  const internalEnc1 =
+    phaseEnc(recruitMonths, RAMP_PRODUCTIVITY.recruit) +
+    phaseEnc(onboardMonths, RAMP_PRODUCTIVITY.onboard) +
+    phaseEnc(credPanelMonths, RAMP_PRODUCTIVITY.credPanel) +
+    phaseEnc(panelBuildMonths, RAMP_PRODUCTIVITY.panelBuild) +
+    phaseEnc(internalFullProdMonths, 1.0);
 
   const internalCostYear1 = fullyLoaded + supportCost + recruiterFee; // full salary + support + recruiter (paid in full year 1)
   const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
@@ -1097,7 +1117,7 @@ function calculate() {
   const legaraPTOWeeks1 = ptoWeeks * (legaraProductiveMonths1 / 12);
   const legaraAvailWeeks1 = Math.max(legaraProductiveWeeks1 - legaraPTOWeeks1, 0);
   const legaraEnc1 = effectiveEncPerWeek * legaraAvailWeeks1;
-  const legaraCostYear1 = legaraEnc1 * LEGARA_COST_PER_ENC;
+  const legaraCostYear1 = legaraEnc1 * legaraRate;
 
   // ─── YEAR 2+ STEADY STATE ───
   // Internal: full year salary + benefits + support + turnover replacement cost (amortized)
@@ -1105,8 +1125,8 @@ function calculate() {
   const internalCostSteady = fullyLoaded + supportCost + turnoverReplacementCost;
   const internalCPESteady = fullYearEncounters > 0 ? internalCostSteady / fullYearEncounters : 0;
 
-  // Legara: full year encounters × $165
-  const legaraCostSteady = fullYearEncounters * LEGARA_COST_PER_ENC;
+  // Legara: full year encounters × per-encounter rate
+  const legaraCostSteady = fullYearEncounters * legaraRate;
 
   // ─── SAVINGS ───
   const year1Savings = (internalCostYear1 - legaraCostYear1) * count;
@@ -1126,14 +1146,15 @@ function calculate() {
     ? 'first-year savings across ' + count + ' providers'
     : 'first-year savings per provider';
   document.getElementById('internalCPE').textContent = fmt(internalCPE1);
-  document.getElementById('legaraCPE').textContent = '$165';
+  document.getElementById('legaraCPE').textContent = '$' + legaraRate;
+  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths);
 
   // Comparison cards — Year 1
   document.getElementById('cmpSalary').textContent = fmt(salary);
   document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
   document.getElementById('cmpSupport').textContent = fmt(supportCost);
   document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
-  document.getElementById('cmpRamp').textContent = Math.round(internalProductiveMonths1) + ' of 12 mo productive';
+  document.getElementById('cmpRamp').textContent = Math.round(internalFullProdMonths) + ' of 12 mo at full productivity';
   document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1);
   document.getElementById('cmpTotalLegara').textContent = fmt(legaraCostYear1);
 
@@ -1187,10 +1208,17 @@ function calculate() {
       </div>`;
   });
 
+  // Update dynamic Legara rate displays
+  document.getElementById('cmpLegaraRate').textContent = '$' + legaraRate;
+  document.getElementById('legaraRateNote').textContent = legaraRate;
+
   // CPE by Year comparison
   document.getElementById('cpeY1Internal').textContent = fmt(internalCPE1);
   document.getElementById('cpeY2Internal').textContent = fmt(internalCPESteady);
   document.getElementById('cpeY3Internal').textContent = fmt(internalCPESteady);
+  document.getElementById('cpeY1Legara').textContent = '$' + legaraRate;
+  document.getElementById('cpeY2Legara').textContent = '$' + legaraRate;
+  document.getElementById('cpeY3Legara').textContent = '$' + legaraRate;
   document.getElementById('cpeRampNote').textContent = '~' + Math.round(totalRampMonths);
 
   // 3-Year — show real numbers (can be negative in Year 2-3 for low-salary providers)

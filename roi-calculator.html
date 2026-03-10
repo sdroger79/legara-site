@@ -658,8 +658,8 @@
     <div class="calc-inputs">
       <div class="calc-section-title">Provider Type</div>
       <div class="provider-toggle">
-        <button onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
-        <button class="active" onclick="setProviderType('psychologist')">Psychologist</button>
+        <button class="active" onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
+        <button onclick="setProviderType('psychologist')">Psychologist</button>
         <button onclick="setProviderType('pmhnp')">PMHNP</button>
         <button onclick="setProviderType('psychiatrist')">Psychiatrist</button>
       </div>
@@ -669,7 +669,7 @@
         <label>Base annual salary <span class="field-hint">before benefits</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
-          <input type="number" id="salary" class="has-prefix" value="155000" onchange="calculate()" oninput="calculate()">
+          <input type="number" id="salary" class="has-prefix" value="135000" onchange="calculate()" oninput="calculate()">
         </div>
       </div>
       <div class="calc-row">
@@ -753,6 +753,9 @@
             <div class="results-hero-stat-num" id="encCount">0</div>
             <div class="results-hero-stat-label">Year 1 encounters</div>
           </div>
+        </div>
+        <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
+          <strong>Why so high?</strong> You pay full salary for 12 months, but your provider only reaches full productivity after <span id="cpeRampMonthsNote">~11</span> months of recruiting, onboarding, credentialing, and panel building. Even with partial patient volume during ramp, Year 1 encounters are a fraction of steady state.
         </div>
       </div>
 
@@ -908,6 +911,14 @@ const DEFAULTS = {
 const SUPPORT_STAFF_COST = 11000;
 const LEGARA_RAMP_MONTHS = 5;
 
+// Graduated ramp: partial productivity during later ramp phases
+const RAMP_PRODUCTIVITY = {
+  recruit: 0,      // not hired yet
+  onboard: 0,      // orientation & training
+  credPanel: 0.25, // limited panels active, seeing some patients
+  panelBuild: 0.65 // most panels active, building caseload
+};
+
 // Baked-in assumptions for public version
 const BAKED = {
   loadedMultiplier: 1.4,
@@ -922,7 +933,7 @@ const BAKED = {
   ptoDays: 30
 };
 
-let currentType = 'psychologist';
+let currentType = 'lcsw_lmft';
 
 // ─── GA EVENT HELPER ───
 function trackEvent(action, category, label, value) {
@@ -995,12 +1006,22 @@ function calculate() {
   const credPanelMonths = credentialMonths + payerPanelMonths - credPanelOverlap;
   const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
 
-  // ─── YEAR 1: INTERNAL HIRE ───
-  const internalProductiveMonths1 = Math.max(12 - totalRampMonths, 0);
-  const internalProductiveWeeks1 = internalProductiveMonths1 * 4.33;
-  const internalPTOWeeks1 = ptoWeeks * (internalProductiveMonths1 / 12);
-  const internalAvailWeeks1 = Math.max(internalProductiveWeeks1 - internalPTOWeeks1, 0);
-  const internalEnc1 = effectiveEncPerWeek * internalAvailWeeks1;
+  // ─── YEAR 1: INTERNAL HIRE (graduated ramp) ───
+  const internalFullProdMonths = Math.max(12 - totalRampMonths, 0);
+
+  function phaseEnc(months, productivity) {
+    const weeks = months * 4.33;
+    const pto = ptoWeeks * (months / 12);
+    return effectiveEncPerWeek * Math.max(weeks - pto, 0) * productivity;
+  }
+
+  const internalEnc1 =
+    phaseEnc(recruitMonths, RAMP_PRODUCTIVITY.recruit) +
+    phaseEnc(onboardMonths, RAMP_PRODUCTIVITY.onboard) +
+    phaseEnc(credPanelMonths, RAMP_PRODUCTIVITY.credPanel) +
+    phaseEnc(panelBuildMonths, RAMP_PRODUCTIVITY.panelBuild) +
+    phaseEnc(internalFullProdMonths, 1.0);
+
   const internalCostYear1 = fullyLoaded + supportCost + recruiterFee;
   const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
 
@@ -1022,13 +1043,14 @@ function calculate() {
     : 'first-year cost per encounter (internal hire)';
   document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1 * count);
   document.getElementById('encCount').textContent = fmtNum(internalEnc1 * count);
+  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths);
 
   // Internal hire cost card
   document.getElementById('cmpSalary').textContent = fmt(salary);
   document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
   document.getElementById('cmpSupport').textContent = fmt(supportCost);
   document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
-  document.getElementById('cmpRamp').textContent = Math.round(internalProductiveMonths1) + ' of 12 mo productive';
+  document.getElementById('cmpRamp').textContent = Math.round(internalFullProdMonths) + ' of 12 mo at full productivity';
   document.getElementById('cmpTotalInternalCard').textContent = fmt(internalCostYear1);
 
   // Timeline
