@@ -1524,7 +1524,8 @@ function calculate() {
     total3Yr: Math.round(total3Yr),
     legaraCashYear1: Math.round(legaraCashYear1 * count),
     missionAdvantage: Math.round(missionAdvantage * count),
-    internalCPE1: internalCPE1
+    internalCPE1: internalCPE1,
+    legaraRate: legaraRate
   };
 
   // ─── UPDATE UI ───
@@ -1708,7 +1709,7 @@ function submitLeadForm(e) {
         { objectTypeId: '0-1', name: 'roi_year_1_savings', value: String(lastCalc.year1Savings || 0) },
         { objectTypeId: '0-1', name: 'roi_3year_savings', value: String(lastCalc.total3Yr || 0) },
         { objectTypeId: '0-1', name: 'roi_internal_cpe_y1', value: String(Math.round(lastCalc.internalCPE1 || 0)) },
-        { objectTypeId: '0-1', name: 'roi_legara_rate', value: String(legaraRate) },
+        { objectTypeId: '0-1', name: 'roi_legara_rate', value: String(lastCalc.legaraRate || 155) },
         { objectTypeId: '0-1', name: 'roi_mission_advantage', value: String(lastCalc.missionAdvantage || 0) },
         { objectTypeId: '0-1', name: 'roi_mission_cash_legara', value: String(lastCalc.legaraCashYear1 || 0) },
         { objectTypeId: '0-1', name: 'roi_calculator_version', value: 'public_v2' }
