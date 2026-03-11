@@ -843,7 +843,7 @@ section {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--mist);
+  color: var(--slate);
 }
 
 .form-field input,
