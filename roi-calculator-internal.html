@@ -699,6 +699,145 @@ section.content-section {
   font-weight: 900;
 }
 
+/* Year tabs for mission section */
+.mission-year-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.mission-year-tab {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  background: var(--off-white);
+  border: none;
+  color: var(--mist);
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.mission-year-tab:hover {
+  color: var(--slate);
+  background: var(--white);
+}
+
+.mission-year-tab.active {
+  color: var(--green);
+  background: var(--white);
+  border-bottom-color: var(--green);
+}
+
+.mission-year-panel {
+  display: none;
+}
+
+.mission-year-panel.active {
+  display: block;
+}
+
+/* Breakeven callout */
+.mission-breakeven {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 28px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--slate);
+}
+
+.mission-breakeven-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mission-breakeven.never-breaks-even {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.mission-breakeven.never-breaks-even .mission-breakeven-icon {
+  background: var(--green);
+  color: white;
+}
+
+.mission-breakeven.breaks-even {
+  border-color: #e0b040;
+  background: #fef9eb;
+}
+
+.mission-breakeven.breaks-even .mission-breakeven-icon {
+  background: #e0b040;
+  color: white;
+}
+
+.mission-breakeven strong {
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+/* Cumulative summary row */
+.mission-cumulative {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--border);
+}
+
+.mission-cumulative-col {
+  padding: 16px 28px;
+  text-align: center;
+}
+
+.mission-cumulative-col:first-child {
+  border-right: 1px solid var(--border);
+  background: var(--green-pale);
+}
+
+.mission-cumulative-col:last-child {
+  background: var(--off-white);
+}
+
+.mission-cumulative-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin-bottom: 4px;
+}
+
+.mission-cumulative-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.mission-cumulative-col:first-child .mission-cumulative-value {
+  color: var(--green);
+}
+
+.mission-cumulative-col:last-child .mission-cumulative-value {
+  color: var(--charcoal);
+}
+
+.mission-cumulative-col:last-child .mission-cumulative-value.negative {
+  color: #c0392b;
+}
+
 /* 3-year view */
 .three-year {
   background: var(--charcoal);
@@ -817,6 +956,41 @@ section.content-section {
   .mission-advantage { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
+
+<!-- SEO Meta Tags -->
+<link rel="canonical" href="https://golegara.com/roi-calculator-internal.html">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="ROI Calculator (Internal) | Legara">
+<meta property="og:description" content="Internal sales tool. Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://golegara.com/roi-calculator-internal.html">
+<meta property="og:image" content="https://golegara.com/img/og-image.png">
+<meta property="og:site_name" content="Legara">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ROI Calculator (Internal) | Legara">
+<meta name="twitter:description" content="Internal sales tool. Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model.">
+<meta name="twitter:image" content="https://golegara.com/img/og-image.png">
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="apple-touch-icon" href="/img/logo.png">
+<!-- Resource Hints -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "ROI Calculator Internal",
+  "description": "Internal sales tool. Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model.",
+  "url": "https://golegara.com/roi-calculator-internal.html",
+  "isPartOf": { "@id": "https://golegara.com/#website" },
+  "publisher": { "@id": "https://golegara.com/#organization" }
+}
+</script>
 </head>
 <body>
 
@@ -1086,52 +1260,124 @@ section.content-section {
           <div class="mission-header-title">How much cash does each model generate to serve your mission?</div>
         </div>
         <div class="mission-body">
-          <div class="mission-compare">
-            <div class="mission-col legara-col">
-              <div class="mission-col-label">With Legara</div>
-              <div class="mission-big-number" id="missionLegaraCash">$0</div>
-              <div class="mission-per-enc">
-                <strong id="missionLegaraPerEnc">$0</strong> net cash per encounter
+          <!-- Year tabs -->
+          <div class="mission-year-tabs">
+            <button class="mission-year-tab active" data-year="1" onclick="switchMissionYear(1)">Year 1</button>
+            <button class="mission-year-tab" data-year="2" onclick="switchMissionYear(2)">Year 2</button>
+            <button class="mission-year-tab" data-year="3" onclick="switchMissionYear(3)">Year 3</button>
+          </div>
+
+          <!-- Year 1 panel -->
+          <div class="mission-year-panel active" id="missionYear1">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-big-number" id="missionLegaraCashY1">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionLegaraPerEncY1">$0</strong> net cash per encounter
+                </div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY1">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY1">–$155</span></div>
+                  <div class="mission-detail-line"><span>Year 1 encounters</span><span id="missionLegaraEncY1">0</span></div>
+                </div>
               </div>
-              <div class="mission-detail">
-                <div class="mission-detail-line">
-                  <span>Encounter revenue</span>
-                  <span id="missionLegaraRev">$230</span>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-big-number" id="missionInternalCashY1">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionInternalPerEncY1">$0</strong> net cash per encounter
                 </div>
-                <div class="mission-detail-line">
-                  <span>Legara rate</span>
-                  <span id="missionLegaraRate">–$155</span>
-                </div>
-                <div class="mission-detail-line">
-                  <span>Year 1 encounters</span>
-                  <span id="missionLegaraEnc">0</span>
-                </div>
-              </div>
-            </div>
-            <div class="mission-col internal-col">
-              <div class="mission-col-label">Internal Hire</div>
-              <div class="mission-big-number" id="missionInternalCash">$0</div>
-              <div class="mission-per-enc">
-                <strong id="missionInternalPerEnc">$0</strong> net cash per encounter
-              </div>
-              <div class="mission-detail">
-                <div class="mission-detail-line">
-                  <span>Encounter revenue</span>
-                  <span id="missionInternalRev">$230</span>
-                </div>
-                <div class="mission-detail-line">
-                  <span>True cost per encounter</span>
-                  <span id="missionInternalCPE">–$0</span>
-                </div>
-                <div class="mission-detail-line">
-                  <span>Year 1 encounters</span>
-                  <span id="missionInternalEnc">0</span>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY1">$230</span></div>
+                  <div class="mission-detail-line"><span>True cost per encounter</span><span id="missionInternalCPEY1">–$0</span></div>
+                  <div class="mission-detail-line"><span>Year 1 encounters</span><span id="missionInternalEncY1">0</span></div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Year 2 panel -->
+          <div class="mission-year-panel" id="missionYear2">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-big-number" id="missionLegaraCashY2">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionLegaraPerEncY2">$0</strong> net cash per encounter
+                </div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY2">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY2">–$155</span></div>
+                  <div class="mission-detail-line"><span>Year 2 encounters</span><span id="missionLegaraEncY2">0</span></div>
+                </div>
+              </div>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-big-number" id="missionInternalCashY2">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionInternalPerEncY2">$0</strong> net cash per encounter
+                </div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY2">$230</span></div>
+                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY2">–$0</span></div>
+                  <div class="mission-detail-line"><span>Year 2 encounters</span><span id="missionInternalEncY2">0</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Year 3 panel -->
+          <div class="mission-year-panel" id="missionYear3">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-big-number" id="missionLegaraCashY3">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionLegaraPerEncY3">$0</strong> net cash per encounter
+                </div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY3">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY3">–$155</span></div>
+                  <div class="mission-detail-line"><span>Year 3 encounters</span><span id="missionLegaraEncY3">0</span></div>
+                </div>
+              </div>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-big-number" id="missionInternalCashY3">$0</div>
+                <div class="mission-per-enc">
+                  <strong id="missionInternalPerEncY3">$0</strong> net cash per encounter
+                </div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY3">$230</span></div>
+                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY3">–$0</span></div>
+                  <div class="mission-detail-line"><span>Year 3 encounters</span><span id="missionInternalEncY3">0</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cumulative 3-year totals -->
+          <div class="mission-cumulative">
+            <div class="mission-cumulative-col">
+              <div class="mission-cumulative-label">3-Year Cumulative (Legara)</div>
+              <div class="mission-cumulative-value" id="missionLegaraCum3">$0</div>
+            </div>
+            <div class="mission-cumulative-col">
+              <div class="mission-cumulative-label">3-Year Cumulative (Internal)</div>
+              <div class="mission-cumulative-value" id="missionInternalCum3">$0</div>
+            </div>
+          </div>
+
+          <!-- Breakeven callout -->
+          <div class="mission-breakeven never-breaks-even" id="missionBreakeven">
+            <span class="mission-breakeven-icon">i</span>
+            <span id="missionBreakevenText">Calculating...</span>
+          </div>
+
+          <!-- Advantage bar -->
           <div class="mission-advantage">
-            <div class="mission-advantage-label">Additional cash generated for your mission with Legara</div>
+            <div class="mission-advantage-label">Additional 3-year cash generated for your mission with Legara</div>
             <div class="mission-advantage-value" id="missionAdvantage">$0</div>
           </div>
         </div>
@@ -1313,6 +1559,12 @@ function fmtNum(n) {
   return Math.round(n).toLocaleString();
 }
 
+function switchMissionYear(year) {
+  document.querySelectorAll('.mission-year-tab').forEach(t => t.classList.toggle('active', t.dataset.year == year));
+  document.querySelectorAll('.mission-year-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('missionYear' + year).classList.add('active');
+}
+
 function calculate() {
   const salary = parseFloat(document.getElementById('salary').value) || 0;
   const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
@@ -1404,12 +1656,54 @@ function calculate() {
   const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
   const lostPPSRevenue = encounterGapYear1 * ppsRate;
 
-  // ─── CASH GENERATED TO SERVE MISSION ───
+  // ─── CASH GENERATED TO SERVE MISSION (Year 1, 2, 3) ───
   const legaraNetPerEnc = ppsRate - legaraRate;
+
+  // Year 1
   const legaraCashYear1Total = legaraEnc1 * legaraNetPerEnc;
   const internalRevYear1 = internalEnc1 * ppsRate;
   const internalCashYear1 = internalRevYear1 - internalCostYear1;
-  const missionAdvantage = legaraCashYear1Total - internalCashYear1;
+
+  // Year 2 & 3 (steady state for both models — full year encounters)
+  const legaraCashSteady = fullYearEncounters * legaraNetPerEnc;
+  const internalRevSteady = fullYearEncounters * ppsRate;
+  const internalCashSteady = internalRevSteady - internalCostSteady;
+  const internalNetPerEncSteady = fullYearEncounters > 0 ? ppsRate - internalCPESteady : 0;
+
+  // Cumulative 3-year
+  const legaraCash3Yr = legaraCashYear1Total + legaraCashSteady + legaraCashSteady;
+  const internalCash3Yr = internalCashYear1 + internalCashSteady + internalCashSteady;
+  const missionAdvantage3Yr = legaraCash3Yr - internalCash3Yr;
+
+  // ─── BREAKEVEN ANALYSIS ───
+  // Internal hire generates more cash per encounter in steady state when internalCashSteady > legaraCashSteady
+  // We compute the cumulative crossover point month by month
+  let breakevenMonth = null;
+  const internalSteadyPerMonth = internalCashSteady / 12;
+  const legaraSteadyPerMonth = legaraCashSteady / 12;
+  const legaraY1PerMonth = legaraCashYear1Total / 12;
+  const internalY1PerMonth = internalCashYear1 / 12;
+
+  // If internal never catches up in steady state, no breakeven
+  if (internalCashSteady > legaraCashSteady) {
+    // Internal generates more per year in steady state, so it will eventually catch up
+    // Walk month by month (up to 20 years = 240 months)
+    let cumLegara = 0;
+    let cumInternal = 0;
+    for (let m = 1; m <= 240; m++) {
+      if (m <= 12) {
+        cumLegara += legaraY1PerMonth;
+        cumInternal += internalY1PerMonth;
+      } else {
+        cumLegara += legaraSteadyPerMonth;
+        cumInternal += internalSteadyPerMonth;
+      }
+      if (cumInternal >= cumLegara && cumInternal > 0) {
+        breakevenMonth = m;
+        break;
+      }
+    }
+  }
 
   // ─── UPDATE UI ───
 
@@ -1483,26 +1777,73 @@ function calculate() {
       </div>`;
   });
 
-  // Cash Generated to Serve Mission
-  document.getElementById('missionLegaraCash').textContent = fmt(legaraCashYear1Total * count);
-  document.getElementById('missionLegaraPerEnc').textContent = fmt(legaraNetPerEnc);
-  document.getElementById('missionLegaraRev').textContent = fmt(ppsRate);
-  document.getElementById('missionLegaraRate').textContent = '–' + fmt(legaraRate);
-  document.getElementById('missionLegaraEnc').textContent = fmtNum(legaraEnc1 * count);
+  // Cash Generated to Serve Mission — Year 1
+  document.getElementById('missionLegaraCashY1').textContent = fmt(legaraCashYear1Total * count);
+  document.getElementById('missionLegaraPerEncY1').textContent = fmt(legaraNetPerEnc);
+  document.getElementById('missionLegaraRevY1').textContent = fmt(ppsRate);
+  document.getElementById('missionLegaraRateY1').textContent = '–' + fmt(legaraRate);
+  document.getElementById('missionLegaraEncY1').textContent = fmtNum(legaraEnc1 * count);
 
-  document.getElementById('missionInternalCash').textContent = fmt(internalCashYear1 * count);
-  const internalBigNum = document.getElementById('missionInternalCash');
-  if (internalCashYear1 < 0) {
-    internalBigNum.classList.add('negative');
+  document.getElementById('missionInternalCashY1').textContent = fmt(internalCashYear1 * count);
+  const internalBigNumY1 = document.getElementById('missionInternalCashY1');
+  internalBigNumY1.classList.toggle('negative', internalCashYear1 < 0);
+  document.getElementById('missionInternalPerEncY1').textContent = internalEnc1 > 0 ? fmt(ppsRate - internalCPE1) : '$0';
+  document.getElementById('missionInternalRevY1').textContent = fmt(ppsRate);
+  document.getElementById('missionInternalCPEY1').textContent = '–' + fmt(internalCPE1);
+  document.getElementById('missionInternalEncY1').textContent = fmtNum(internalEnc1 * count);
+
+  // Cash Generated to Serve Mission — Year 2
+  document.getElementById('missionLegaraCashY2').textContent = fmt(legaraCashSteady * count);
+  document.getElementById('missionLegaraPerEncY2').textContent = fmt(legaraNetPerEnc);
+  document.getElementById('missionLegaraRevY2').textContent = fmt(ppsRate);
+  document.getElementById('missionLegaraRateY2').textContent = '–' + fmt(legaraRate);
+  document.getElementById('missionLegaraEncY2').textContent = fmtNum(fullYearEncounters * count);
+
+  document.getElementById('missionInternalCashY2').textContent = fmt(internalCashSteady * count);
+  document.getElementById('missionInternalCashY2').classList.toggle('negative', internalCashSteady < 0);
+  document.getElementById('missionInternalPerEncY2').textContent = fullYearEncounters > 0 ? fmt(internalNetPerEncSteady) : '$0';
+  document.getElementById('missionInternalRevY2').textContent = fmt(ppsRate);
+  document.getElementById('missionInternalCPEY2').textContent = '–' + fmt(internalCPESteady);
+  document.getElementById('missionInternalEncY2').textContent = fmtNum(fullYearEncounters * count);
+
+  // Cash Generated to Serve Mission — Year 3 (same as Year 2)
+  document.getElementById('missionLegaraCashY3').textContent = fmt(legaraCashSteady * count);
+  document.getElementById('missionLegaraPerEncY3').textContent = fmt(legaraNetPerEnc);
+  document.getElementById('missionLegaraRevY3').textContent = fmt(ppsRate);
+  document.getElementById('missionLegaraRateY3').textContent = '–' + fmt(legaraRate);
+  document.getElementById('missionLegaraEncY3').textContent = fmtNum(fullYearEncounters * count);
+
+  document.getElementById('missionInternalCashY3').textContent = fmt(internalCashSteady * count);
+  document.getElementById('missionInternalCashY3').classList.toggle('negative', internalCashSteady < 0);
+  document.getElementById('missionInternalPerEncY3').textContent = fullYearEncounters > 0 ? fmt(internalNetPerEncSteady) : '$0';
+  document.getElementById('missionInternalRevY3').textContent = fmt(ppsRate);
+  document.getElementById('missionInternalCPEY3').textContent = '–' + fmt(internalCPESteady);
+  document.getElementById('missionInternalEncY3').textContent = fmtNum(fullYearEncounters * count);
+
+  // Cumulative 3-year totals
+  document.getElementById('missionLegaraCum3').textContent = fmt(legaraCash3Yr * count);
+  document.getElementById('missionInternalCum3').textContent = fmt(internalCash3Yr * count);
+  document.getElementById('missionInternalCum3').classList.toggle('negative', internalCash3Yr < 0);
+
+  // Breakeven callout
+  const beEl = document.getElementById('missionBreakeven');
+  const beText = document.getElementById('missionBreakevenText');
+  if (breakevenMonth === null) {
+    beEl.className = 'mission-breakeven never-breaks-even';
+    beText.innerHTML = '<strong>Internal hiring never breaks even.</strong> Legara generates more cash for your mission every single year — the gap only widens over time.';
   } else {
-    internalBigNum.classList.remove('negative');
+    const beYears = Math.floor(breakevenMonth / 12);
+    const beMonths = breakevenMonth % 12;
+    let beTimeStr = '';
+    if (beYears > 0 && beMonths > 0) beTimeStr = beYears + ' year' + (beYears > 1 ? 's' : '') + ' and ' + beMonths + ' month' + (beMonths > 1 ? 's' : '');
+    else if (beYears > 0) beTimeStr = beYears + ' year' + (beYears > 1 ? 's' : '');
+    else beTimeStr = beMonths + ' month' + (beMonths > 1 ? 's' : '');
+    beEl.className = 'mission-breakeven breaks-even';
+    beText.innerHTML = 'Internal hiring reaches cumulative cash breakeven at <strong>' + beTimeStr + '</strong>. Until then, Legara generates more total cash for your mission — with zero upfront investment.';
   }
-  document.getElementById('missionInternalPerEnc').textContent = internalEnc1 > 0 ? fmt(ppsRate - internalCPE1) : '$0';
-  document.getElementById('missionInternalRev').textContent = fmt(ppsRate);
-  document.getElementById('missionInternalCPE').textContent = '–' + fmt(internalCPE1);
-  document.getElementById('missionInternalEnc').textContent = fmtNum(internalEnc1 * count);
 
-  document.getElementById('missionAdvantage').textContent = fmtSigned(missionAdvantage * count);
+  // 3-year advantage
+  document.getElementById('missionAdvantage').textContent = fmtSigned(missionAdvantage3Yr * count);
 
   // Update dynamic Legara rate displays
   document.getElementById('cmpLegaraRate').textContent = '$' + legaraRate;

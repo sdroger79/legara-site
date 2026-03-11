@@ -1,0 +1,9 @@
+# Legara - golegara.com
+# https://golegara.com/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /roi-calculator-internal.html
+
+# Sitemap
+Sitemap: https://golegara.com/sitemap.xml
