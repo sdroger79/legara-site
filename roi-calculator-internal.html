@@ -11,18 +11,32 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>ROI Calculator (Internal) | Legara Behavioral Health Platform</title>
-<meta name="description" content="Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model. See your real cost per encounter, annual savings, and 3-year ROI.">
+<meta name="description" content="Internal sales tool. Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model.">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
 /* ═══ ROI CALCULATOR STYLES ═══ */
 
+/* Tighter page header for calculator — get interactive content into viewport faster */
+.page-header {
+  padding: 100px 80px 40px;
+}
+.page-header .section-headline {
+  font-size: clamp(30px, 3.2vw, 44px);
+  margin-bottom: 12px;
+}
+.page-header .section-body {
+  font-size: 15px;
+  max-width: 620px;
+}
+
 .calc-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
-  margin-top: 48px;
+  margin-top: 32px;
   align-items: start;
 }
 
@@ -33,9 +47,15 @@
   padding: 40px;
 }
 
+/* Override global section padding for calculator — less vertical whitespace */
+section.content-section {
+  padding: 48px 80px 60px;
+}
+
 .calc-results {
-  position: sticky;
-  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .calc-section-title {
@@ -512,6 +532,173 @@
   flex-shrink: 0;
 }
 
+/* ═══ CASH GENERATED — MISSION SECTION ═══ */
+
+.mission-section {
+  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid var(--green);
+}
+
+.mission-header {
+  background: var(--green);
+  padding: 24px 28px 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 70%, rgba(0,0,0,0.1) 0%, transparent 60%);
+}
+
+.mission-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mission-header-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+.mission-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.mission-body {
+  background: var(--white);
+  padding: 0;
+}
+
+.mission-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mission-col {
+  padding: 24px 28px;
+}
+
+.mission-col.legara-col {
+  background: var(--green-pale);
+  border-right: 1px solid rgba(26,107,74,0.12);
+}
+
+.mission-col.internal-col {
+  background: var(--off-white);
+}
+
+.mission-col-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.mission-col.legara-col .mission-col-label {
+  color: var(--green);
+}
+
+.mission-col.internal-col .mission-col-label {
+  color: var(--mist);
+}
+
+.mission-big-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.mission-col.legara-col .mission-big-number {
+  color: var(--green);
+}
+
+.mission-col.internal-col .mission-big-number {
+  color: var(--charcoal);
+}
+
+.mission-col.internal-col .mission-big-number.negative {
+  color: #c0392b;
+}
+
+.mission-per-enc {
+  font-size: 13px;
+  color: var(--mist);
+  margin-bottom: 16px;
+}
+
+.mission-per-enc strong {
+  font-weight: 600;
+}
+
+.mission-col.legara-col .mission-per-enc strong {
+  color: var(--green);
+}
+
+.mission-col.internal-col .mission-per-enc strong {
+  color: var(--charcoal);
+}
+
+.mission-detail {
+  font-size: 12px;
+  color: var(--slate);
+  line-height: 1.6;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.mission-col.legara-col .mission-detail {
+  border-color: rgba(26,107,74,0.15);
+}
+
+.mission-detail-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.mission-detail-line span:last-child {
+  font-weight: 600;
+}
+
+.mission-advantage {
+  background: var(--green);
+  color: white;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mission-advantage-label {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.mission-advantage-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+}
+
 /* 3-year view */
 .three-year {
   background: var(--charcoal);
@@ -608,12 +795,13 @@
   .calc-layout {
     grid-template-columns: 1fr;
   }
-  .calc-results {
-    position: static;
-  }
+  .page-header { padding: 80px 40px 32px; }
+  section.content-section { padding: 32px 40px 48px; }
 }
 
 @media (max-width: 768px) {
+  .page-header { padding: 72px 24px 24px; }
+  section.content-section { padding: 24px 24px 40px; }
   .calc-inputs { padding: 24px; }
   .results-hero { padding: 24px; }
   .results-hero-savings { font-size: 36px; }
@@ -623,6 +811,10 @@
   .provider-toggle { flex-direction: column; }
   .provider-toggle button { border-right: none; border-bottom: 1px solid var(--border); }
   .provider-toggle button:last-child { border-bottom: none; }
+  .mission-compare { grid-template-columns: 1fr; }
+  .mission-col.legara-col { border-right: none; border-bottom: 1px solid rgba(26,107,74,0.12); }
+  .mission-big-number { font-size: 28px; }
+  .mission-advantage { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
 </head>
@@ -646,8 +838,8 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
   <div class="section-label">ROI Calculator</div>
-  <div class="section-headline">The true cost of internal hiring vs. Legara.</div>
-  <p class="section-body">Most FQHCs underestimate the real cost of employed behavioral health providers by 40–60%. This calculator shows you the full picture — including the costs that never make it into a budget forecast.</p>
+  <div class="section-headline">The true cost of your behavioral health workforce — and the cash it could be generating</div>
+  <p class="section-body">Most FQHCs underestimate the real cost of employed providers by 40–60%. Adjust the inputs below to see your true cost per encounter, where that money actually goes, and how much cash each staffing model generates to serve your mission.</p>
 </div>
 
 <!-- CALCULATOR -->
@@ -674,7 +866,7 @@
       </div>
       <div class="calc-row">
         <div class="calc-field">
-          <label>Fully loaded multiplier</label>
+          <label>Benefits &amp; tax multiplier <span class="field-hint">typically 1.3–1.5&times;</span></label>
           <div class="input-group">
             <input type="number" id="loadedMultiplier" class="has-suffix" value="1.4" step="0.05" onchange="calculate()" oninput="calculate()">
             <span class="input-suffix">&times;</span>
@@ -758,7 +950,7 @@
 
       <div class="calc-section-title">Revenue</div>
       <div class="calc-field">
-        <label>Total encounter revenue <span class="field-hint">PPS + copays + secondaries</span></label>
+        <label>Avg. encounter revenue <span class="field-hint">PPS + copays + secondaries, given payer mix</span></label>
         <div class="input-group">
           <span class="input-prefix">$</span>
           <input type="number" id="ppsRate" class="has-prefix" value="230" step="5" onchange="calculate()" oninput="calculate()">
@@ -785,7 +977,7 @@
           </div>
         </div>
         <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
-          <strong>Why so high?</strong> Three months of recruiting before anyone's on payroll, then another <span id="cpeRampMonthsNote">~8</span> months of onboarding, credentialing, and panel building — all while salary, benefits, and overhead are running. The math is simple: 9 months of fully loaded cost against a fraction of steady-state encounters.
+          <strong>What's driving this?</strong> Salary, benefits, and overhead begin on day one of employment — but it takes <span id="cpeRampMonthsNote">~8</span> months of onboarding, credentialing, payer enrollment, and caseload building before a new hire reaches full productivity. You're paying full cost against a fraction of steady-state encounters.
         </div>
       </div>
 
@@ -887,6 +1079,64 @@
         <div id="waterfallBars"></div>
       </div>
 
+      <!-- CASH GENERATED TO SERVE MISSION -->
+      <div class="mission-section">
+        <div class="mission-header">
+          <div class="mission-header-label">The Real Question</div>
+          <div class="mission-header-title">How much cash does each model generate to serve your mission?</div>
+        </div>
+        <div class="mission-body">
+          <div class="mission-compare">
+            <div class="mission-col legara-col">
+              <div class="mission-col-label">With Legara</div>
+              <div class="mission-big-number" id="missionLegaraCash">$0</div>
+              <div class="mission-per-enc">
+                <strong id="missionLegaraPerEnc">$0</strong> net cash per encounter
+              </div>
+              <div class="mission-detail">
+                <div class="mission-detail-line">
+                  <span>Encounter revenue</span>
+                  <span id="missionLegaraRev">$230</span>
+                </div>
+                <div class="mission-detail-line">
+                  <span>Legara rate</span>
+                  <span id="missionLegaraRate">–$155</span>
+                </div>
+                <div class="mission-detail-line">
+                  <span>Year 1 encounters</span>
+                  <span id="missionLegaraEnc">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="mission-col internal-col">
+              <div class="mission-col-label">Internal Hire</div>
+              <div class="mission-big-number" id="missionInternalCash">$0</div>
+              <div class="mission-per-enc">
+                <strong id="missionInternalPerEnc">$0</strong> net cash per encounter
+              </div>
+              <div class="mission-detail">
+                <div class="mission-detail-line">
+                  <span>Encounter revenue</span>
+                  <span id="missionInternalRev">$230</span>
+                </div>
+                <div class="mission-detail-line">
+                  <span>True cost per encounter</span>
+                  <span id="missionInternalCPE">–$0</span>
+                </div>
+                <div class="mission-detail-line">
+                  <span>Year 1 encounters</span>
+                  <span id="missionInternalEnc">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mission-advantage">
+            <div class="mission-advantage-label">Additional cash generated for your mission with Legara</div>
+            <div class="mission-advantage-value" id="missionAdvantage">$0</div>
+          </div>
+        </div>
+      </div>
+
       <!-- CPE by Year Comparison -->
       <div class="timeline-compare" id="cpeByYear">
         <div class="timeline-compare-label">Cost Per Encounter by Year</div>
@@ -951,7 +1201,7 @@
       </div>
 
       <div class="assumptions">
-        <strong>Assumptions:</strong> Support staff estimated at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $<span id="legaraRateNote">155</span>/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. No salary cost during recruitment phase. Internal ramp cost = salary paid post-hire during months of limited patient volume. Encounter rate: <span id="encRateNote">1.5/hr (therapy)</span>. Encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries). All figures are estimates — actual results vary by organization.
+        <strong>Assumptions:</strong> Support staff at 0.25 FTE patient service rep per provider (~$11K/yr). Legara all-in cost of $<span id="legaraRateNote">155</span>/encounter includes platform fee and MSO servicing. Legara provider turnover under 3%. No salary during recruitment phase. Credentialing often begins during recruiting; this model assumes the bulk occurs post-hire. Internal ramp cost = salary paid post-hire during months of limited patient volume. Encounter rate: <span id="encRateNote">1.0/hr (therapy)</span>. Avg. encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries, given payer mix). All figures are estimates — actual results vary by organization.
       </div>
 
       <div class="calc-cta">
@@ -1054,6 +1304,15 @@ function fmtShort(n) {
   return '$' + Math.round(n);
 }
 
+function fmtSigned(n) {
+  if (n >= 0) return '+$' + Math.round(n).toLocaleString();
+  return '–$' + Math.round(Math.abs(n)).toLocaleString();
+}
+
+function fmtNum(n) {
+  return Math.round(n).toLocaleString();
+}
+
 function calculate() {
   const salary = parseFloat(document.getElementById('salary').value) || 0;
   const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
@@ -1145,6 +1404,13 @@ function calculate() {
   const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
   const lostPPSRevenue = encounterGapYear1 * ppsRate;
 
+  // ─── CASH GENERATED TO SERVE MISSION ───
+  const legaraNetPerEnc = ppsRate - legaraRate;
+  const legaraCashYear1Total = legaraEnc1 * legaraNetPerEnc;
+  const internalRevYear1 = internalEnc1 * ppsRate;
+  const internalCashYear1 = internalRevYear1 - internalCostYear1;
+  const missionAdvantage = legaraCashYear1Total - internalCashYear1;
+
   // ─── UPDATE UI ───
 
   // Hero — show Year 1 savings (always the strongest case)
@@ -1200,7 +1466,7 @@ function calculate() {
     { label: 'Benefits & taxes', value: benefitsCost },
     { label: 'Support staff', value: supportCost },
     { label: 'Recruiter fee', value: recruiterFee },
-    { label: 'Total encounter revenue', value: lostPPSRevenue }
+    { label: 'Lost encounter revenue', value: lostPPSRevenue }
   ];
   const maxWaterfall = Math.max(...waterfallData.map(d => d.value));
   const wf = document.getElementById('waterfallBars');
@@ -1211,11 +1477,32 @@ function calculate() {
       <div class="waterfall-item">
         <div class="waterfall-item-label">${d.label}</div>
         <div class="waterfall-item-bar">
-          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Total encounter revenue' ? ' background: var(--red);' : ''}"></div>
+          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Lost encounter revenue' ? ' background: var(--red);' : ''}"></div>
         </div>
         <div class="waterfall-item-value">${fmtShort(d.value)}</div>
       </div>`;
   });
+
+  // Cash Generated to Serve Mission
+  document.getElementById('missionLegaraCash').textContent = fmt(legaraCashYear1Total * count);
+  document.getElementById('missionLegaraPerEnc').textContent = fmt(legaraNetPerEnc);
+  document.getElementById('missionLegaraRev').textContent = fmt(ppsRate);
+  document.getElementById('missionLegaraRate').textContent = '–' + fmt(legaraRate);
+  document.getElementById('missionLegaraEnc').textContent = fmtNum(legaraEnc1 * count);
+
+  document.getElementById('missionInternalCash').textContent = fmt(internalCashYear1 * count);
+  const internalBigNum = document.getElementById('missionInternalCash');
+  if (internalCashYear1 < 0) {
+    internalBigNum.classList.add('negative');
+  } else {
+    internalBigNum.classList.remove('negative');
+  }
+  document.getElementById('missionInternalPerEnc').textContent = internalEnc1 > 0 ? fmt(ppsRate - internalCPE1) : '$0';
+  document.getElementById('missionInternalRev').textContent = fmt(ppsRate);
+  document.getElementById('missionInternalCPE').textContent = '–' + fmt(internalCPE1);
+  document.getElementById('missionInternalEnc').textContent = fmtNum(internalEnc1 * count);
+
+  document.getElementById('missionAdvantage').textContent = fmtSigned(missionAdvantage * count);
 
   // Update dynamic Legara rate displays
   document.getElementById('cmpLegaraRate').textContent = '$' + legaraRate;
