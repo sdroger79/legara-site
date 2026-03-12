@@ -900,106 +900,6 @@ section.content-section {
   text-align: center;
 }
 
-/* ═══ LEAD CAPTURE MODAL ═══ */
-.lead-modal-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(28, 43, 36, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  justify-content: center;
-  align-items: center;
-}
-
-.lead-modal-backdrop.active {
-  display: flex;
-}
-
-.lead-modal {
-  background: white;
-  border-radius: 16px;
-  padding: 48px;
-  max-width: 480px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.15);
-}
-
-.lead-modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: var(--mist);
-  cursor: pointer;
-  padding: 4px 8px;
-  line-height: 1;
-  transition: color 0.2s;
-}
-
-.lead-modal-close:hover {
-  color: var(--charcoal);
-}
-
-.lead-modal h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--charcoal);
-  margin-bottom: 8px;
-}
-
-.lead-modal p {
-  font-size: 14px;
-  color: var(--slate);
-  line-height: 1.5;
-  margin-bottom: 24px;
-}
-
-.lead-modal input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--off-white);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: var(--charcoal);
-  margin-bottom: 12px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.lead-modal input:focus {
-  border-color: var(--green-mid);
-}
-
-.lead-modal input::placeholder {
-  color: var(--mist);
-}
-
-.lead-modal button[type="submit"] {
-  width: 100%;
-  padding: 14px;
-  background: var(--green);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 4px;
-}
-
-.lead-modal button[type="submit"]:hover {
-  background: var(--charcoal);
-}
-
 /* Responsive */
 @media (max-width: 1024px) {
   .calc-layout {
@@ -1173,6 +1073,10 @@ section.content-section {
       <div style="margin-top: 24px; padding: 16px; background: var(--off-white); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">
         <strong style="color: var(--slate);">Built-in assumptions:</strong> 3-month recruitment, 3-week onboarding, 3-month credentialing (post-hire), 3-month payer enrollment (overlapping), 3-month caseload build, 32 clinical hrs/wk, 30 days PTO/sick/CME. Credentialing often begins during recruiting; this model assumes the bulk occurs post-hire.
       </div>
+
+      <div style="margin-top: 16px; padding: 16px; background: rgba(26,107,74,0.04); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">
+        <strong style="color: var(--slate);">Productivity & utilization benchmarks:</strong> This calculator uses industry-standard productivity rates (1.0 encounters/hr for staff therapy, 1.5/hr for staff psychiatry) and utilization assumptions (~52% effective for employed providers, ~82% for Legara). These reflect what we see across the FQHCs we serve. Your health center's actual numbers may differ — and that's where the real picture comes into focus.
+      </div>
     </div>
 
     <!-- RIGHT: RESULTS -->
@@ -1227,19 +1131,8 @@ section.content-section {
         </div>
       </div>
 
-      <!-- 6. GATED: CTA to open modal -->
-      <div id="gatedCTA" style="background: var(--green); border-radius: 16px; padding: 48px 40px; text-align: center; color: white; position: relative; overflow: hidden;">
-        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.12) 0%, transparent 60%);"></div>
-        <div style="position: relative; z-index: 1;">
-          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px;">See the Full Comparison</div>
-          <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 12px;">What if you didn't have to carry any of this cost — and how much revenue are you missing while you wait?</div>
-          <p style="font-size: 15px; opacity: 0.85; margin-bottom: 28px; line-height: 1.6; max-width: 560px; margin-left: auto; margin-right: auto;">Get your personalized ROI report showing exactly how Legara's encounter-based model compares — including cost per encounter, 3-year savings projection, and cash generated for your mission.</p>
-          <button onclick="openLeadModal()" style="display: inline-block; padding: 16px 40px; background: white; color: var(--green); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">See Your Full ROI Comparison</button>
-        </div>
-      </div>
-
-      <!-- GATED RESULTS: hidden until form submission -->
-      <div id="gatedResults" class="gated-reveal" style="display: none;">
+      <!-- GATED RESULTS: now visible by default -->
+      <div id="gatedResults" class="gated-reveal">
 
       <!-- 1. CASH GENERATED TO SERVE MISSION — Year 1/2/3 tabs -->
       <div class="mission-section">
@@ -1412,7 +1305,7 @@ section.content-section {
         <div class="timeline-bar-group">
           <div class="timeline-bar-label">
             <span>Legara</span>
-            <span class="timeline-bar-months" id="legaraMonths">5 months (at $0 cost)</span>
+            <span class="timeline-bar-months" id="legaraMonths">As fast as 6 weeks (at $0 cost)</span>
           </div>
           <div class="timeline-bar-track">
             <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
@@ -1436,22 +1329,54 @@ section.content-section {
         <div id="waterfallBars"></div>
       </div>
 
-      <!-- 6. Meeting CTA -->
-      <div style="background: var(--green); border-radius: 16px; padding: 48px 40px; text-align: center; color: white; position: relative; overflow: hidden; margin-top: 16px;">
-        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.12) 0%, transparent 60%);"></div>
-        <div style="position: relative; z-index: 1;">
-          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px;">Your Custom Analysis</div>
-          <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 16px;">These numbers use industry benchmarks.<br>Let's dial them in for your organization.</div>
-          <div style="text-align: left; max-width: 480px; margin: 0 auto 28px; font-size: 14px; line-height: 1.8; opacity: 0.9;">
-            <div style="margin-bottom: 6px;">In a 15-minute call, we'll:</div>
-            <div style="padding-left: 16px;">
-              <div style="margin-bottom: 4px;">&#10003; Plug in your actual salary bands, benefits load, and payer mix</div>
-              <div style="margin-bottom: 4px;">&#10003; Adjust for your real credentialing and ramp timelines</div>
-              <div style="margin-bottom: 4px;">&#10003; Model multiple provider types and staffing scenarios</div>
-              <div>&#10003; Understand the real picture — and be empowered to make an informed decision</div>
-            </div>
+      <!-- 6. Premium CTA with inline form -->
+      <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; text-align: center; margin-top: 16px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 12px;">See What Your Numbers Really Say</div>
+        <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 16px; color: var(--slate);">This calculator uses industry benchmarks</div>
+        <p style="font-size: 14px; line-height: 1.8; max-width: 560px; margin: 0 auto 32px; color: var(--mist);">This calculator uses industry benchmarks — and they're accurate for most FQHCs we work with. But your health center has its own productivity and utilization profile, and that's where the comparison gets real. In a conversation with Roger, we'll plug in your actual numbers and walk through the scenarios together.</p>
+
+        <!-- Roger bio -->
+        <div style="background: var(--off-white); border-radius: 12px; padding: 24px; margin-bottom: 28px; text-align: left; max-width: 560px; margin-left: auto; margin-right: auto; display: flex; gap: 16px; align-items: flex-start;">
+          <img src="img/roger-avatar-112.png" alt="Roger Stellers" width="48" height="48" style="border-radius: 50%; flex-shrink: 0; object-fit: cover;">
+          <div>
+            <div style="font-weight: 600; color: var(--slate); margin-bottom: 4px;">Roger Stellers</div>
+            <div style="font-size: 13px; color: var(--mist); line-height: 1.6;">CEO &amp; Chairman of Legara, sets aside time every day to talk with health center leaders about behavioral health capacity. Not a sales pitch — a conversation about what you're facing and whether we can help.</div>
           </div>
-          <a href="https://meetings-na2.hubspot.com/roger-stellers/legara-roi-review" target="_blank" style="display: inline-block; padding: 16px 36px; background: white; color: var(--green); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Get Your Custom Analysis</a>
+        </div>
+
+        <!-- CTA buttons -->
+        <div style="margin-bottom: 20px;">
+          <a href="https://meetings-na2.hubspot.com/roger-stellers/legara-roi-review" target="_blank" style="display: inline-block; padding: 16px 36px; background: var(--green); color: white; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; margin-bottom: 16px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Schedule a Conversation with Roger</a>
+        </div>
+
+        <!-- Secondary CTA -->
+        <div style="font-size: 14px; color: var(--mist); margin-bottom: 12px;">Or tell us about your situation and we'll be in touch within one business day.</div>
+        <button onclick="toggleInlineForm()" style="color: var(--green); background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: underline;">Share your details</button>
+
+        <!-- Inline form (hidden by default) -->
+        <form id="inlineLeadForm" onsubmit="submitInlineForm(event)" style="display: none; margin-top: 24px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
+          <input type="text" id="inlineFirstName" name="firstName" placeholder="First Name" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <input type="text" id="inlineLastName" name="lastName" placeholder="Last Name" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <input type="text" id="inlineOrg" name="org" placeholder="Organization" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <input type="text" id="inlineTitle" name="title" placeholder="Title/Role" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <input type="email" id="inlineEmail" name="email" placeholder="Email" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <input type="tel" id="inlinePhone" name="phone" placeholder="Phone (optional)" style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+          <select id="inlineInterest" name="interest" style="width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; box-sizing: border-box;">
+            <option value="">What's driving your interest? (optional)</option>
+            <option value="Growing wait times for BH services">Growing wait times for BH services</option>
+            <option value="Difficulty filling BH positions">Difficulty filling BH positions</option>
+            <option value="Exploring alternatives to FTE hiring">Exploring alternatives to FTE hiring</option>
+            <option value="Evaluating cost of current BH model">Evaluating cost of current BH model</option>
+            <option value="Other">Other</option>
+          </select>
+          <button type="submit" style="width: 100%; padding: 16px; background: var(--green); color: white; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Send to Roger</button>
+        </form>
+
+        <!-- Success message (hidden by default) -->
+        <div id="formSuccessMessage" style="display: none; text-align: center;">
+          <div style="font-size: 16px; font-weight: 600; color: var(--slate); margin-bottom: 16px;">Thanks — Roger will be in touch within one business day.</div>
+          <div style="font-size: 14px; color: var(--mist); margin-bottom: 16px;">If you'd like to get on the calendar sooner:</div>
+          <a href="https://meetings-na2.hubspot.com/roger-stellers/legara-roi-review" target="_blank" style="display: inline-block; padding: 14px 32px; background: var(--green); color: white; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Schedule Now</a>
         </div>
       </div>
 
@@ -1468,7 +1393,14 @@ section.content-section {
 <div class="cta-band">
   <div class="section-headline">Ready to see what Legara can do for your health center?</div>
   <p>No FTE commitment. No capital outlay. Just behavioral health capacity — on demand.</p>
-  <a href="contact.html" class="btn-primary">Get in Touch</a>
+  <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin: 0 auto 32px; text-align: left; max-width: 480px; display: flex; gap: 16px; align-items: flex-start;">
+    <img src="img/roger-avatar-112.png" alt="Roger Stellers" width="48" height="48" style="border-radius: 50%; flex-shrink: 0; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
+    <div>
+      <div style="font-weight: 600; color: var(--white); margin-bottom: 4px; font-size: 15px;">Roger Stellers</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6;">CEO &amp; Chairman of Legara, sets aside time every day to talk with health center leaders about behavioral health capacity. Not a sales pitch — a conversation about what you're facing and whether we can help.</div>
+    </div>
+  </div>
+  <a href="contact.html" class="btn-primary">Schedule a Conversation</a>
 </div>
 
 <!-- FOOTER -->
@@ -1501,23 +1433,6 @@ section.content-section {
     <span>Encinitas, CA</span>
   </div>
 </footer>
-
-<!-- Lead Capture Modal -->
-<div class="lead-modal-backdrop" id="leadModal" onclick="if(event.target===this)closeLeadModal()">
-  <div class="lead-modal">
-    <button class="lead-modal-close" onclick="closeLeadModal()" aria-label="Close">&times;</button>
-    <h3>Unlock Your Complete ROI Report</h3>
-    <p>Enter your details below and we'll show your full analysis instantly — plus email you a copy to share with your team.</p>
-    <form id="leadForm" onsubmit="submitLeadForm(event)">
-      <input type="text" name="name" placeholder="Your name" required>
-      <input type="text" name="title" placeholder="Title">
-      <input type="text" name="org" placeholder="Organization" required>
-      <input type="email" name="email" placeholder="Work email" required>
-      <input type="tel" name="phone" placeholder="Phone (optional)">
-      <button type="submit">Get My Full ROI Report</button>
-    </form>
-  </div>
-</div>
 
 <script src="js/tracking.js"></script>
 <script>
@@ -1790,7 +1705,7 @@ function calculate() {
 
   // 4. Timeline
   document.getElementById('internalMonths').textContent = Math.round(totalRampMonths) + ' months';
-  document.getElementById('legaraMonths').textContent = LEGARA_RAMP_MONTHS + ' months (at $0 cost)';
+  document.getElementById('legaraMonths').textContent = 'As fast as 6 weeks (at $0 cost)';
 
   const totalForBar = recruitMonths + onboardMonths + credentialMonths + payerPanelMonths + panelBuildMonths;
   const tl = document.getElementById('internalTimeline');
@@ -1861,53 +1776,45 @@ function calculate() {
   }
 }
 
-// ─── MODAL FUNCTIONS ───
-function openLeadModal() {
-  document.getElementById('leadModal').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  trackEvent('lead_modal_opened', 'ROI Calculator', currentType);
+// ─── INLINE FORM FUNCTIONS ───
+function toggleInlineForm() {
+  var form = document.getElementById('inlineLeadForm');
+  var successMsg = document.getElementById('formSuccessMessage');
+  if (form.style.display === 'none' || !form.style.display) {
+    form.style.display = 'block';
+    successMsg.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+  }
 }
 
-function closeLeadModal() {
-  document.getElementById('leadModal').classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// ─── LEAD FORM HANDLER ───
-function submitLeadForm(e) {
+function submitInlineForm(e) {
   e.preventDefault();
   var form = e.target;
-  var fullName = (form.name.value || '').trim();
-  var nameParts = fullName.split(' ');
-  var firstName = nameParts[0] || '';
-  var lastName = nameParts.slice(1).join(' ') || '';
+  var firstName = (document.getElementById('inlineFirstName').value || '').trim();
+  var lastName = (document.getElementById('inlineLastName').value || '').trim();
+  var email = (document.getElementById('inlineEmail').value || '').trim();
+  var org = (document.getElementById('inlineOrg').value || '').trim();
+  var title = (document.getElementById('inlineTitle').value || '').trim();
+  var phone = (document.getElementById('inlinePhone').value || '').trim();
+  var interest = (document.getElementById('inlineInterest').value || '').trim();
 
   // Track form submission in GA
-  trackEvent('lead_form_submit', 'ROI Calculator', form.org.value, 1);
+  trackEvent('inline_lead_form_submit', 'ROI Calculator', org, 1);
 
   // Send to GA as a conversion event
   if (typeof gtag === 'function') {
     gtag('event', 'generate_lead', {
       event_category: 'ROI Calculator',
-      event_label: form.org.value + ' | ' + form.email.value,
+      event_label: org + ' | ' + email,
       value: 1
     });
     gtag('event', 'roi_form_submit', {
       provider_type: currentType,
-      form_name: 'roi_calculator_gate',
+      form_name: 'roi_inline_form',
       calculator_version: 'public'
     });
   }
-
-  // Close modal & reveal gated results
-  closeLeadModal();
-  document.getElementById('gatedCTA').style.display = 'none';
-  var gatedEl = document.getElementById('gatedResults');
-  gatedEl.style.display = 'block';
-  // Small delay to let animation start, then smooth scroll to the new content
-  setTimeout(function() {
-    gatedEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 200);
 
   // Submit to HubSpot Forms API
   fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/23567105-e94f-457a-9b1f-f5990ee77821', {
@@ -1918,12 +1825,12 @@ function submitLeadForm(e) {
       fields: [
         { objectTypeId: '0-1', name: 'firstname', value: firstName },
         { objectTypeId: '0-1', name: 'lastname', value: lastName },
-        { objectTypeId: '0-1', name: 'email', value: form.email.value || '' },
-        { objectTypeId: '0-1', name: 'company', value: form.org.value || '' },
-        { objectTypeId: '0-1', name: 'jobtitle', value: form.title.value || '' },
-        { objectTypeId: '0-1', name: 'phone', value: form.phone.value || '' },
+        { objectTypeId: '0-1', name: 'email', value: email },
+        { objectTypeId: '0-1', name: 'company', value: org },
+        { objectTypeId: '0-1', name: 'jobtitle', value: title },
+        { objectTypeId: '0-1', name: 'phone', value: phone },
         { objectTypeId: '0-1', name: 'roi_provider_type', value: currentType },
-        { objectTypeId: '0-1', name: 'roi_organization_name', value: form.org.value || '' },
+        { objectTypeId: '0-1', name: 'roi_organization_name', value: org },
         { objectTypeId: '0-1', name: 'roi_number_of_providers', value: String(document.getElementById('providerCount').value || '1') },
         { objectTypeId: '0-1', name: 'roi_annual_salary', value: String(document.getElementById('salary').value || '0') },
         { objectTypeId: '0-1', name: 'roi_year_1_savings', value: String(lastCalc.year1Savings || 0) },
@@ -1933,7 +1840,7 @@ function submitLeadForm(e) {
         { objectTypeId: '0-1', name: 'roi_mission_advantage', value: String(lastCalc.missionAdvantage || 0) },
         { objectTypeId: '0-1', name: 'roi_mission_cash_legara', value: String(lastCalc.legaraCashYear1 || 0) },
         { objectTypeId: '0-1', name: 'roi_calculator_version', value: 'public' },
-        { objectTypeId: '0-2', name: 'name', value: form.org.value || '' }
+        { objectTypeId: '0-2', name: 'name', value: org }
       ],
       context: {
         hutk: getHubspotCookie(),
@@ -1941,6 +1848,10 @@ function submitLeadForm(e) {
         pageName: 'ROI Calculator'
       }
     })
+  }).then(function() {
+    // Show success message
+    form.style.display = 'none';
+    document.getElementById('formSuccessMessage').style.display = 'block';
   }).catch(function(err) { console.error('HubSpot submission error:', err); });
 }
 
