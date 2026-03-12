@@ -1214,46 +1214,6 @@ section.content-section {
         </div>
       </div>
 
-      <!-- Timeline comparison -->
-      <div class="timeline-compare">
-        <div class="timeline-compare-label">Time to First Revenue</div>
-        <div class="timeline-bar-group">
-          <div class="timeline-bar-label">
-            <span>Internal Hire</span>
-            <span class="timeline-bar-months" id="internalMonths">11 months</span>
-          </div>
-          <div class="timeline-bar-track">
-            <div class="timeline-bar-segments" id="internalTimeline">
-            </div>
-          </div>
-        </div>
-        <div class="timeline-bar-group">
-          <div class="timeline-bar-label">
-            <span>Legara</span>
-            <span class="timeline-bar-months" id="legaraMonths">5 months (at $0 cost)</span>
-          </div>
-          <div class="timeline-bar-track">
-            <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
-              <div class="timeline-bar-segment credential" style="width: 60%;">Credentialing</div>
-              <div class="timeline-bar-segment panel" style="width: 40%;">Panel build</div>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-legend">
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #4a5e54;"></div>Recruit</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #3a7a5a;"></div>Onboard</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #2d8a62;"></div>Credential</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #156040;"></div>Payer panel</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #1a6b4a;"></div>Panel build</div>
-        </div>
-      </div>
-
-      <!-- Where money goes -->
-      <div class="waterfall">
-        <div class="waterfall-label">Where Your Money Actually Goes (Internal Hire)</div>
-        <div id="waterfallBars"></div>
-      </div>
-
       <!-- CASH GENERATED TO SERVE MISSION -->
       <div class="mission-section">
         <div class="mission-header">
@@ -1384,6 +1344,32 @@ section.content-section {
         </div>
       </div>
 
+      <!-- 3-Year View -->
+      <div class="three-year">
+        <div class="three-year-label">3-Year Cumulative Savings</div>
+        <div class="three-year-grid">
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 1</div>
+            <div class="three-year-item-value" id="yr1Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 2</div>
+            <div class="three-year-item-value" id="yr2Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+          <div class="three-year-item">
+            <div class="three-year-item-year">Year 3</div>
+            <div class="three-year-item-value" id="yr3Savings">$0</div>
+            <div class="three-year-item-label">savings</div>
+          </div>
+        </div>
+        <div class="three-year-total">
+          <div class="three-year-total-label">Total 3-Year Savings</div>
+          <div class="three-year-total-value" id="total3Yr">$0</div>
+        </div>
+      </div>
+
       <!-- CPE by Year Comparison -->
       <div class="timeline-compare" id="cpeByYear">
         <div class="timeline-compare-label">Cost Per Encounter by Year</div>
@@ -1421,30 +1407,44 @@ section.content-section {
         </div>
       </div>
 
-      <!-- 3-Year View -->
-      <div class="three-year">
-        <div class="three-year-label">3-Year Cumulative Savings</div>
-        <div class="three-year-grid">
-          <div class="three-year-item">
-            <div class="three-year-item-year">Year 1</div>
-            <div class="three-year-item-value" id="yr1Savings">$0</div>
-            <div class="three-year-item-label">savings</div>
+      <!-- Timeline comparison -->
+      <div class="timeline-compare">
+        <div class="timeline-compare-label">Time to First Revenue</div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Internal Hire</span>
+            <span class="timeline-bar-months" id="internalMonths">11 months</span>
           </div>
-          <div class="three-year-item">
-            <div class="three-year-item-year">Year 2</div>
-            <div class="three-year-item-value" id="yr2Savings">$0</div>
-            <div class="three-year-item-label">savings</div>
-          </div>
-          <div class="three-year-item">
-            <div class="three-year-item-year">Year 3</div>
-            <div class="three-year-item-value" id="yr3Savings">$0</div>
-            <div class="three-year-item-label">savings</div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments" id="internalTimeline">
+            </div>
           </div>
         </div>
-        <div class="three-year-total">
-          <div class="three-year-total-label">Total 3-Year Savings</div>
-          <div class="three-year-total-value" id="total3Yr">$0</div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Legara</span>
+            <span class="timeline-bar-months" id="legaraMonths">5 months (at $0 cost)</span>
+          </div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
+              <div class="timeline-bar-segment credential" style="width: 60%;">Credentialing</div>
+              <div class="timeline-bar-segment panel" style="width: 40%;">Panel build</div>
+            </div>
+          </div>
         </div>
+        <div class="timeline-legend">
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #4a5e54;"></div>Recruit</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #3a7a5a;"></div>Onboard</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #2d8a62;"></div>Credential</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #156040;"></div>Payer panel</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #1a6b4a;"></div>Panel build</div>
+        </div>
+      </div>
+
+      <!-- Where money goes -->
+      <div class="waterfall">
+        <div class="waterfall-label">Where Your Money Actually Goes (Internal Hire)</div>
+        <div id="waterfallBars"></div>
       </div>
 
       <div class="assumptions">
