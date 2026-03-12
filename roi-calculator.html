@@ -44,6 +44,9 @@
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 40px;
+  position: sticky;
+  top: 88px; /* 68px nav + 20px breathing room */
+  align-self: start;
 }
 
 /* Override global section padding for calculator — less vertical whitespace */
@@ -894,6 +897,9 @@ section.content-section {
   .calc-layout {
     grid-template-columns: 1fr;
   }
+  .calc-inputs {
+    position: static;
+  }
   .page-header { padding: 80px 40px 32px; }
   section.content-section { padding: 32px 40px 48px; }
 }
@@ -1278,7 +1284,7 @@ section.content-section {
           <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px;">Customize Your Analysis</div>
           <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 12px;">These numbers use standard industry benchmarks.<br>Want to see what it looks like with <em>your</em> numbers?</div>
           <p style="font-size: 15px; opacity: 0.85; margin-bottom: 28px; line-height: 1.5; max-width: 560px; margin-left: auto; margin-right: auto;">Schedule a 15-minute call and we'll build a custom analysis using your actual timelines, ramp rates, and staffing model — so you can bring the real numbers to your leadership team.</p>
-          <a href="https://meetings.hubspot.com/rstellers/legara-roi-review" target="_blank" style="display: inline-block; padding: 16px 36px; background: white; color: var(--green); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Schedule Your Custom Analysis</a>
+          <a href="https://meetings-na2.hubspot.com/roger-stellers/legara-roi-review" target="_blank" style="display: inline-block; padding: 16px 36px; background: white; color: var(--green); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Schedule Your Custom Analysis</a>
         </div>
       </div>
 
@@ -1676,7 +1682,7 @@ function submitLeadForm(e) {
     gtag('event', 'roi_form_submit', {
       provider_type: currentType,
       form_name: 'roi_calculator_gate',
-      calculator_version: 'public_v2'
+      calculator_version: 'public'
     });
   }
 
@@ -1712,7 +1718,8 @@ function submitLeadForm(e) {
         { objectTypeId: '0-1', name: 'roi_legara_rate', value: String(lastCalc.legaraRate || 155) },
         { objectTypeId: '0-1', name: 'roi_mission_advantage', value: String(lastCalc.missionAdvantage || 0) },
         { objectTypeId: '0-1', name: 'roi_mission_cash_legara', value: String(lastCalc.legaraCashYear1 || 0) },
-        { objectTypeId: '0-1', name: 'roi_calculator_version', value: 'public_v2' }
+        { objectTypeId: '0-1', name: 'roi_calculator_version', value: 'public' },
+        { objectTypeId: '0-2', name: 'name', value: form.org.value || '' }
       ],
       context: {
         hutk: getHubspotCookie(),
