@@ -15,922 +15,7 @@
 <meta name="description" content="Calculate the true cost of internal behavioral health hiring vs. Legara's encounter-based model. See your real cost per encounter, cash generated to serve your mission, and 3-year ROI.">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
-<style>
-/* ═══ ROI CALCULATOR STYLES ═══ */
-
-/* Tighter page header for calculator — get interactive content into viewport faster */
-.page-header {
-  padding: 100px 80px 40px;
-}
-.page-header .section-headline {
-  font-size: clamp(30px, 3.2vw, 44px);
-  margin-bottom: 12px;
-}
-.page-header .section-body {
-  font-size: 15px;
-  max-width: 620px;
-}
-
-.calc-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  margin-top: 32px;
-  align-items: start;
-}
-
-.calc-inputs {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 40px;
-  position: sticky;
-  top: 88px; /* 68px nav + 20px breathing room */
-  align-self: start;
-}
-
-/* Override global section padding for calculator — less vertical whitespace */
-section.content-section {
-  padding: 48px 80px 60px;
-}
-
-.calc-results {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.calc-section-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.calc-section-title:not(:first-child) {
-  margin-top: 32px;
-}
-
-/* Provider type toggle */
-.provider-toggle {
-  display: flex;
-  gap: 0;
-  margin-bottom: 24px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.provider-toggle button {
-  flex: 1;
-  padding: 12px 10px;
-  border: none;
-  background: var(--off-white);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--slate);
-  cursor: pointer;
-  transition: all 0.2s;
-  border-right: 1px solid var(--border);
-}
-
-.provider-toggle button:last-child { border-right: none; }
-
-.provider-toggle button.active {
-  background: var(--green);
-  color: var(--white);
-  font-weight: 600;
-}
-
-.provider-toggle button:hover:not(.active) {
-  background: var(--green-light);
-  color: var(--green);
-}
-
-/* Input fields */
-.calc-field {
-  margin-bottom: 16px;
-}
-
-.calc-field label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--slate);
-  margin-bottom: 6px;
-}
-
-.calc-field .field-hint {
-  font-size: 11px;
-  color: var(--slate);
-  font-weight: 400;
-}
-
-.calc-field input[type="number"],
-.calc-field input[type="text"] {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  color: var(--charcoal);
-  background: var(--off-white);
-  transition: border-color 0.2s;
-  outline: none;
-  -moz-appearance: textfield;
-}
-
-.calc-field input::-webkit-outer-spin-button,
-.calc-field input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.calc-field input:focus {
-  border-color: var(--green-mid);
-}
-
-.calc-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  align-items: end;
-}
-
-/* Input group with prefix/suffix */
-.input-group {
-  position: relative;
-}
-
-.input-prefix {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: var(--slate);
-  pointer-events: none;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.input-suffix {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  color: var(--slate);
-  pointer-events: none;
-}
-
-.calc-field .input-group input.has-prefix[type="number"] {
-  padding-left: 36px;
-}
-
-.input-group .has-suffix {
-  padding-right: 40px;
-}
-
-/* ═══ RESULTS PANEL ═══ */
-
-.results-hero {
-  background: var(--green);
-  border-radius: 16px;
-  padding: 36px;
-  color: white;
-  margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
-}
-
-.results-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.12) 0%, transparent 60%);
-}
-
-.results-hero > * {
-  position: relative;
-  z-index: 1;
-}
-
-.results-hero-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.6;
-  margin-bottom: 16px;
-}
-
-.results-hero-savings {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 4px;
-}
-
-.results-hero-sub {
-  font-size: 14px;
-  opacity: 0.7;
-  margin-bottom: 24px;
-}
-
-.results-hero-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.results-hero-stat {
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 16px;
-}
-
-.results-hero-stat-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.results-hero-stat-label {
-  font-size: 11px;
-  opacity: 0.6;
-  margin-top: 4px;
-}
-
-/* Comparison cards */
-.results-compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.compare-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.compare-card.legara {
-  border-color: var(--green);
-  background: var(--green-pale);
-}
-
-.compare-card-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 16px;
-}
-
-.compare-card.legara .compare-card-label {
-  color: var(--green);
-}
-
-.compare-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-
-.compare-card.legara .compare-line {
-  border-color: rgba(26,107,74,0.15);
-}
-
-.compare-line:last-child { border-bottom: none; }
-
-.compare-line-label {
-  color: var(--slate);
-  font-weight: 400;
-}
-
-.compare-line-value {
-  font-weight: 600;
-  color: var(--charcoal);
-  font-size: 14px;
-}
-
-.compare-total {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 2px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.compare-card.legara .compare-total {
-  border-color: var(--green);
-}
-
-.compare-total-label {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--slate);
-}
-
-.compare-total-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--charcoal);
-}
-
-.compare-card.legara .compare-total-value {
-  color: var(--green);
-}
-
-/* ═══ CASH GENERATED — MISSION SECTION ═══ */
-
-.mission-section {
-  margin-bottom: 16px;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 2px solid var(--green);
-}
-
-.mission-header {
-  background: var(--green);
-  padding: 24px 28px 20px;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.mission-header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 70%, rgba(0,0,0,0.1) 0%, transparent 60%);
-}
-
-.mission-header > * {
-  position: relative;
-  z-index: 1;
-}
-
-.mission-header-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.mission-header-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.mission-body {
-  background: var(--white);
-  padding: 0;
-}
-
-.mission-compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.mission-col {
-  padding: 24px 28px;
-}
-
-.mission-col.legara-col {
-  background: var(--green-pale);
-  border-right: 1px solid rgba(26,107,74,0.12);
-}
-
-.mission-col.internal-col {
-  background: var(--off-white);
-}
-
-.mission-col-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.mission-col.legara-col .mission-col-label {
-  color: var(--green);
-}
-
-.mission-col.internal-col .mission-col-label {
-  color: var(--mist);
-}
-
-.mission-big-number {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 4px;
-}
-
-.mission-col.legara-col .mission-big-number {
-  color: var(--green);
-}
-
-.mission-col.internal-col .mission-big-number {
-  color: var(--charcoal);
-}
-
-.mission-col.internal-col .mission-big-number.negative {
-  color: #c0392b;
-}
-
-.mission-per-enc {
-  font-size: 13px;
-  color: var(--mist);
-  margin-bottom: 16px;
-}
-
-.mission-per-enc strong {
-  font-weight: 600;
-}
-
-.mission-col.legara-col .mission-per-enc strong {
-  color: var(--green);
-}
-
-.mission-col.internal-col .mission-per-enc strong {
-  color: var(--charcoal);
-}
-
-.mission-detail {
-  font-size: 12px;
-  color: var(--slate);
-  line-height: 1.6;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-
-.mission-col.legara-col .mission-detail {
-  border-color: rgba(26,107,74,0.15);
-}
-
-.mission-detail-line {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-}
-
-.mission-detail-line span:last-child {
-  font-weight: 600;
-}
-
-.mission-advantage {
-  background: var(--green);
-  color: white;
-  padding: 20px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.mission-advantage-label {
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0.85;
-}
-
-.mission-advantage-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  font-weight: 900;
-}
-
-/* Timeline comparison */
-.timeline-compare {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 16px;
-}
-
-.timeline-compare-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 20px;
-}
-
-.timeline-bar-group {
-  margin-bottom: 20px;
-}
-
-.timeline-bar-group:last-child { margin-bottom: 0; }
-
-.timeline-bar-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--slate);
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.timeline-bar-months {
-  font-weight: 600;
-  color: var(--charcoal);
-}
-
-.timeline-bar-track {
-  height: 32px;
-  background: var(--off-white);
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-}
-
-.timeline-bar-fill {
-  height: 100%;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-size: 11px;
-  font-weight: 600;
-  color: white;
-  transition: width 0.5s ease;
-}
-
-.timeline-bar-fill.internal {
-  background: var(--charcoal);
-}
-
-.timeline-bar-fill.legara {
-  background: var(--green);
-}
-
-.timeline-bar-segments {
-  display: flex;
-  height: 100%;
-}
-
-.timeline-bar-segment {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
-  color: white;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: width 0.5s ease;
-}
-
-.timeline-bar-segment.recruit { background: #4a5e54; }
-.timeline-bar-segment.onboard { background: #3a7a5a; }
-.timeline-bar-segment.credential { background: #2d8a62; }
-.timeline-bar-segment.panel { background: #1a6b4a; }
-.timeline-bar-segment.payer { background: #156040; }
-
-.timeline-legend {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.timeline-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--mist);
-}
-
-.timeline-legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-}
-
-/* Cost waterfall */
-.waterfall {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 16px;
-}
-
-.waterfall-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 20px;
-}
-
-.waterfall-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.waterfall-item:last-child { margin-bottom: 0; }
-
-.waterfall-item-label {
-  font-size: 13px;
-  color: var(--slate);
-  width: 160px;
-  flex-shrink: 0;
-}
-
-.waterfall-item-bar {
-  flex: 1;
-  height: 24px;
-  background: var(--off-white);
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-.waterfall-item-fill {
-  height: 100%;
-  background: var(--charcoal);
-  border-radius: 4px;
-  transition: width 0.5s ease;
-  min-width: 2px;
-}
-
-.waterfall-item-value {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--charcoal);
-  width: 80px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-/* 3-year view */
-.three-year {
-  background: var(--charcoal);
-  border-radius: 12px;
-  padding: 24px;
-  color: white;
-}
-
-.three-year-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-}
-
-.three-year-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.three-year-item {
-  background: rgba(255,255,255,0.06);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-}
-
-.three-year-item-year {
-  font-size: 11px;
-  opacity: 0.5;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.three-year-item-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.three-year-item-label {
-  font-size: 11px;
-  opacity: 0.5;
-  margin-top: 4px;
-}
-
-.three-year-total {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  text-align: center;
-}
-
-.three-year-total-label {
-  font-size: 11px;
-  opacity: 0.5;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.three-year-total-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--white);
-}
-
-/* Assumptions note */
-.assumptions {
-  margin-top: 16px;
-  font-size: 12px;
-  color: var(--mist);
-  line-height: 1.6;
-}
-
-.assumptions strong {
-  color: var(--slate);
-}
-
-/* Fade-in animation for ungated content */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.gated-reveal > * {
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-}
-
-.gated-reveal > *:nth-child(1) { animation-delay: 0.1s; }
-.gated-reveal > *:nth-child(2) { animation-delay: 0.2s; }
-.gated-reveal > *:nth-child(3) { animation-delay: 0.3s; }
-.gated-reveal > *:nth-child(4) { animation-delay: 0.4s; }
-.gated-reveal > *:nth-child(5) { animation-delay: 0.5s; }
-.gated-reveal > *:nth-child(6) { animation-delay: 0.6s; }
-
-/* Year tabs for mission section */
-.mission-year-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 2px solid var(--border);
-}
-
-.mission-year-tab {
-  flex: 1;
-  padding: 12px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  background: #e8f0ec;
-  border: none;
-  color: var(--green);
-  transition: all 0.2s;
-  border-bottom: 2px solid #c5d6cd;
-  margin-bottom: -2px;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.mission-year-tab:hover {
-  background: #dce8e1;
-}
-
-.mission-year-tab.active {
-  color: var(--green);
-  background: var(--white);
-  border-bottom: 3px solid var(--green);
-  font-weight: 700;
-}
-
-.mission-year-panel {
-  display: none;
-}
-
-.mission-year-panel.active {
-  display: block;
-}
-
-/* Cumulative row */
-.mission-cumulative {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--border);
-}
-
-.mission-cumulative-col {
-  padding: 16px 28px;
-  text-align: center;
-}
-
-.mission-cumulative-col:first-child {
-  background: var(--green-pale);
-  border-right: 1px solid rgba(26,107,74,0.12);
-}
-
-.mission-cumulative-col:last-child {
-  background: var(--off-white);
-}
-
-.mission-cumulative-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 4px;
-}
-
-.mission-cumulative-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.mission-cumulative-col:first-child .mission-cumulative-value {
-  color: var(--green);
-}
-
-.mission-cumulative-col:last-child .mission-cumulative-value {
-  color: var(--charcoal);
-}
-
-.mission-cumulative-value.negative {
-  color: #c0392b;
-}
-
-/* CTA */
-.calc-cta {
-  margin-top: 24px;
-  text-align: center;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .calc-layout {
-    grid-template-columns: 1fr;
-  }
-  .calc-inputs {
-    position: static;
-  }
-  .page-header { padding: 80px 40px 32px; }
-  section.content-section { padding: 32px 40px 48px; }
-}
-
-@media (max-width: 768px) {
-  .page-header { padding: 72px 24px 24px; }
-  section.content-section { padding: 24px 24px 40px; }
-  .calc-inputs { padding: 24px; }
-  .results-hero { padding: 24px; }
-  .results-hero-savings { font-size: 36px; }
-  .results-compare { grid-template-columns: 1fr; }
-  .three-year-grid { grid-template-columns: 1fr; }
-  .calc-row { grid-template-columns: 1fr; }
-  .provider-toggle { flex-direction: column; }
-  .provider-toggle button { border-right: none; border-bottom: 1px solid var(--border); }
-  .provider-toggle button:last-child { border-bottom: none; }
-  .mission-compare { grid-template-columns: 1fr; }
-  .mission-col.legara-col { border-right: none; border-bottom: 1px solid rgba(26,107,74,0.12); }
-  .mission-big-number { font-size: 28px; }
-  .mission-advantage { flex-direction: column; gap: 8px; text-align: center; }
-}
-</style>
+<link rel="stylesheet" href="css/calculator.css">
 
 <!-- SEO Meta Tags -->
 <link rel="canonical" href="https://golegara.com/roi-calculator.html">
@@ -996,6 +81,8 @@ section.content-section {
 
     <!-- LEFT: INPUTS -->
     <div class="calc-inputs">
+      <div class="calc-section-title">Enter your health center's data</div>
+
       <div class="calc-section-title">Provider Type</div>
       <div class="provider-toggle">
         <button class="active" onclick="setProviderType('lcsw_lmft')">LCSW/LMFT</button>
@@ -1083,27 +170,145 @@ section.content-section {
     <!-- RIGHT: RESULTS -->
     <div class="calc-results">
 
-      <!-- 1. Hero — internal hire true cost (the shock) -->
-      <div class="results-hero">
-        <div class="results-hero-label">Your True Cost Per Encounter</div>
-        <div class="results-hero-savings" id="internalCPE">$0</div>
-        <div class="results-hero-sub" id="cpeContext">first-year cost per encounter (internal hire)</div>
-        <div class="results-hero-row">
-          <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="cmpTotalInternal">$0</div>
-            <div class="results-hero-stat-label">Year 1 true cost</div>
-          </div>
-          <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="encCount">0</div>
-            <div class="results-hero-stat-label">Year 1 encounters</div>
-          </div>
+      <!-- 1. THE REAL QUESTION — Mission section with year tabs -->
+      <div class="mission-section">
+        <div class="mission-header">
+          <div class="mission-header-label">The Real Question</div>
+          <div class="mission-header-title">How much cash does each model generate to serve your mission?</div>
         </div>
-        <div id="cpeContextNote" style="margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0.85;">
-          <strong>What's driving this?</strong> Salary, benefits, and overhead begin on day one of employment — but it takes <span id="cpeRampMonthsNote">~8</span> months of onboarding, credentialing, payer enrollment, and caseload building before a new hire reaches full productivity. You're paying full cost against a fraction of steady-state encounters.
+        <div class="mission-body">
+          <!-- Year tabs -->
+          <div class="mission-year-tabs">
+            <button class="mission-year-tab active" data-year="1" onclick="switchMissionYear(1)">Year 1</button>
+            <button class="mission-year-tab" data-year="2" onclick="switchMissionYear(2)">Year 2</button>
+            <button class="mission-year-tab" data-year="3" onclick="switchMissionYear(3)">Year 3</button>
+          </div>
+
+          <!-- Year 1 panel -->
+          <div class="mission-year-panel active" id="missionYear1">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionLegaraRevY1">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY1">–$155</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionLegaraPerEncY1">$75</strong>
+                </div>
+                <div class="mission-encounters" id="missionLegaraEncTextY1"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionLegaraCashY1">$0</div>
+                <div class="mission-footnote">*That's it. No salary, benefits, support staff, or recruiter fees. One rate per completed, billable encounter.</div>
+              </div>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionInternalRevY1">$230</span></div>
+                  <div class="mission-detail-line"><span>True cost per encounter</span><span id="missionInternalCPEY1">–$0</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionInternalPerEncY1">$0</strong>
+                </div>
+                <div class="mission-encounters" id="missionInternalEncTextY1"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionInternalCashY1">$0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Year 2 panel -->
+          <div class="mission-year-panel" id="missionYear2">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionLegaraRevY2">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY2">–$155</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionLegaraPerEncY2">$75</strong>
+                </div>
+                <div class="mission-encounters" id="missionLegaraEncTextY2"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionLegaraCashY2">$0</div>
+                <div class="mission-footnote">*That's it. No salary, benefits, support staff, or recruiter fees. One rate per completed, billable encounter.</div>
+              </div>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionInternalRevY2">$230</span></div>
+                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY2">–$0</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionInternalPerEncY2">$0</strong>
+                </div>
+                <div class="mission-encounters" id="missionInternalEncTextY2"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionInternalCashY2">$0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Year 3 panel -->
+          <div class="mission-year-panel" id="missionYear3">
+            <div class="mission-compare">
+              <div class="mission-col legara-col">
+                <div class="mission-col-label">With Legara</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionLegaraRevY3">$230</span></div>
+                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY3">–$155</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionLegaraPerEncY3">$75</strong>
+                </div>
+                <div class="mission-encounters" id="missionLegaraEncTextY3"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionLegaraCashY3">$0</div>
+                <div class="mission-footnote">*That's it. No salary, benefits, support staff, or recruiter fees. One rate per completed, billable encounter.</div>
+              </div>
+              <div class="mission-col internal-col">
+                <div class="mission-col-label">Internal Hire</div>
+                <div class="mission-detail">
+                  <div class="mission-detail-line"><span>Revenue per encounter</span><span id="missionInternalRevY3">$230</span></div>
+                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY3">–$0</span></div>
+                </div>
+                <div class="mission-net-per-enc">
+                  <span>Net cash per encounter</span>
+                  <strong id="missionInternalPerEncY3">$0</strong>
+                </div>
+                <div class="mission-encounters" id="missionInternalEncTextY3"></div>
+                <div class="mission-big-number-label">Annual cash to mission</div>
+                <div class="mission-big-number" id="missionInternalCashY3">$0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cumulative 3-year totals -->
+          <div class="mission-cumulative">
+            <div class="mission-cumulative-col">
+              <div class="mission-cumulative-label">3-Year Cumulative (Legara)</div>
+              <div class="mission-cumulative-value" id="missionLegaraCum3">$0</div>
+            </div>
+            <div class="mission-cumulative-col">
+              <div class="mission-cumulative-label">3-Year Cumulative (Internal)</div>
+              <div class="mission-cumulative-value" id="missionInternalCum3">$0</div>
+            </div>
+          </div>
+
+          <!-- Simplified advantage bar -->
+          <div class="mission-advantage">
+            <div class="mission-advantage-label" id="missionAdvantage3Yr">Legara generates <strong>$0</strong> more cash for your mission over 3 years</div>
+          </div>
         </div>
       </div>
 
-      <!-- 2. Internal hire cost breakdown -->
+      <!-- 2. THE REAL COST OF AN INTERNAL HIRE -->
       <div class="compare-card">
         <div class="compare-card-label">The Real Cost of an Internal Hire</div>
         <div class="compare-line">
@@ -1132,165 +337,24 @@ section.content-section {
         </div>
       </div>
 
-      <!-- GATED RESULTS: now visible by default -->
-      <div id="gatedResults" class="gated-reveal">
-
-      <!-- 1. CASH GENERATED TO SERVE MISSION — Year 1/2/3 tabs -->
-      <div class="mission-section">
-        <div class="mission-header">
-          <div class="mission-header-label">The Real Question</div>
-          <div class="mission-header-title">How much cash does each model generate to serve your mission?</div>
-        </div>
-        <div class="mission-body">
-          <!-- Year tabs -->
-          <div class="mission-year-tabs">
-            <button class="mission-year-tab active" data-year="1" onclick="switchMissionYear(1)">Year 1</button>
-            <button class="mission-year-tab" data-year="2" onclick="switchMissionYear(2)">Year 2</button>
-            <button class="mission-year-tab" data-year="3" onclick="switchMissionYear(3)">Year 3</button>
+      <!-- 3. CASH GENERATED FOR YOUR MISSION -->
+      <div class="cash-generated-card">
+        <div class="cash-generated-card-label">Cash Generated for Your Mission</div>
+        <div class="cash-generated-card-amount" id="cashGen3YrTotal">$0</div>
+        <div class="cash-generated-card-sub">additional mission cash with Legara over 3 years</div>
+        <div class="cash-generated-card-row">
+          <div class="cash-generated-card-stat">
+            <div class="cash-generated-card-stat-num" id="cashGenY1">$0</div>
+            <div class="cash-generated-card-stat-label">Year 1 advantage</div>
           </div>
-
-          <!-- Year 1 panel -->
-          <div class="mission-year-panel active" id="missionYear1">
-            <div class="mission-compare">
-              <div class="mission-col legara-col">
-                <div class="mission-col-label">With Legara</div>
-                <div class="mission-big-number" id="missionLegaraCashY1">$0</div>
-                <div class="mission-per-enc"><strong id="missionLegaraPerEncY1">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY1">$230</span></div>
-                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY1">–$155</span></div>
-                  <div class="mission-detail-line"><span>Year 1 encounters</span><span id="missionLegaraEncY1">0</span></div>
-                </div>
-              </div>
-              <div class="mission-col internal-col">
-                <div class="mission-col-label">Internal Hire</div>
-                <div class="mission-big-number" id="missionInternalCashY1">$0</div>
-                <div class="mission-per-enc"><strong id="missionInternalPerEncY1">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY1">$230</span></div>
-                  <div class="mission-detail-line"><span>True cost per encounter</span><span id="missionInternalCPEY1">–$0</span></div>
-                  <div class="mission-detail-line"><span>Year 1 encounters</span><span id="missionInternalEncY1">0</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Year 2 panel -->
-          <div class="mission-year-panel" id="missionYear2">
-            <div class="mission-compare">
-              <div class="mission-col legara-col">
-                <div class="mission-col-label">With Legara</div>
-                <div class="mission-big-number" id="missionLegaraCashY2">$0</div>
-                <div class="mission-per-enc"><strong id="missionLegaraPerEncY2">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY2">$230</span></div>
-                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY2">–$155</span></div>
-                  <div class="mission-detail-line"><span>Year 2 encounters</span><span id="missionLegaraEncY2">0</span></div>
-                </div>
-              </div>
-              <div class="mission-col internal-col">
-                <div class="mission-col-label">Internal Hire</div>
-                <div class="mission-big-number" id="missionInternalCashY2">$0</div>
-                <div class="mission-per-enc"><strong id="missionInternalPerEncY2">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY2">$230</span></div>
-                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY2">–$0</span></div>
-                  <div class="mission-detail-line"><span>Year 2 encounters</span><span id="missionInternalEncY2">0</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Year 3 panel -->
-          <div class="mission-year-panel" id="missionYear3">
-            <div class="mission-compare">
-              <div class="mission-col legara-col">
-                <div class="mission-col-label">With Legara</div>
-                <div class="mission-big-number" id="missionLegaraCashY3">$0</div>
-                <div class="mission-per-enc"><strong id="missionLegaraPerEncY3">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionLegaraRevY3">$230</span></div>
-                  <div class="mission-detail-line"><span>Legara rate</span><span id="missionLegaraRateY3">–$155</span></div>
-                  <div class="mission-detail-line"><span>Year 3 encounters</span><span id="missionLegaraEncY3">0</span></div>
-                </div>
-              </div>
-              <div class="mission-col internal-col">
-                <div class="mission-col-label">Internal Hire</div>
-                <div class="mission-big-number" id="missionInternalCashY3">$0</div>
-                <div class="mission-per-enc"><strong id="missionInternalPerEncY3">$0</strong> net cash per encounter</div>
-                <div class="mission-detail">
-                  <div class="mission-detail-line"><span>Encounter revenue</span><span id="missionInternalRevY3">$230</span></div>
-                  <div class="mission-detail-line"><span>Steady-state CPE</span><span id="missionInternalCPEY3">–$0</span></div>
-                  <div class="mission-detail-line"><span>Year 3 encounters</span><span id="missionInternalEncY3">0</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cumulative 3-year totals -->
-          <div class="mission-cumulative">
-            <div class="mission-cumulative-col">
-              <div class="mission-cumulative-label">3-Year Cumulative (Legara)</div>
-              <div class="mission-cumulative-value" id="missionLegaraCum3">$0</div>
-            </div>
-            <div class="mission-cumulative-col">
-              <div class="mission-cumulative-label">3-Year Cumulative (Internal)</div>
-              <div class="mission-cumulative-value" id="missionInternalCum3">$0</div>
-            </div>
-          </div>
-
-          <!-- Advantage bar -->
-          <div class="mission-advantage">
-            <div class="mission-advantage-label">Additional 3-year cash generated for your mission with Legara</div>
-            <div class="mission-advantage-value" id="missionAdvantage3Yr">$0</div>
+          <div class="cash-generated-card-stat">
+            <div class="cash-generated-card-stat-num" id="cashGenY2Plus">$0</div>
+            <div class="cash-generated-card-stat-label">Year 2+ annual advantage</div>
           </div>
         </div>
       </div>
 
-      <!-- 2. 3-Year Savings Projection -->
-      <div class="results-hero" style="margin-bottom: 16px;">
-        <div class="results-hero-label">3-Year Savings Projection</div>
-        <div class="results-hero-savings" id="savingsTotal3Yr">$0</div>
-        <div class="results-hero-sub">total savings with Legara over three years</div>
-        <div class="results-hero-row">
-          <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="savingsYear1">$0</div>
-            <div class="results-hero-stat-label">Year 1 savings</div>
-          </div>
-          <div class="results-hero-stat">
-            <div class="results-hero-stat-num" id="savingsYear2Plus">$0</div>
-            <div class="results-hero-stat-label">Year 2+ annual savings</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Cost Per Encounter Comparison -->
-      <div class="results-compare">
-        <div class="compare-card">
-          <div class="compare-card-label">Internal Hire CPE</div>
-          <div class="compare-line">
-            <span class="compare-line-label">Year 1</span>
-            <span class="compare-line-value" id="cpeInternalY1">$0</span>
-          </div>
-          <div class="compare-line">
-            <span class="compare-line-label">Year 2+ (steady state)</span>
-            <span class="compare-line-value" id="cpeInternalSteady">$0</span>
-          </div>
-        </div>
-        <div class="compare-card legara">
-          <div class="compare-card-label">Legara CPE</div>
-          <div class="compare-line">
-            <span class="compare-line-label">All-in rate</span>
-            <span class="compare-line-value" id="cpeLegaraRate">$0</span>
-          </div>
-          <div class="compare-line">
-            <span class="compare-line-label">Savings per encounter (vs. steady state)</span>
-            <span class="compare-line-value" id="cpeSavingsPerEnc" style="color: var(--green);">$0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. Timeline comparison -->
+      <!-- 4. TIME TO FIRST REVENUE -->
       <div class="timeline-compare">
         <div class="timeline-compare-label">Time to First Revenue</div>
         <div class="timeline-bar-group">
@@ -1324,13 +388,13 @@ section.content-section {
         </div>
       </div>
 
-      <!-- 5. Where money goes -->
+      <!-- 5. WHERE YOUR MONEY ACTUALLY GOES -->
       <div class="waterfall">
         <div class="waterfall-label">Where Your Money Actually Goes</div>
         <div id="waterfallBars"></div>
       </div>
 
-      <!-- 6. Premium CTA with inline form -->
+      <!-- 6. PREMIUM CTA with inline form -->
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; text-align: center; margin-top: 16px;">
         <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 12px;">See What Your Numbers Really Say</div>
         <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 16px; color: var(--slate);">This calculator uses industry benchmarks</div>
@@ -1381,8 +445,7 @@ section.content-section {
         </div>
       </div>
 
-      </div><!-- /gatedResults -->
-
+      <!-- 7. ASSUMPTIONS -->
       <div class="assumptions" style="margin-top: 16px;">
         <strong>Assumptions:</strong> Support staff at 0.25 FTE (~$11K/yr). Ramp timeline: 3-month recruit, 3-week onboard, 3-month credentialing (post-hire), 3-month payer enrollment (overlapping), 3-month caseload build. 32 scheduled clinical hrs/wk, 30 days PTO/sick/CME. Credentialing often begins during recruiting; this model assumes the bulk occurs post-hire. Encounter rate: <span id="encRateNote">1.0/hr (therapy)</span>. Avg. encounter revenue of $<span id="ppsNote">230</span> (PPS + copays + secondaries, given payer mix). Legara rate: $<span id="legaraRateNote">155</span>/encounter (all-in). All figures are estimates — actual results vary by organization.
       </div>
@@ -1437,347 +500,16 @@ section.content-section {
 
 <script src="js/tracking.js"></script>
 <script>
-// ═══ ROI CALCULATOR ENGINE (PUBLIC / GATED) ═══
-
-const DEFAULTS = {
-  lcsw_lmft: { salary: 135000, encPerHour: 1.0, legaraRate: 155, label: 'LCSW / LMFT', encNote: '1.0/hr (therapy)' },
-  psychologist: { salary: 155000, encPerHour: 1.0, legaraRate: 165, label: 'Psychologist', encNote: '1.0/hr (therapy)' },
-  pmhnp: { salary: 200000, encPerHour: 1.5, legaraRate: 165, label: 'PMHNP', encNote: '1.5/hr (psychiatry)' },
-  psychiatrist: { salary: 330000, encPerHour: 1.5, legaraRate: 165, label: 'Psychiatrist', encNote: '1.5/hr (psychiatry)' }
-};
-
-const SUPPORT_STAFF_COST = 11000;
-const LEGARA_RAMP_MONTHS = 5;
-
-// Graduated ramp: partial productivity during later ramp phases
-const RAMP_PRODUCTIVITY = {
-  recruit: 0,      // not hired yet
-  onboard: 0,      // orientation & training
-  credPanel: 0.25, // limited panels active, seeing some patients
-  panelBuild: 0.65 // most panels active, building caseload
-};
-
-// Baked-in assumptions for public version
-const BAKED = {
-  loadedMultiplier: 1.4,
-  recruiterFee: 8000,
-  turnoverRate: 0.30,
-  recruitMonths: 3,
-  onboardWeeks: 3,
-  credentialMonths: 3,
-  payerPanelMonths: 3,
-  panelBuildMonths: 3,
-  scheduledHours: 32,
-  ptoDays: 30
-};
-
-let currentType = 'lcsw_lmft';
+// ─── PUBLIC CALCULATOR CONFIG ───
+const CALC_MODE = 'public';
 let lastCalc = {};
+let calcCount = 0;
 
 function getHubspotCookie() {
   var match = document.cookie.match(/hubspotutk=([^;]+)/);
   return match ? match[1] : '';
 }
 
-// ─── GA EVENT HELPER ───
-function trackEvent(action, category, label, value) {
-  if (typeof gtag === 'function') {
-    gtag('event', action, {
-      event_category: category || 'ROI Calculator',
-      event_label: label || '',
-      value: value || 0
-    });
-  }
-}
-
-function setProviderType(type) {
-  currentType = type;
-  const d = DEFAULTS[type];
-  document.getElementById('salary').value = d.salary;
-  document.querySelectorAll('.provider-toggle button').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  trackEvent('provider_type_change', 'ROI Calculator', type);
-  calculate();
-}
-
-function fmt(n) {
-  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
-  return '$' + Math.round(n).toLocaleString();
-}
-
-function fmtShort(n) {
-  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
-  if (Math.abs(n) >= 1000) return '$' + (n / 1000).toFixed(0) + 'K';
-  return '$' + Math.round(n);
-}
-
-function fmtNum(n) {
-  return Math.round(n).toLocaleString();
-}
-
-function fmtSigned(n) {
-  if (n >= 0) return '+$' + Math.round(n).toLocaleString();
-  return '–$' + Math.round(Math.abs(n)).toLocaleString();
-}
-
-// ─── MISSION YEAR SWITCHER ───
-function switchMissionYear(year) {
-  document.querySelectorAll('.mission-year-tab').forEach(t => t.classList.toggle('active', t.dataset.year == year));
-  document.querySelectorAll('.mission-year-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('missionYear' + year).classList.add('active');
-}
-
-let calcCount = 0;
-function calculate() {
-  const salary = parseFloat(document.getElementById('salary').value) || 0;
-  const multiplier = parseFloat(document.getElementById('loadedMultiplier').value) || 1.4;
-  const count = parseInt(document.getElementById('providerCount').value) || 1;
-  const recruiterFee = parseFloat(document.getElementById('recruiterFee').value) || 0;
-  const turnover = (parseFloat(document.getElementById('turnoverRate').value) || 0) / 100;
-  const recruitMonths = BAKED.recruitMonths;
-  const onboardWeeks = BAKED.onboardWeeks;
-  const credentialMonths = BAKED.credentialMonths;
-  const payerPanelMonths = BAKED.payerPanelMonths;
-  const panelBuildMonths = BAKED.panelBuildMonths;
-  const scheduledHours = BAKED.scheduledHours;
-  const openSlotRate = (parseFloat(document.getElementById('openSlotRate').value) || 0) / 100;
-  const noShowRate = (parseFloat(document.getElementById('noShowRate').value) || 0) / 100;
-  const ptoDays = BAKED.ptoDays;
-  const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
-  const encPerHour = DEFAULTS[currentType].encPerHour;
-  const legaraRate = DEFAULTS[currentType].legaraRate;
-
-  // ─── CORE UTILIZATION MATH ───
-  const fullyLoaded = salary * multiplier;
-  const benefitsCost = fullyLoaded - salary;
-  const supportCost = SUPPORT_STAFF_COST;
-  const ptoWeeks = ptoDays / 5;
-  const availableWeeksPerYear = 52 - ptoWeeks;
-  const effectiveHours = scheduledHours * (1 - openSlotRate);
-  const effectiveEncPerWeek = effectiveHours * encPerHour * (1 - noShowRate);
-  const fullYearEncounters = effectiveEncPerWeek * availableWeeksPerYear;
-
-  // ─── INTERNAL HIRE RAMP TIMELINE ───
-  const onboardMonths = onboardWeeks / 4.33;
-  const credPanelOverlap = Math.min(credentialMonths, payerPanelMonths) * 0.5;
-  const credPanelMonths = credentialMonths + payerPanelMonths - credPanelOverlap;
-  const totalRampMonths = recruitMonths + onboardMonths + credPanelMonths + panelBuildMonths;
-
-  // ─── YEAR 1: INTERNAL HIRE (graduated ramp) ───
-  const internalFullProdMonths = Math.max(12 - totalRampMonths, 0);
-
-  function phaseEnc(months, productivity) {
-    const weeks = months * 4.33;
-    const pto = ptoWeeks * (months / 12);
-    return effectiveEncPerWeek * Math.max(weeks - pto, 0) * productivity;
-  }
-
-  const internalEnc1 =
-    phaseEnc(recruitMonths, RAMP_PRODUCTIVITY.recruit) +
-    phaseEnc(onboardMonths, RAMP_PRODUCTIVITY.onboard) +
-    phaseEnc(credPanelMonths, RAMP_PRODUCTIVITY.credPanel) +
-    phaseEnc(panelBuildMonths, RAMP_PRODUCTIVITY.panelBuild) +
-    phaseEnc(internalFullProdMonths, 1.0);
-
-  // Salary only starts after hire (post-recruit), so prorate to months on payroll
-  const monthsOnPayroll = Math.max(12 - recruitMonths, 0);
-  const proratedSalary = fullyLoaded * (monthsOnPayroll / 12);
-  const proratedSupport = supportCost * (monthsOnPayroll / 12);
-  const internalCostYear1 = proratedSalary + proratedSupport + recruiterFee;
-  const internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
-
-  // ─── LEGARA YEAR 1 ───
-  const legaraProductiveMonths1 = Math.max(12 - LEGARA_RAMP_MONTHS, 0);
-  const legaraProductiveWeeks1 = legaraProductiveMonths1 * 4.33;
-  const legaraPTOWeeks1 = ptoWeeks * (legaraProductiveMonths1 / 12);
-  const legaraAvailWeeks1 = Math.max(legaraProductiveWeeks1 - legaraPTOWeeks1, 0);
-  const legaraEnc1 = effectiveEncPerWeek * legaraAvailWeeks1;
-  const encounterGapYear1 = Math.max(legaraEnc1 - internalEnc1, 0);
-  const lostPPSRevenue = encounterGapYear1 * ppsRate;
-
-  // ─── CASH GENERATED TO SERVE MISSION ───
-  // Legara: revenue per encounter - Legara rate = net cash
-  const legaraNetPerEnc = ppsRate - legaraRate;
-  const legaraCashYear1 = legaraEnc1 * legaraNetPerEnc;
-
-  // Internal hire: revenue per encounter - true CPE = net cash (can be negative in Y1)
-  const internalNetPerEnc = internalEnc1 > 0 ? ppsRate - internalCPE1 : 0;
-  const internalRevYear1 = internalEnc1 * ppsRate;
-  const internalCashYear1 = internalRevYear1 - internalCostYear1;
-
-  const missionAdvantage = legaraCashYear1 - internalCashYear1;
-
-  // ─── SAVINGS (for HubSpot submission) ───
-  const legaraCostYear1 = legaraEnc1 * legaraRate;
-  const turnoverReplacementCost = turnover * (recruiterFee + fullyLoaded * Math.min(totalRampMonths / 12, 1) * 0.5);
-  const internalCostSteady = fullyLoaded + supportCost + turnoverReplacementCost;
-  const internalCPESteady = fullYearEncounters > 0 ? internalCostSteady / fullYearEncounters : 0;
-  const legaraCostSteady = fullYearEncounters * legaraRate;
-  const year1Savings = (internalCostYear1 - legaraCostYear1) * count;
-  const year2Savings = (internalCostSteady - legaraCostSteady) * count;
-  const total3Yr = year1Savings + year2Savings + year2Savings;
-
-  // ─── YEAR 2 & 3 MISSION (steady state for both) ───
-  const legaraCashSteadyYear = fullYearEncounters * legaraNetPerEnc;
-  const internalNetPerEncSteady = fullYearEncounters > 0 ? ppsRate - internalCPESteady : 0;
-  const internalRevSteady = fullYearEncounters * ppsRate;
-  const internalCashSteady2 = internalRevSteady - internalCostSteady;
-
-  // Cumulative 3-year mission
-  const legaraCash3Yr = (legaraCashYear1 + legaraCashSteadyYear + legaraCashSteadyYear) * count;
-  const internalCash3Yr = (internalCashYear1 + internalCashSteady2 + internalCashSteady2) * count;
-  const missionAdvantage3Yr = legaraCash3Yr - internalCash3Yr;
-
-  lastCalc = {
-    year1Savings: Math.round(year1Savings),
-    total3Yr: Math.round(total3Yr),
-    legaraCashYear1: Math.round(legaraCashYear1 * count),
-    missionAdvantage: Math.round(missionAdvantage3Yr),
-    internalCPE1: internalCPE1,
-    legaraRate: legaraRate
-  };
-
-  // ─── UPDATE UI ───
-
-  // 1. Hero — internal true CPE (the shock number)
-  document.getElementById('internalCPE').textContent = fmt(internalCPE1);
-  document.getElementById('cpeContext').textContent = count > 1
-    ? 'first-year cost per encounter across ' + count + ' providers'
-    : 'first-year cost per encounter (internal hire)';
-  document.getElementById('cmpTotalInternal').textContent = fmt(internalCostYear1 * count);
-  document.getElementById('encCount').textContent = fmtNum(internalEnc1 * count);
-  document.getElementById('cpeRampMonthsNote').textContent = '~' + Math.round(totalRampMonths - recruitMonths);
-
-  // 2. Internal hire cost card
-  document.getElementById('cmpSalary').textContent = fmt(salary);
-  document.getElementById('cmpBenefits').textContent = fmt(benefitsCost);
-  document.getElementById('cmpSupport').textContent = fmt(supportCost);
-  document.getElementById('cmpRecruiter').textContent = fmt(recruiterFee);
-  document.getElementById('cmpRamp').textContent = Math.round(internalFullProdMonths) + ' of 12 mo at full productivity';
-  document.getElementById('cmpTotalInternalCard').textContent = fmt(internalCostYear1);
-
-  // 3. Cash Generated to Serve Mission — Year 1
-  document.getElementById('missionLegaraCashY1').textContent = fmt(legaraCashYear1 * count);
-  document.getElementById('missionLegaraPerEncY1').textContent = fmt(legaraNetPerEnc);
-  document.getElementById('missionLegaraRevY1').textContent = fmt(ppsRate);
-  document.getElementById('missionLegaraRateY1').textContent = '–' + fmt(legaraRate);
-  document.getElementById('missionLegaraEncY1').textContent = fmtNum(legaraEnc1 * count);
-
-  document.getElementById('missionInternalCashY1').textContent = fmt(internalCashYear1 * count);
-  document.getElementById('missionInternalCashY1').classList.toggle('negative', internalCashYear1 < 0);
-  document.getElementById('missionInternalPerEncY1').textContent = internalEnc1 > 0 ? fmt(ppsRate - internalCPE1) : '$0';
-  document.getElementById('missionInternalRevY1').textContent = fmt(ppsRate);
-  document.getElementById('missionInternalCPEY1').textContent = '–' + fmt(internalCPE1);
-  document.getElementById('missionInternalEncY1').textContent = fmtNum(internalEnc1 * count);
-
-  // Cash Generated — Year 2
-  document.getElementById('missionLegaraCashY2').textContent = fmt(legaraCashSteadyYear * count);
-  document.getElementById('missionLegaraPerEncY2').textContent = fmt(legaraNetPerEnc);
-  document.getElementById('missionLegaraRevY2').textContent = fmt(ppsRate);
-  document.getElementById('missionLegaraRateY2').textContent = '–' + fmt(legaraRate);
-  document.getElementById('missionLegaraEncY2').textContent = fmtNum(fullYearEncounters * count);
-
-  document.getElementById('missionInternalCashY2').textContent = fmt(internalCashSteady2 * count);
-  document.getElementById('missionInternalCashY2').classList.toggle('negative', internalCashSteady2 < 0);
-  document.getElementById('missionInternalPerEncY2').textContent = fullYearEncounters > 0 ? fmt(internalNetPerEncSteady) : '$0';
-  document.getElementById('missionInternalRevY2').textContent = fmt(ppsRate);
-  document.getElementById('missionInternalCPEY2').textContent = '–' + fmt(internalCPESteady);
-  document.getElementById('missionInternalEncY2').textContent = fmtNum(fullYearEncounters * count);
-
-  // Cash Generated — Year 3 (same as Year 2)
-  document.getElementById('missionLegaraCashY3').textContent = fmt(legaraCashSteadyYear * count);
-  document.getElementById('missionLegaraPerEncY3').textContent = fmt(legaraNetPerEnc);
-  document.getElementById('missionLegaraRevY3').textContent = fmt(ppsRate);
-  document.getElementById('missionLegaraRateY3').textContent = '–' + fmt(legaraRate);
-  document.getElementById('missionLegaraEncY3').textContent = fmtNum(fullYearEncounters * count);
-
-  document.getElementById('missionInternalCashY3').textContent = fmt(internalCashSteady2 * count);
-  document.getElementById('missionInternalCashY3').classList.toggle('negative', internalCashSteady2 < 0);
-  document.getElementById('missionInternalPerEncY3').textContent = fullYearEncounters > 0 ? fmt(internalNetPerEncSteady) : '$0';
-  document.getElementById('missionInternalRevY3').textContent = fmt(ppsRate);
-  document.getElementById('missionInternalCPEY3').textContent = '–' + fmt(internalCPESteady);
-  document.getElementById('missionInternalEncY3').textContent = fmtNum(fullYearEncounters * count);
-
-  // Cumulative 3-year totals
-  document.getElementById('missionLegaraCum3').textContent = fmt(legaraCash3Yr);
-  document.getElementById('missionInternalCum3').textContent = fmt(internalCash3Yr);
-  document.getElementById('missionInternalCum3').classList.toggle('negative', internalCash3Yr < 0);
-  document.getElementById('missionAdvantage3Yr').textContent = fmtSigned(missionAdvantage3Yr);
-
-  // 4. Timeline
-  document.getElementById('internalMonths').textContent = Math.round(totalRampMonths) + ' months';
-  document.getElementById('legaraMonths').textContent = 'As fast as 6 weeks (at $0 cost)';
-
-  const totalForBar = recruitMonths + onboardMonths + credentialMonths + payerPanelMonths + panelBuildMonths;
-  const tl = document.getElementById('internalTimeline');
-  tl.innerHTML = '';
-  [
-    { label: 'Recruit', months: recruitMonths, cls: 'recruit' },
-    { label: 'Onboard', months: onboardMonths, cls: 'onboard' },
-    { label: 'Credential', months: credentialMonths, cls: 'credential' },
-    { label: 'Payer', months: payerPanelMonths, cls: 'payer' },
-    { label: 'Panel', months: panelBuildMonths, cls: 'panel' }
-  ].forEach(s => {
-    if (s.months > 0) {
-      const div = document.createElement('div');
-      div.className = 'timeline-bar-segment ' + s.cls;
-      div.style.width = (s.months / totalForBar * 100) + '%';
-      div.textContent = s.label;
-      tl.appendChild(div);
-    }
-  });
-
-  // Proportional Legara bar (relative to internal timeline)
-  const legaraPct = totalRampMonths > 0 ? Math.round(LEGARA_RAMP_MONTHS / totalRampMonths * 100) : 50;
-  document.getElementById('legaraTimeline').style.width = legaraPct + '%';
-
-  // 5. Waterfall
-  const waterfallData = [
-    { label: 'Base salary', value: salary },
-    { label: 'Benefits & taxes', value: benefitsCost },
-    { label: 'Support staff', value: supportCost },
-    { label: 'Recruiter fee', value: recruiterFee },
-    { label: 'Lost encounter revenue', value: lostPPSRevenue }
-  ];
-  const maxWaterfall = Math.max(...waterfallData.map(d => d.value));
-  const wf = document.getElementById('waterfallBars');
-  wf.innerHTML = '';
-  waterfallData.forEach(d => {
-    const pct = maxWaterfall > 0 ? (d.value / maxWaterfall * 100) : 0;
-    wf.innerHTML += `
-      <div class="waterfall-item">
-        <div class="waterfall-item-label">${d.label}</div>
-        <div class="waterfall-item-bar">
-          <div class="waterfall-item-fill" style="width: ${Math.max(pct, 1)}%;${d.label === 'Lost encounter revenue' ? ' background: var(--red);' : ''}"></div>
-        </div>
-        <div class="waterfall-item-value">${fmtShort(d.value)}</div>
-      </div>`;
-  });
-
-  // 6. 3-Year Savings
-  document.getElementById('savingsTotal3Yr').textContent = fmtSigned(total3Yr);
-  document.getElementById('savingsYear1').textContent = fmtSigned(year1Savings);
-  document.getElementById('savingsYear2Plus').textContent = fmtSigned(year2Savings);
-
-  // 7. CPE Comparison
-  document.getElementById('cpeInternalY1').textContent = fmt(internalCPE1);
-  document.getElementById('cpeInternalSteady').textContent = fmt(internalCPESteady);
-  document.getElementById('cpeLegaraRate').textContent = fmt(legaraRate);
-  document.getElementById('cpeSavingsPerEnc').textContent = fmtSigned(internalCPESteady - legaraRate);
-
-  // Notes
-  document.getElementById('encRateNote').textContent = DEFAULTS[currentType].encNote;
-  document.getElementById('ppsNote').textContent = ppsRate;
-  document.getElementById('legaraRateNote').textContent = legaraRate;
-
-  // Track engagement (fire on 3rd+ calculation to avoid noise from initial load)
-  calcCount++;
-  if (calcCount === 3) {
-    trackEvent('calculator_engaged', 'ROI Calculator', currentType, Math.round(internalCPE1));
-  }
-}
-
-// ─── INLINE FORM FUNCTIONS ───
 function toggleInlineForm() {
   var form = document.getElementById('inlineLeadForm');
   var successMsg = document.getElementById('formSuccessMessage');
@@ -1800,10 +532,8 @@ function submitInlineForm(e) {
   var phone = (document.getElementById('inlinePhone').value || '').trim();
   var interest = (document.getElementById('inlineInterest').value || '').trim();
 
-  // Track form submission in GA
   trackEvent('inline_lead_form_submit', 'ROI Calculator', org, 1);
 
-  // Send to GA as a conversion event
   if (typeof gtag === 'function') {
     gtag('event', 'generate_lead', {
       event_category: 'ROI Calculator',
@@ -1817,7 +547,6 @@ function submitInlineForm(e) {
     });
   }
 
-  // Submit to HubSpot Forms API
   fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/23567105-e94f-457a-9b1f-f5990ee77821', {
     method: 'POST',
     mode: 'cors',
@@ -1850,15 +579,13 @@ function submitInlineForm(e) {
       }
     })
   }).then(function() {
-    // Show success message
     form.style.display = 'none';
     document.getElementById('formSuccessMessage').style.display = 'block';
   }).catch(function(err) { console.error('HubSpot submission error:', err); });
 }
-
-// Run on load
-calculate();
 </script>
+<script src="js/calculator.js"></script>
+<script>calculate();</script>
 
 </body>
 </html>
