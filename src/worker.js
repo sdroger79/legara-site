@@ -113,6 +113,21 @@ async function handleMeetingBooked(request, env) {
     // Extract organization
     const organization = payload.responses?.organization?.value || "";
 
+    // Run Brevo and HubSpot updates in parallel
+    await Promise.all([
+      updateBrevo(email, firstName, lastName, organization, env),
+      updateHubSpot(email, firstName, lastName, organization, payload, env),
+    ]);
+
+    return webhookJson({ ok: true }, 200);
+  } catch (err) {
+    console.error("meeting-booked error:", err);
+    return webhookJson({ error: err.message }, 500);
+  }
+}
+
+async function updateBrevo(email, firstName, lastName, organization, env) {
+  try {
     const brevoRes = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
@@ -132,14 +147,122 @@ async function handleMeetingBooked(request, env) {
         updateEnabled: true,
       }),
     });
-
     const body = await brevoRes.text();
     console.log("Brevo response:", brevoRes.status, body);
-
-    return webhookJson({ ok: true }, 200);
   } catch (err) {
-    console.error("meeting-booked error:", err);
-    return webhookJson({ error: err.message }, 500);
+    console.error("Brevo update failed:", err);
+  }
+}
+
+async function updateHubSpot(email, firstName, lastName, organization, payload, env) {
+  const HS_TOKEN = env.HUBSPOT_TOKEN;
+  const hsHeaders = {
+    Authorization: `Bearer ${HS_TOKEN}`,
+    "Content-Type": "application/json",
+  };
+
+  try {
+    // 1. Search for contact by email
+    const searchRes = await fetch(
+      "https://api.hubapi.com/crm/v3/objects/contacts/search",
+      {
+        method: "POST",
+        headers: hsHeaders,
+        body: JSON.stringify({
+          filterGroups: [
+            {
+              filters: [
+                { propertyName: "email", operator: "EQ", value: email },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+    const searchData = await searchRes.json();
+    console.log("HubSpot search:", searchRes.status, JSON.stringify(searchData));
+
+    let contactId;
+
+    if (searchData.total > 0) {
+      contactId = searchData.results[0].id;
+    } else {
+      // 4. Contact not found — create it
+      const createRes = await fetch(
+        "https://api.hubapi.com/crm/v3/objects/contacts",
+        {
+          method: "POST",
+          headers: hsHeaders,
+          body: JSON.stringify({
+            properties: {
+              email,
+              firstname: firstName,
+              lastname: lastName,
+              company: organization,
+            },
+          }),
+        }
+      );
+      const createData = await createRes.json();
+      console.log("HubSpot create contact:", createRes.status, JSON.stringify(createData));
+      contactId = createData.id;
+    }
+
+    // 2. Update lifecycle stage and lead status
+    const updateRes = await fetch(
+      `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`,
+      {
+        method: "PATCH",
+        headers: hsHeaders,
+        body: JSON.stringify({
+          properties: {
+            lifecyclestage: "salesqualifiedlead",
+            hs_lead_status: "OPEN",
+          },
+        }),
+      }
+    );
+    console.log("HubSpot update contact:", updateRes.status);
+
+    // 3. Create a note with meeting details
+    const startTime = payload.startTime || new Date().toISOString();
+    const meetingDate = new Date(startTime).toLocaleString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+
+    const noteRes = await fetch(
+      "https://api.hubapi.com/crm/v3/objects/notes",
+      {
+        method: "POST",
+        headers: hsHeaders,
+        body: JSON.stringify({
+          properties: {
+            hs_timestamp: startTime,
+            hs_note_body: `Meeting booked: Legara ROI Review (30 min, Zoom) via Cal.com on ${meetingDate}. Contact booked through the automated marketing pipeline.`,
+          },
+          associations: [
+            {
+              to: { id: contactId },
+              types: [
+                {
+                  associationCategory: "HUBSPOT_DEFINED",
+                  associationTypeId: 202,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+    console.log("HubSpot create note:", noteRes.status);
+  } catch (err) {
+    console.error("HubSpot update failed:", err);
   }
 }
 
