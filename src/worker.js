@@ -50,7 +50,7 @@ export default {
 
 async function handleBrevoWebhook(request, env) {
   try {
-    const { email, firstName, lastName, organization, title } =
+    const { email, firstName, lastName, organization, title, utm_source, utm_medium, utm_campaign } =
       await request.json();
 
     if (!email) {
@@ -71,6 +71,9 @@ async function handleBrevoWebhook(request, env) {
           LASTNAME: lastName || "",
           COMPANY: organization || "",
           JOBTITLE: title || "",
+          UTM_SOURCE: utm_source || "",
+          UTM_MEDIUM: utm_medium || "",
+          UTM_CAMPAIGN: utm_campaign || "",
         },
         listIds: [5],
         updateEnabled: true,

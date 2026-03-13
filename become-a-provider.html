@@ -8,7 +8,40 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-GC0KH378ZK');
+  gtag('config', 'AW-1769529274'); // TODO: Replace AW-1769529274 with actual Google Ads account ID
 </script>
+<script src="js/utm.js"></script>
+<script>
+var utm = typeof getUtmParams === 'function' ? getUtmParams() : {};
+if (utm.utm_source) {
+  gtag('set', {
+    'campaign_source': utm.utm_source,
+    'campaign_medium': utm.utm_medium || '',
+    'campaign_name': utm.utm_campaign || '',
+    'campaign_content': utm.utm_content || '',
+    'campaign_term': utm.utm_term || ''
+  });
+}
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "520245111";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script>
+<script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.ltr-js/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=520245111&fmt=gif" />
+</noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Become a Provider | Legara Behavioral Health Platform</title>
@@ -62,7 +95,7 @@
     <li><a href="about.html">About</a></li>
     <li><a href="how-it-works.html">How It Works</a></li>
     <li><a href="for-health-centers.html">For Health Centers</a></li>
-    <li><a href="become-a-provider.html" class="active">Become a Provider</a></li>
+    <li><a href="roi-calculator.html">What's It Cost?</a></li>
     <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
   </ul>
 </nav>
@@ -355,6 +388,8 @@ function submitProviderForm(e) {
   if (languages) message += 'Languages: ' + languages + '\n';
   if (bio) message += '\n' + bio;
 
+  var utm = typeof getUtmParams === 'function' ? getUtmParams() : {};
+
   // GA tracking
   if (typeof gtag === 'function') {
     gtag('event', 'provider_form_submit', {
@@ -379,7 +414,12 @@ function submitProviderForm(e) {
         { objectTypeId: '0-1', name: 'lastname', value: lastName },
         { objectTypeId: '0-1', name: 'email', value: email },
         { objectTypeId: '0-1', name: 'phone', value: phone },
-        { objectTypeId: '0-1', name: 'message', value: message }
+        { objectTypeId: '0-1', name: 'message', value: message },
+        { objectTypeId: '0-1', name: 'hs_analytics_source', value: utm.utm_source || '' },
+        { objectTypeId: '0-1', name: 'utm_campaign', value: utm.utm_campaign || '' },
+        { objectTypeId: '0-1', name: 'utm_medium', value: utm.utm_medium || '' },
+        { objectTypeId: '0-1', name: 'utm_content', value: utm.utm_content || '' },
+        { objectTypeId: '0-1', name: 'utm_term', value: utm.utm_term || '' }
       ],
       context: {
         hutk: getHubspotCookie(),
