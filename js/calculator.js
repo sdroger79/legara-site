@@ -226,15 +226,48 @@ function calculate() {
   const missionAdvY1 = (legaraCashYear1 - internalCashYear1) * count;
   const missionAdvSteady = (legaraCashSteady - internalCashSteady) * count;
 
-  // ─── PUBLIC: store lastCalc for HubSpot ───
+  // ─── PUBLIC: store lastCalc for HubSpot + PDF report ───
   if (CALC_MODE === 'public') {
     lastCalc = {
       year1Savings: Math.round(year1Savings),
+      year2Savings: Math.round(year2Savings),
+      year3Savings: Math.round(year3Savings),
       total3Yr: Math.round(total3Yr),
       legaraCashYear1: Math.round(legaraCashYear1 * count),
       missionAdvantage: Math.round(missionAdvantage3Yr),
       internalCPE1: internalCPE1,
-      legaraRate: legaraRate
+      legaraRate: legaraRate,
+      // Detailed costs
+      internalCostYear1: Math.round(internalCostYear1),
+      internalCostSteady: Math.round(internalCostSteady),
+      legaraCostYear1: Math.round(legaraCostYear1),
+      legaraCostSteady: Math.round(legaraCostSteady),
+      // Encounters
+      legaraEnc1: Math.round(legaraEnc1),
+      legaraEncSteady: Math.round(fullYearEncounters),
+      internalEnc1: Math.round(internalEnc1),
+      fullYearEncounters: Math.round(fullYearEncounters),
+      // Mission cash
+      legaraCashSteady: Math.round(legaraCashSteady * count),
+      internalCashYear1: Math.round(internalCashYear1 * count),
+      internalCashSteady: Math.round(internalCashSteady * count),
+      missionAdvY1: Math.round(missionAdvY1),
+      missionAdvSteady: Math.round(missionAdvSteady),
+      missionAdvantage3Yr: Math.round(missionAdvantage3Yr),
+      legaraCash3Yr: Math.round(legaraCash3Yr),
+      internalCash3Yr: Math.round(internalCash3Yr),
+      // Cost components
+      salary: salary,
+      fullyLoaded: Math.round(fullyLoaded),
+      benefitsCost: Math.round(benefitsCost),
+      supportCost: supportCost,
+      recruiterFee: recruiterFee,
+      // Timeline
+      totalRampMonths: Math.round(totalRampMonths),
+      monthsOnPayroll: Math.round(monthsOnPayroll),
+      encounterGapYear1: Math.round(encounterGapYear1),
+      // Provider info
+      providerLabel: DEFAULTS[currentType].label
     };
   }
 
