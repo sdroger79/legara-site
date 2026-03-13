@@ -117,9 +117,30 @@ async function handleMeetingBooked(request, env) {
     // Extract organization
     const organization = booking.responses?.organization?.value || "";
 
+    // Format meeting date/time for Brevo template variables
+    const startTime = booking.startTime || "";
+    let meetingDate = "";
+    let meetingTime = "";
+    if (startTime) {
+      const dt = new Date(startTime);
+      meetingDate = dt.toLocaleString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/Los_Angeles",
+      }) + " PT";
+      meetingTime = dt.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/Los_Angeles",
+      }) + " PT";
+    }
+
     // Run Brevo and HubSpot updates in parallel
     await Promise.all([
-      updateBrevo(email, firstName, lastName, organization, env),
+      updateBrevo(email, firstName, lastName, organization, meetingDate, meetingTime, env),
       updateHubSpot(email, firstName, lastName, organization, booking, env),
     ]);
 
@@ -130,8 +151,18 @@ async function handleMeetingBooked(request, env) {
   }
 }
 
-async function updateBrevo(email, firstName, lastName, organization, env) {
+async function updateBrevo(email, firstName, lastName, organization, meetingDate, meetingTime, env) {
   try {
+    // Only set name/org attributes if we have values — avoid overwriting
+    // existing data from the calculator form with empty strings
+    const attributes = {
+      MEETING_DATE: meetingDate,
+      MEETING_TIME: meetingTime,
+    };
+    if (firstName) attributes.FIRSTNAME = firstName;
+    if (lastName) attributes.LASTNAME = lastName;
+    if (organization) attributes.COMPANY = organization;
+
     const brevoRes = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
@@ -141,11 +172,7 @@ async function updateBrevo(email, firstName, lastName, organization, env) {
       },
       body: JSON.stringify({
         email,
-        attributes: {
-          FIRSTNAME: firstName,
-          LASTNAME: lastName,
-          COMPANY: organization,
-        },
+        attributes,
         listIds: [6],
         unlinkListIds: [5, 7],
         updateEnabled: true,
