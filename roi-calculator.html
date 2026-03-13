@@ -564,6 +564,19 @@ function submitInlineForm(e) {
     form.style.display = 'none';
     document.getElementById('formSuccessMessage').style.display = 'block';
   }).catch(function(err) { console.error('HubSpot submission error:', err); });
+
+  // Fire-and-forget: add contact to Brevo list for Sequence A nurture
+  fetch('/api/brevo-webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      organization: org,
+      title: title
+    })
+  }).catch(function(err) { console.error('Brevo webhook error:', err); });
 }
 </script>
 <script src="js/calculator.js"></script>
