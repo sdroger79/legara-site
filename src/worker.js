@@ -92,31 +92,35 @@ async function handleMeetingBooked(request, env) {
     const payload = await request.json();
     console.log("Cal.com meeting-booked payload:", JSON.stringify(payload));
 
-    // Extract email: payload.email or payload.responses.email.value
+    // Cal.com wraps booking data inside a "payload" property
+    const booking = payload.payload || payload;
+
+    // Extract email
     const email =
-      payload.email ||
-      payload.responses?.email?.value;
+      booking.email ||
+      booking.responses?.email?.value ||
+      booking.attendees?.[0]?.email;
 
     if (!email) {
       return webhookJson({ error: "could not extract email from payload" }, 400);
     }
 
-    // Extract name: payload.responses.name.value or payload.attendees[0].name
+    // Extract name
     const fullName =
-      payload.responses?.name?.value ||
-      payload.attendees?.[0]?.name ||
+      booking.responses?.name?.value ||
+      booking.attendees?.[0]?.name ||
       "";
     const nameParts = fullName.trim().split(/\s+/);
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
     // Extract organization
-    const organization = payload.responses?.organization?.value || "";
+    const organization = booking.responses?.organization?.value || "";
 
     // Run Brevo and HubSpot updates in parallel
     await Promise.all([
       updateBrevo(email, firstName, lastName, organization, env),
-      updateHubSpot(email, firstName, lastName, organization, payload, env),
+      updateHubSpot(email, firstName, lastName, organization, booking, env),
     ]);
 
     return webhookJson({ ok: true }, 200);
