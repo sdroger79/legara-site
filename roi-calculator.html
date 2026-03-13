@@ -131,24 +131,6 @@
         </div>
       </div>
 
-      <div class="calc-section-title">Utilization</div>
-      <div class="calc-row">
-        <div class="calc-field">
-          <label>Open/unfilled slot rate</label>
-          <div class="input-group">
-            <input type="number" id="openSlotRate" class="has-suffix" value="15" step="1" onchange="calculate()" oninput="calculate()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-        <div class="calc-field">
-          <label>No-show / late-cancel rate</label>
-          <div class="input-group">
-            <input type="number" id="noShowRate" class="has-suffix" value="18" step="1" onchange="calculate()" oninput="calculate()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-      </div>
-
       <div class="calc-section-title">Revenue</div>
       <div class="calc-field">
         <label>Avg. encounter revenue <span class="field-hint">PPS + copays + secondaries, given payer mix</span></label>
@@ -159,7 +141,7 @@
       </div>
 
       <div style="margin-top: 24px; padding: 16px; background: var(--off-white); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">
-        <strong style="color: var(--slate);">Built-in assumptions:</strong> 3-month recruitment, 3-week onboarding, 3-month credentialing (post-hire), 3-month payer enrollment (overlapping), 3-month caseload build, 32 clinical hrs/wk, 30 days PTO/sick/CME. Credentialing often begins during recruiting; this model assumes the bulk occurs post-hire.
+        <strong style="color: var(--slate);">Built-in assumptions:</strong> 3-month recruitment, 3-week onboarding, 3-month credentialing (post-hire), 3-month payer enrollment (overlapping), 3-month caseload build, 32 clinical hrs/wk, 30 days PTO/sick/CME, 18% no-show/late-cancel rate, 4% open/unfilled slot rate. Credentialing often begins during recruiting; this model assumes the bulk occurs post-hire.
       </div>
 
       <div style="margin-top: 16px; padding: 16px; background: rgba(26,107,74,0.04); border-radius: 8px; font-size: 12px; color: var(--mist); line-height: 1.6;">

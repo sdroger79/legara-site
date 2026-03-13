@@ -107,8 +107,14 @@ function calculate() {
   const count = parseInt(document.getElementById('providerCount').value) || 1;
   const recruiterFee = parseFloat(document.getElementById('recruiterFee').value) || 0;
   const turnover = (parseFloat(document.getElementById('turnoverRate').value) || 0) / 100;
-  const openSlotRate = (parseFloat(document.getElementById('openSlotRate').value) || 0) / 100;
-  const noShowRate = (parseFloat(document.getElementById('noShowRate').value) || 0) / 100;
+  let openSlotRate, noShowRate;
+  if (CALC_MODE === 'internal') {
+    openSlotRate = (parseFloat(document.getElementById('openSlotRate').value) || 0) / 100;
+    noShowRate = (parseFloat(document.getElementById('noShowRate').value) || 0) / 100;
+  } else {
+    openSlotRate = 0.04;
+    noShowRate = 0.18;
+  }
   const ppsRate = parseFloat(document.getElementById('ppsRate').value) || 230;
 
   // CALC_MODE branching: internal reads from inputs, public from BAKED
