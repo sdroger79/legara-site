@@ -75,7 +75,7 @@ function switchMissionYear(year) {
 }
 
 // ─── PROVIDER TYPE SWITCH ───
-function setProviderType(type) {
+function setProviderType(type, e) {
   currentType = type;
   const d = DEFAULTS[type];
   document.getElementById('salary').value = d.salary;
@@ -84,7 +84,7 @@ function setProviderType(type) {
     document.getElementById('staffEncPerHour').value = d.encPerHour;
   }
   document.querySelectorAll('.provider-toggle button').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  e.target.classList.add('active');
   trackEvent('provider_type_change', CALC_MODE === 'internal' ? 'ROI Calculator Internal' : 'ROI Calculator', type);
   calculate();
 }

@@ -70,7 +70,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
   <div class="section-label">For Clinicians</div>
-  <div class="section-headline">Practice independently. Make a difference in the communities that need it most.</div>
+  <h1 class="section-headline">Practice independently. Make a difference in the communities that need it most.</h1>
   <p class="section-body">Legara connects independent behavioral health clinicians with FQHCs and safety-net healthcare organizations — with the operational support to let you focus on patients, not paperwork.</p>
 </div>
 
@@ -213,69 +213,76 @@
     <div class="section-headline" style="font-size: clamp(28px, 3vw, 40px); text-align: center; max-width: 100%;">Interested in joining the Legara network?</div>
     <p class="section-body" style="text-align: center; max-width: 100%; margin: 0 auto 40px;">Tell us about yourself and we'll reach out to discuss current opportunities. No commitment — just a conversation.</p>
 
-    <div class="contact-form" style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 40px;">
-      <div class="form-row">
-        <div class="form-field">
-          <label>First Name</label>
-          <input type="text" placeholder="First name">
+    <!-- TODO: replace PROVIDER_FORM_ID_HERE with actual HubSpot form ID -->
+    <div id="providerFormContainer" class="contact-form" style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 40px;">
+      <form onsubmit="submitProviderForm(event)">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="providerFirstName">First Name</label>
+            <input type="text" id="providerFirstName" name="firstname" placeholder="First name" required>
+          </div>
+          <div class="form-field">
+            <label for="providerLastName">Last Name</label>
+            <input type="text" id="providerLastName" name="lastname" placeholder="Last name" required>
+          </div>
         </div>
         <div class="form-field">
-          <label>Last Name</label>
-          <input type="text" placeholder="Last name">
-        </div>
-      </div>
-      <div class="form-field">
-        <label>Email</label>
-        <input type="email" placeholder="your@email.com">
-      </div>
-      <div class="form-field">
-        <label>Phone</label>
-        <input type="tel" placeholder="(555) 555-5555">
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>License Type</label>
-          <select>
-            <option value="" disabled selected>Select your license</option>
-            <option>LCSW</option>
-            <option>LMFT</option>
-            <option>Psychologist (PhD/PsyD)</option>
-            <option>PMHNP</option>
-            <option>Psychiatrist (MD/DO)</option>
-            <option>Other</option>
-          </select>
+          <label for="providerEmail">Email</label>
+          <input type="email" id="providerEmail" name="email" placeholder="your@email.com" required>
         </div>
         <div class="form-field">
-          <label>State Licensed In</label>
-          <select>
-            <option value="" disabled selected>Select state</option>
-            <option>California</option>
-            <option>Other (specify in notes)</option>
-          </select>
+          <label for="providerPhone">Phone</label>
+          <input type="tel" id="providerPhone" name="phone" placeholder="(555) 555-5555">
         </div>
-      </div>
-      <div class="form-row">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="providerLicense">License Type</label>
+            <select id="providerLicense" name="license" required>
+              <option value="" disabled selected>Select your license</option>
+              <option value="LCSW">LCSW</option>
+              <option value="LMFT">LMFT</option>
+              <option value="Psychologist (PhD/PsyD)">Psychologist (PhD/PsyD)</option>
+              <option value="PMHNP">PMHNP</option>
+              <option value="Psychiatrist (MD/DO)">Psychiatrist (MD/DO)</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="providerState">State Licensed In</label>
+            <select id="providerState" name="state" required>
+              <option value="" disabled selected>Select state</option>
+              <option value="California">California</option>
+              <option value="Other">Other (specify in notes)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="providerAvailability">Availability</label>
+            <select id="providerAvailability" name="availability">
+              <option value="" disabled selected>Select availability</option>
+              <option value="Full-time (30+ hrs/week)">Full-time (30+ hrs/week)</option>
+              <option value="Part-time (15-30 hrs/week)">Part-time (15-30 hrs/week)</option>
+              <option value="Limited (under 15 hrs/week)">Limited (under 15 hrs/week)</option>
+              <option value="Flexible / open to discuss">Flexible / open to discuss</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="providerLanguages">Languages Spoken</label>
+            <input type="text" id="providerLanguages" name="languages" placeholder="e.g., English, Spanish">
+          </div>
+        </div>
         <div class="form-field">
-          <label>Availability</label>
-          <select>
-            <option value="" disabled selected>Select availability</option>
-            <option>Full-time (30+ hrs/week)</option>
-            <option>Part-time (15-30 hrs/week)</option>
-            <option>Limited (under 15 hrs/week)</option>
-            <option>Flexible / open to discuss</option>
-          </select>
+          <label for="providerBio">Tell us about yourself</label>
+          <textarea id="providerBio" name="bio" placeholder="Brief background: your experience, areas of focus, interest in FQHC work, or anything else you'd like us to know."></textarea>
         </div>
-        <div class="form-field">
-          <label>Languages Spoken</label>
-          <input type="text" placeholder="e.g., English, Spanish">
-        </div>
-      </div>
-      <div class="form-field">
-        <label>Tell us about yourself</label>
-        <textarea placeholder="Brief background: your experience, areas of focus, interest in FQHC work, or anything else you'd like us to know."></textarea>
-      </div>
-      <button class="btn-primary" style="text-align: center; width: 100%;">Submit Interest</button>
-      <p style="font-size: 12px; color: var(--mist); text-align: center; margin-top: 8px;">Submitting this form is not a commitment. We'll reach out to discuss opportunities that match your profile.</p>
+        <button type="submit" class="btn-primary" style="text-align: center; width: 100%;">Submit Interest</button>
+        <p style="font-size: 12px; color: var(--mist); text-align: center; margin-top: 8px;">Submitting this form is not a commitment. We'll reach out to discuss opportunities that match your profile.</p>
+      </form>
+    </div>
+    <div id="providerFormSuccess" style="display: none; background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 40px; text-align: center;">
+      <div style="font-size: 20px; font-weight: 600; color: var(--slate); margin-bottom: 12px;">Thanks for your interest!</div>
+      <p style="font-size: 14px; color: var(--mist); line-height: 1.6;">We've received your information and will be in touch soon to discuss opportunities that match your profile.</p>
     </div>
   </div>
 </section>
@@ -321,6 +328,68 @@
   </div>
 </footer>
 
+<!-- TODO: replace PROVIDER_FORM_ID_HERE with actual HubSpot form ID -->
+<script>
+function getHubspotCookie() {
+  var match = document.cookie.match(/hubspotutk=([^;]+)/);
+  return match ? match[1] : '';
+}
+
+function submitProviderForm(e) {
+  e.preventDefault();
+  var firstName = document.getElementById('providerFirstName').value || '';
+  var lastName = document.getElementById('providerLastName').value || '';
+  var email = document.getElementById('providerEmail').value || '';
+  var phone = document.getElementById('providerPhone').value || '';
+  var license = document.getElementById('providerLicense').value || '';
+  var state = document.getElementById('providerState').value || '';
+  var availability = document.getElementById('providerAvailability').value || '';
+  var languages = document.getElementById('providerLanguages').value || '';
+  var bio = document.getElementById('providerBio').value || '';
+
+  // Build message from provider-specific fields
+  var message = '';
+  if (license) message += 'License: ' + license + '\n';
+  if (state) message += 'State: ' + state + '\n';
+  if (availability) message += 'Availability: ' + availability + '\n';
+  if (languages) message += 'Languages: ' + languages + '\n';
+  if (bio) message += '\n' + bio;
+
+  // GA tracking
+  if (typeof gtag === 'function') {
+    gtag('event', 'provider_form_submit', {
+      event_category: 'Provider',
+      event_label: license,
+      form_name: 'become_a_provider'
+    });
+  }
+
+  // Show success state
+  document.getElementById('providerFormContainer').style.display = 'none';
+  document.getElementById('providerFormSuccess').style.display = 'block';
+
+  // Submit to HubSpot Forms API
+  fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/PROVIDER_FORM_ID_HERE', {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fields: [
+        { objectTypeId: '0-1', name: 'firstname', value: firstName },
+        { objectTypeId: '0-1', name: 'lastname', value: lastName },
+        { objectTypeId: '0-1', name: 'email', value: email },
+        { objectTypeId: '0-1', name: 'phone', value: phone },
+        { objectTypeId: '0-1', name: 'message', value: message }
+      ],
+      context: {
+        hutk: getHubspotCookie(),
+        pageUri: window.location.href,
+        pageName: 'Become a Provider'
+      }
+    })
+  }).catch(function(err) { console.error('HubSpot submission error:', err); });
+}
+</script>
 <script src="js/tracking.js"></script>
 </body>
 </html>
