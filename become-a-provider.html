@@ -213,7 +213,7 @@
     <div class="section-headline" style="font-size: clamp(28px, 3vw, 40px); text-align: center; max-width: 100%;">Interested in joining the Legara network?</div>
     <p class="section-body" style="text-align: center; max-width: 100%; margin: 0 auto 40px;">Tell us about yourself and we'll reach out to discuss current opportunities. No commitment — just a conversation.</p>
 
-    <!-- TODO: replace PROVIDER_FORM_ID_HERE with actual HubSpot form ID -->
+    <!-- TODO: replace 4f1b50a8-9687-4328-ae58-975666e431f1 with actual HubSpot form ID -->
     <div id="providerFormContainer" class="contact-form" style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 40px;">
       <form onsubmit="submitProviderForm(event)">
         <div class="form-row">
@@ -328,7 +328,7 @@
   </div>
 </footer>
 
-<!-- TODO: replace PROVIDER_FORM_ID_HERE with actual HubSpot form ID -->
+<!-- TODO: replace 4f1b50a8-9687-4328-ae58-975666e431f1 with actual HubSpot form ID -->
 <script>
 function getHubspotCookie() {
   var match = document.cookie.match(/hubspotutk=([^;]+)/);
@@ -369,7 +369,7 @@ function submitProviderForm(e) {
   document.getElementById('providerFormSuccess').style.display = 'block';
 
   // Submit to HubSpot Forms API
-  fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/PROVIDER_FORM_ID_HERE', {
+  fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/4f1b50a8-9687-4328-ae58-975666e431f1', {
     method: 'POST',
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
