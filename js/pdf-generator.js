@@ -520,9 +520,11 @@ function generateReport(orgName) {
   addFooter(6);
 
   // ─── RETURN BLOB URL ───
-  console.log('[PDF] Generating blob URL');
+  var filename = 'Legara ROI Analysis - ' + orgName.replace(/[^a-zA-Z0-9 ]/g, '') + '.pdf';
   var blob = doc.output('blob');
   var blobUrl = URL.createObjectURL(blob);
-  console.log('[PDF] Report ready:', blobUrl);
+  // Store filename for the download link
+  window._legaraPdfFilename = filename;
+  console.log('[PDF] Report ready:', filename);
   return blobUrl;
 }

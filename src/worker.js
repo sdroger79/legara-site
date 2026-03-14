@@ -65,6 +65,16 @@ export default {
       });
     }
 
+    if (url.pathname === "/api/brevo-events") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: WEBHOOK_CORS_HEADERS });
+      }
+      if (request.method === "POST") {
+        return handleBrevoEvents(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: WEBHOOK_CORS_HEADERS });
+    }
+
     return env.ASSETS.fetch(request);
   },
 
@@ -523,6 +533,99 @@ async function processScheduledEmails(env) {
   }
 
   console.log("Cron: scheduled email processing complete");
+}
+
+// --- Brevo event webhook → HubSpot notes ---
+
+async function handleBrevoEvents(request, env) {
+  try {
+    const events = await request.json();
+    // Brevo sends an array of events or a single event
+    const eventList = Array.isArray(events) ? events : [events];
+
+    for (const event of eventList) {
+      const email = event.email;
+      const eventType = event.event; // "opened", "click", "hard_bounce", "spam", "delivered"
+      const subject = event.subject || "";
+      const date = event.date || new Date().toISOString();
+      const link = event.link || ""; // for click events
+
+      if (!email || !eventType) continue;
+
+      // Only log meaningful events to HubSpot
+      if (!["opened", "click", "hard_bounce", "spam"].includes(eventType)) continue;
+
+      console.log(`Brevo event: ${eventType} from ${email} — "${subject}"`);
+
+      // Look up contact in HubSpot and add a note
+      try {
+        const HS_TOKEN = env.HUBSPOT_TOKEN;
+        const hsHeaders = {
+          Authorization: `Bearer ${HS_TOKEN}`,
+          "Content-Type": "application/json",
+        };
+
+        const searchRes = await fetch(
+          "https://api.hubapi.com/crm/v3/objects/contacts/search",
+          {
+            method: "POST",
+            headers: hsHeaders,
+            body: JSON.stringify({
+              filterGroups: [{
+                filters: [{ propertyName: "email", operator: "EQ", value: email }],
+              }],
+            }),
+          }
+        );
+        const searchData = await searchRes.json();
+
+        if (searchData.total > 0) {
+          const contactId = searchData.results[0].id;
+
+          // Build note body based on event type
+          let noteBody = "";
+          if (eventType === "opened") {
+            noteBody = `Email opened: "${subject}" (${new Date(date).toLocaleString("en-US")})`;
+          } else if (eventType === "click") {
+            noteBody = `Email link clicked: "${subject}" — ${link} (${new Date(date).toLocaleString("en-US")})`;
+          } else if (eventType === "hard_bounce") {
+            noteBody = `Email hard bounced: "${subject}" (${new Date(date).toLocaleString("en-US")})`;
+          } else if (eventType === "spam") {
+            noteBody = `Email marked as spam: "${subject}" (${new Date(date).toLocaleString("en-US")})`;
+          }
+
+          await fetch("https://api.hubapi.com/crm/v3/objects/notes", {
+            method: "POST",
+            headers: hsHeaders,
+            body: JSON.stringify({
+              properties: {
+                hs_timestamp: date,
+                hs_note_body: noteBody,
+              },
+              associations: [{
+                to: { id: contactId },
+                types: [{
+                  associationCategory: "HUBSPOT_DEFINED",
+                  associationTypeId: 202,
+                }],
+              }],
+            }),
+          });
+
+          console.log(`HubSpot note created for ${email}: ${eventType}`);
+        } else {
+          console.log(`No HubSpot contact found for ${email}, skipping`);
+        }
+      } catch (hsErr) {
+        console.error(`HubSpot update failed for ${email}:`, hsErr);
+      }
+    }
+
+    return webhookJson({ ok: true }, 200);
+  } catch (err) {
+    console.error("brevo-events error:", err);
+    return webhookJson({ error: err.message }, 500);
+  }
 }
 
 // --- Response helpers ---

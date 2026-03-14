@@ -635,6 +635,10 @@ function submitDownloadForm(e) {
     })
   }).catch(function(err) { console.error('Brevo webhook error:', err); });
 
+  // Lock the CTA box height so it doesn't shrink during state transitions
+  var ctaBox = document.getElementById('downloadFormSection').parentElement;
+  ctaBox.style.minHeight = ctaBox.offsetHeight + 'px';
+
   // Step 1: Show processing animation
   document.getElementById('dlOrgProcessing').textContent = org;
   document.getElementById('dlOrgConfirm').textContent = org;
@@ -657,7 +661,16 @@ function submitDownloadForm(e) {
 
     if (pdfUrl) {
       document.getElementById('pdfViewLink').href = pdfUrl;
-      // Don't auto-open popup — let the user click "View Your Report"
+      document.getElementById('pdfViewLink').setAttribute('download', window._legaraPdfFilename || 'Legara ROI Analysis.pdf');
+      document.getElementById('pdfViewLink').onclick = function() {
+        if (typeof gtag === 'function') {
+          gtag('event', 'roi_report_view', {
+            event_category: 'ROI Calculator',
+            event_label: org,
+            provider_type: currentType
+          });
+        }
+      };
     } else {
       document.getElementById('pdfActionArea').style.display = 'none';
       document.getElementById('pdfFallback').style.display = 'block';
