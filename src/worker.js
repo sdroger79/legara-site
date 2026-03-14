@@ -10,6 +10,27 @@ const WEBHOOK_CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+const SEQUENCES = {
+  A: {
+    name: "Post-Calculator Nurture",
+    templateIds: [1, 2, 3, 4],
+    delays: [0, 3, 4, 3], // days after previous email: day 0, 3, 7, 10
+    nextSequence: "C",
+  },
+  B: {
+    name: "Meeting Confirmation",
+    templateIds: [5, 6],
+    delays: [0, null], // B1 immediate, B2 is 1 day before meeting (special)
+    nextSequence: "DONE",
+  },
+  C: {
+    name: "Long-Term Nurture",
+    templateIds: [7, 8, 9, 10, 11, 12, 13, 14],
+    delays: [0, 14, 14, 14, 14, 14, 14, 14],
+    nextSequence: "DONE",
+  },
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -46,7 +67,55 @@ export default {
 
     return env.ASSETS.fetch(request);
   },
+
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(processScheduledEmails(env));
+  },
 };
+
+// --- Transactional email helpers ---
+
+async function sendTransactionalEmail(templateId, to, params, env) {
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": env.BREVO_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      to: [to],
+      templateId,
+      params,
+    }),
+  });
+  const body = await res.text();
+  console.log(`Transactional send template ${templateId} to ${to.email}: ${res.status} ${body}`);
+  return res;
+}
+
+async function updateContactSequence(email, seq, step, nextSendDate, env) {
+  return fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+    method: "PUT",
+    headers: {
+      "api-key": env.BREVO_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      attributes: {
+        SEQ: seq,
+        SEQ_STEP: step,
+        NEXT_SEND: nextSendDate || "",
+      },
+    }),
+  });
+}
+
+function calculateNextSend(delayDays) {
+  if (!delayDays) return "";
+  return new Date(Date.now() + delayDays * 86400000).toISOString();
+}
+
+// --- Webhook handlers ---
 
 async function handleBrevoWebhook(request, env) {
   try {
@@ -57,6 +126,7 @@ async function handleBrevoWebhook(request, env) {
       return json({ error: "email is required" }, 400);
     }
 
+    // Create/update contact in Brevo on List 5
     const brevoRes = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
@@ -81,6 +151,29 @@ async function handleBrevoWebhook(request, env) {
     });
 
     const body = await brevoRes.text();
+
+    // Send Seq-A1 immediately via transactional API
+    const sendParams = {
+      FIRSTNAME: firstName || "",
+      LASTNAME: lastName || "",
+      COMPANY: organization || "",
+    };
+    await sendTransactionalEmail(
+      SEQUENCES.A.templateIds[0],
+      { email, name: ((firstName || "") + " " + (lastName || "")).trim() },
+      sendParams,
+      env
+    );
+
+    // Set drip state: next email is A2 in 3 days
+    await updateContactSequence(
+      email,
+      "A",
+      1,
+      calculateNextSend(SEQUENCES.A.delays[1]),
+      env
+    );
+
     return new Response(body, {
       status: brevoRes.status,
       headers: { "Content-Type": "application/json", ...CORS_HEADERS },
@@ -146,6 +239,28 @@ async function handleMeetingBooked(request, env) {
       updateBrevo(email, firstName, lastName, organization, meetingDate, meetingTime, env),
       updateHubSpot(email, firstName, lastName, organization, booking, env),
     ]);
+
+    // Send Seq-B1 immediately via transactional API
+    const sendParams = {
+      FIRSTNAME: firstName || "",
+      LASTNAME: lastName || "",
+      COMPANY: organization || "",
+      MEETING_DATE: meetingDate || "",
+      MEETING_TIME: meetingTime || "",
+    };
+    await sendTransactionalEmail(
+      SEQUENCES.B.templateIds[0],
+      { email, name: ((firstName || "") + " " + (lastName || "")).trim() },
+      sendParams,
+      env
+    );
+
+    // Set drip state: B2 reminder 1 day before meeting, or +1 day if no date
+    let nextSend = calculateNextSend(1);
+    if (startTime) {
+      nextSend = new Date(new Date(startTime).getTime() - 86400000).toISOString();
+    }
+    await updateContactSequence(email, "B", 1, nextSend, env);
 
     return webhookJson({ ok: true }, 200);
   } catch (err) {
@@ -221,7 +336,7 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
     if (searchData.total > 0) {
       contactId = searchData.results[0].id;
     } else {
-      // 4. Contact not found — create it
+      // Contact not found — create it
       const createRes = await fetch(
         "https://api.hubapi.com/crm/v3/objects/contacts",
         {
@@ -299,6 +414,118 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
     console.error("HubSpot update failed:", err);
   }
 }
+
+// --- Cron: process scheduled emails ---
+
+async function processScheduledEmails(env) {
+  console.log("Cron: checking for scheduled emails...");
+  const now = new Date().toISOString();
+
+  // Get contacts from all three lists (5, 6, 7)
+  for (const listId of [5, 6, 7]) {
+    let offset = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const res = await fetch(
+        `https://api.brevo.com/v3/contacts/lists/${listId}/contacts?limit=50&offset=${offset}`,
+        {
+          headers: {
+            "api-key": env.BREVO_API_KEY,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      const contacts = data.contacts || [];
+
+      for (const contact of contacts) {
+        const attrs = contact.attributes || {};
+        const seq = attrs.SEQ;
+        const step = typeof attrs.SEQ_STEP === "number" ? attrs.SEQ_STEP : parseInt(attrs.SEQ_STEP);
+        const nextSend = attrs.NEXT_SEND;
+
+        // Skip if no sequence, done, or not due yet
+        if (!seq || seq === "DONE" || !nextSend) continue;
+        if (new Date(nextSend) > new Date(now)) continue;
+        if (!SEQUENCES[seq]) continue;
+
+        const seqConfig = SEQUENCES[seq];
+
+        // Skip if step is beyond the sequence length
+        if (step >= seqConfig.templateIds.length) {
+          // Transition to next sequence
+          if (seqConfig.nextSequence && seqConfig.nextSequence !== "DONE") {
+            const nextSeq = SEQUENCES[seqConfig.nextSequence];
+            const firstDelay = nextSeq.delays[0] || 0;
+            await updateContactSequence(
+              contact.email, seqConfig.nextSequence, 0,
+              firstDelay === 0 ? now : calculateNextSend(firstDelay), env
+            );
+            console.log(`Cron: transitioned ${contact.email} from Seq ${seq} to ${seqConfig.nextSequence}`);
+          } else {
+            await updateContactSequence(contact.email, "DONE", 0, "", env);
+            console.log(`Cron: completed ${contact.email} — marked DONE`);
+          }
+          continue;
+        }
+
+        const templateId = seqConfig.templateIds[step];
+        const params = {
+          FIRSTNAME: attrs.FIRSTNAME || "",
+          LASTNAME: attrs.LASTNAME || "",
+          COMPANY: attrs.COMPANY || "",
+          MEETING_DATE: attrs.MEETING_DATE || "",
+          MEETING_TIME: attrs.MEETING_TIME || "",
+        };
+
+        console.log(`Cron: sending template ${templateId} (Seq ${seq}, step ${step}) to ${contact.email}`);
+
+        try {
+          await sendTransactionalEmail(
+            templateId,
+            { email: contact.email, name: ((attrs.FIRSTNAME || "") + " " + (attrs.LASTNAME || "")).trim() },
+            params,
+            env
+          );
+
+          // Calculate next step
+          const nextStep = step + 1;
+          if (nextStep >= seqConfig.templateIds.length) {
+            // Sequence complete — transition
+            if (seqConfig.nextSequence && seqConfig.nextSequence !== "DONE") {
+              const nextSeqConfig = SEQUENCES[seqConfig.nextSequence];
+              const delay = nextSeqConfig.delays[0] || 14;
+              await updateContactSequence(
+                contact.email, seqConfig.nextSequence, 0,
+                calculateNextSend(delay), env
+              );
+              console.log(`Cron: ${contact.email} finished Seq ${seq}, transitioning to ${seqConfig.nextSequence}`);
+            } else {
+              await updateContactSequence(contact.email, "DONE", 0, "", env);
+              console.log(`Cron: ${contact.email} finished Seq ${seq}, marked DONE`);
+            }
+          } else {
+            const nextDelay = seqConfig.delays[nextStep];
+            await updateContactSequence(
+              contact.email, seq, nextStep,
+              calculateNextSend(nextDelay), env
+            );
+          }
+        } catch (err) {
+          console.error(`Cron: failed to send to ${contact.email}:`, err);
+        }
+      }
+
+      hasMore = contacts.length === 50;
+      offset += 50;
+    }
+  }
+
+  console.log("Cron: scheduled email processing complete");
+}
+
+// --- Response helpers ---
 
 function json(data, status) {
   return new Response(JSON.stringify(data), {
