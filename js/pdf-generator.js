@@ -555,6 +555,31 @@ function generateReport(orgName) {
   var blobUrl = URL.createObjectURL(blob);
   // Store filename for the download link
   window._legaraPdfFilename = filename;
+
+  // Fire-and-forget: email the PDF to the lead
+  try {
+    var pdfBase64 = doc.output('datauristring').split(',')[1];
+    var dlEmail = (document.getElementById('dlEmail') || {}).value || '';
+    var dlFirstName = (document.getElementById('dlFirstName') || {}).value || '';
+    var dlLastName = (document.getElementById('dlLastName') || {}).value || '';
+    if (dlEmail) {
+      fetch('/api/email-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: dlEmail,
+          firstName: dlFirstName,
+          lastName: dlLastName,
+          organization: orgName,
+          pdfBase64: pdfBase64,
+          filename: filename
+        })
+      }).catch(function(err) { console.error('[PDF] Email report send failed:', err); });
+    }
+  } catch (emailErr) {
+    console.error('[PDF] Email report error:', emailErr);
+  }
+
   console.log('[PDF] Report ready:', filename);
   return blobUrl;
 }

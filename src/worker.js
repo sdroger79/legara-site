@@ -75,6 +75,16 @@ export default {
       return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
     }
 
+    if (url.pathname === "/api/email-report") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      if (request.method === "POST") {
+        return handleEmailReport(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
+    }
+
     if (url.pathname === "/api/brevo-events") {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: WEBHOOK_CORS_HEADERS });
@@ -658,6 +668,42 @@ async function handleBrevoEvents(request, env) {
   } catch (err) {
     console.error("brevo-events error:", err);
     return webhookJson({ error: err.message }, 500);
+  }
+}
+
+// --- Email PDF report to lead ---
+
+async function handleEmailReport(request, env) {
+  try {
+    const { email, firstName, lastName, organization, pdfBase64, filename } = await request.json();
+
+    if (!email || !pdfBase64) {
+      return json({ error: "email and pdfBase64 are required" }, 400);
+    }
+
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: "Roger Stellers", email: "roger@golegara.com" },
+        to: [{ email, name: ((firstName || "") + " " + (lastName || "")).trim() }],
+        subject: "Your Legara ROI Analysis — " + (organization || "Your Health Center"),
+        htmlContent: "<html><body style='font-family: sans-serif; color: #1c2b24; max-width: 600px; margin: 0 auto;'><p style='margin-bottom: 16px;'>Hi " + (firstName || "there") + ",</p><p style='margin-bottom: 16px;'>Your personalized ROI analysis is attached. These results use industry benchmarks — your organization's real numbers tell a more specific story.</p><p style='margin-bottom: 16px;'>If you'd like to see what the analysis looks like with your actual data, I'd welcome a quick conversation.</p><p style='margin-bottom: 24px;'><a href='https://cal.com/roger-golegara.com/legara-roi-review' style='background: #1a6b4a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;'>Schedule a 30-Minute Conversation</a></p><p style='margin-bottom: 4px;'>Roger Stellers</p><p style='color: #4a5e54; font-size: 14px;'>CEO, Legara Inc.</p><p style='color: #8fa89e; font-size: 13px;'>roger@golegara.com | 760-479-7860</p></body></html>",
+        params: { FIRSTNAME: firstName || "", ORGNAME: organization || "" },
+        attachment: [{ content: pdfBase64, name: filename || "Legara ROI Analysis.pdf" }],
+      }),
+    });
+
+    const body = await res.text();
+    console.log(`Email report to ${email}: ${res.status} ${body}`);
+
+    return json({ ok: true }, 200);
+  } catch (err) {
+    console.error("email-report error:", err);
+    return json({ error: err.message }, 500);
   }
 }
 

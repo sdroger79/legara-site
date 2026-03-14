@@ -1467,6 +1467,7 @@ footer {
   .content-grid { grid-template-columns: 1fr; gap: 40px; }
   .content-grid-reverse { grid-template-columns: 1fr; direction: ltr; }
   .team-grid { grid-template-columns: 1fr; }
+  .team-photo { height: 240px; }
   .info-cards { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
   nav { padding: 0 24px; }
@@ -1507,6 +1508,12 @@ footer {
   .testimonial-card { padding: 24px; }
   .conference-logos { gap: 24px; }
   .conference-logo { font-size: 11px; padding: 12px 16px; }
+  .team-grid { gap: 24px; }
+  .team-photo { height: 180px; }
+  .team-photo-placeholder { width: 80px; height: 80px; }
+  .team-photo-placeholder svg { width: 40px; height: 40px; }
+  .team-info { padding: 24px; }
+  .team-name { font-size: 20px; }
 }
 
 /* ═══════════════════════════════════════════════════
