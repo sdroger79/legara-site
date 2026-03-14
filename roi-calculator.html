@@ -362,15 +362,26 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           </form>
         </div>
 
+        <!-- Processing animation (shown briefly while generating PDF) -->
+        <style>
+          @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+          @keyframes spin { to { transform: rotate(360deg); } }
+          @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        </style>
+        <div id="pdfProcessingState" style="display: none; text-align: center; padding: 48px 0;">
+          <div style="width: 56px; height: 56px; border: 4px solid var(--border); border-top-color: var(--green); border-radius: 50%; margin: 0 auto 24px; animation: spin 0.8s linear infinite;"></div>
+          <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--slate); margin-bottom: 8px;">Building Your Report</div>
+          <div id="processingOrgName" style="font-size: 14px; color: var(--mist);">Analyzing data for <strong id="dlOrgProcessing"></strong></div>
+        </div>
+
         <!-- Success message (hidden by default) -->
-        <style>@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }</style>
         <div id="downloadSuccessMessage" style="display: none; text-align: center; padding: 32px 0;">
           <!-- Animated checkmark -->
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--green); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.3s ease-out;">
+          <div id="successCheckmark" style="width: 64px; height: 64px; border-radius: 50%; background: var(--green); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.3s ease-out;">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
 
-          <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--slate); margin-bottom: 8px;">Your Personalized Report Is Ready</div>
+          <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--slate); margin-bottom: 8px; animation: fadeUp 0.4s ease-out;">Your Personalized Report Is Ready</div>
           <div style="font-size: 14px; color: var(--mist); margin-bottom: 24px;">Prepared for <strong id="dlOrgConfirm"></strong></div>
 
           <!-- Primary: View/Download PDF -->
@@ -529,8 +540,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="js/tracking.js"></script>
 <script>
 // ─── PUBLIC CALCULATOR CONFIG ───
@@ -624,26 +635,34 @@ function submitDownloadForm(e) {
     })
   }).catch(function(err) { console.error('Brevo webhook error:', err); });
 
-  // Show success state FIRST (instant feedback)
+  // Step 1: Show processing animation
+  document.getElementById('dlOrgProcessing').textContent = org;
   document.getElementById('dlOrgConfirm').textContent = org;
   document.getElementById('dlEmailConfirm').textContent = email;
   document.getElementById('downloadFormSection').style.display = 'none';
-  document.getElementById('downloadSuccessMessage').style.display = 'block';
+  document.getElementById('pdfProcessingState').style.display = 'block';
 
-  // Then generate PDF
-  try {
-    var pdfUrl = generateReport(org);
+  // Step 2: Generate PDF after a brief delay (gives the animation payoff)
+  setTimeout(function() {
+    var pdfUrl = null;
+    try {
+      pdfUrl = generateReport(org);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+    }
+
+    // Step 3: Transition to success state
+    document.getElementById('pdfProcessingState').style.display = 'none';
+    document.getElementById('downloadSuccessMessage').style.display = 'block';
+
     if (pdfUrl) {
       document.getElementById('pdfViewLink').href = pdfUrl;
-      window.open(pdfUrl, '_blank');
+      // Don't auto-open popup — let the user click "View Your Report"
     } else {
-      throw new Error('PDF generation returned no URL');
+      document.getElementById('pdfActionArea').style.display = 'none';
+      document.getElementById('pdfFallback').style.display = 'block';
     }
-  } catch (err) {
-    console.error('PDF generation failed:', err);
-    document.getElementById('pdfActionArea').style.display = 'none';
-    document.getElementById('pdfFallback').style.display = 'block';
-  }
+  }, 1800);
 }
 
 // Part D: Download form visibility tracking (IntersectionObserver)
