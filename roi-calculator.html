@@ -178,70 +178,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <!-- RIGHT: RESULTS -->
     <div class="calc-results">
 
-      <!-- 1. THE REAL COST OF AN INTERNAL HIRE -->
-      <div class="compare-card">
-        <div class="compare-card-label">The Real Cost of an Internal Hire</div>
-        <div class="compare-line">
-          <span class="compare-line-label">Base salary</span>
-          <span class="compare-line-value" id="cmpSalary">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Benefits &amp; taxes</span>
-          <span class="compare-line-value" id="cmpBenefits">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Support staff (0.25 FTE)</span>
-          <span class="compare-line-value" id="cmpSupport">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Recruiter / placement</span>
-          <span class="compare-line-value" id="cmpRecruiter">$0</span>
-        </div>
-        <div class="compare-line">
-          <span class="compare-line-label">Productive months</span>
-          <span class="compare-line-value" id="cmpRamp" style="color: #c0392b; font-weight: 600;">$0</span>
-        </div>
-        <div class="compare-total">
-          <span class="compare-total-label">True Year 1 cost</span>
-          <span class="compare-total-value" id="cmpTotalInternalCard">$0</span>
-        </div>
-      </div>
-
-      <!-- 2. TIME TO FIRST REVENUE -->
-      <div class="timeline-compare">
-        <div class="timeline-compare-label">Time to First Revenue</div>
-        <div class="timeline-bar-group">
-          <div class="timeline-bar-label">
-            <span>Internal Hire</span>
-            <span class="timeline-bar-months" id="internalMonths">11 months</span>
-          </div>
-          <div class="timeline-bar-track">
-            <div class="timeline-bar-segments" id="internalTimeline">
-            </div>
-          </div>
-        </div>
-        <div class="timeline-bar-group">
-          <div class="timeline-bar-label">
-            <span>Legara</span>
-            <span class="timeline-bar-months" id="legaraMonths">As fast as 6 weeks (at $0 cost)</span>
-          </div>
-          <div class="timeline-bar-track">
-            <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
-              <div class="timeline-bar-segment credential" style="width: 60%;">Credentialing</div>
-              <div class="timeline-bar-segment panel" style="width: 40%;">Panel build</div>
-            </div>
-          </div>
-        </div>
-        <div class="timeline-legend">
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #4a5e54;"></div>Recruit</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #3a7a5a;"></div>Onboard</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #2d8a62;"></div>Credential</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #156040;"></div>Payer panel</div>
-          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #1a6b4a;"></div>Panel build</div>
-        </div>
-      </div>
-
-      <!-- 3. THE REAL QUESTION — Mission section with year tabs (PEAK MOMENT) -->
+      <!-- 1. THE REAL QUESTION — Mission section with year tabs (the story) -->
       <div class="mission-section">
         <div class="mission-header">
           <div class="mission-header-label">The Real Question</div>
@@ -379,7 +316,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         </div>
       </div>
 
-      <!-- 4. CASH GENERATED FOR YOUR MISSION -->
+      <!-- 2. CASH GENERATED FOR YOUR MISSION (the punchline) -->
       <div class="cash-generated-card">
         <div class="cash-generated-card-label">Cash Generated for Your Mission</div>
         <div class="cash-generated-card-amount" id="cashGen3YrTotal">$0</div>
@@ -396,7 +333,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         </div>
       </div>
 
-      <!-- 5. PRIMARY CTA — Download Report (placed at peak conviction, right after mission cash) -->
+      <!-- 3. PRIMARY CTA — Download Report (placed at peak conviction, right after mission cash) -->
       <div style="background: white; border: 2px solid var(--green); border-radius: 16px; padding: 48px 40px; margin-top: 16px;">
         <div id="downloadFormSection">
           <div style="text-align: center; margin-bottom: 28px;">
@@ -433,7 +370,76 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         </div>
       </div>
 
-      <!-- 5b. SECONDARY CTA — Schedule a Conversation -->
+      <!-- 4. TIME TO FIRST REVENUE (supporting evidence) -->
+      <div class="timeline-compare">
+        <div class="timeline-compare-label">Time to First Revenue</div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Internal Hire</span>
+            <span class="timeline-bar-months" id="internalMonths">11 months</span>
+          </div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments" id="internalTimeline">
+            </div>
+          </div>
+        </div>
+        <div class="timeline-bar-group">
+          <div class="timeline-bar-label">
+            <span>Legara</span>
+            <span class="timeline-bar-months" id="legaraMonths">As fast as 6 weeks (at $0 cost)</span>
+          </div>
+          <div class="timeline-bar-track">
+            <div class="timeline-bar-segments" id="legaraTimeline" style="width: 45%;">
+              <div class="timeline-bar-segment credential" style="width: 60%;">Credentialing</div>
+              <div class="timeline-bar-segment panel" style="width: 40%;">Panel build</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-legend">
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #4a5e54;"></div>Recruit</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #3a7a5a;"></div>Onboard</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #2d8a62;"></div>Credential</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #156040;"></div>Payer panel</div>
+          <div class="timeline-legend-item"><div class="timeline-legend-dot" style="background: #1a6b4a;"></div>Panel build</div>
+        </div>
+      </div>
+
+      <!-- 5. THE REAL COST OF AN INTERNAL HIRE (for analytical types) -->
+      <div class="compare-card">
+        <div class="compare-card-label">The Real Cost of an Internal Hire</div>
+        <div class="compare-line">
+          <span class="compare-line-label">Base salary</span>
+          <span class="compare-line-value" id="cmpSalary">$0</span>
+        </div>
+        <div class="compare-line">
+          <span class="compare-line-label">Benefits &amp; taxes</span>
+          <span class="compare-line-value" id="cmpBenefits">$0</span>
+        </div>
+        <div class="compare-line">
+          <span class="compare-line-label">Support staff (0.25 FTE)</span>
+          <span class="compare-line-value" id="cmpSupport">$0</span>
+        </div>
+        <div class="compare-line">
+          <span class="compare-line-label">Recruiter / placement</span>
+          <span class="compare-line-value" id="cmpRecruiter">$0</span>
+        </div>
+        <div class="compare-line">
+          <span class="compare-line-label">Productive months</span>
+          <span class="compare-line-value" id="cmpRamp" style="color: #c0392b; font-weight: 600;">$0</span>
+        </div>
+        <div class="compare-total">
+          <span class="compare-total-label">True Year 1 cost</span>
+          <span class="compare-total-value" id="cmpTotalInternalCard">$0</span>
+        </div>
+      </div>
+
+      <!-- 6. WHERE YOUR MONEY ACTUALLY GOES (bonus content for deep-divers) -->
+      <div class="waterfall">
+        <div class="waterfall-label">Where Your Money Actually Goes</div>
+        <div id="waterfallBars"></div>
+      </div>
+
+      <!-- 7. SECONDARY CTA — Schedule a Conversation -->
       <div style="background: white; border: 1px solid var(--border); border-radius: 16px; padding: 36px 40px; margin-top: 16px; text-align: center;">
         <div style="background: var(--off-white); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: left; max-width: 560px; margin-left: auto; margin-right: auto; display: flex; gap: 16px; align-items: flex-start;">
           <img src="img/roger-avatar-112.png" alt="Roger Stellers" width="48" height="48" style="border-radius: 50%; flex-shrink: 0; object-fit: cover;">
@@ -446,13 +452,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank" style="display: inline-block; padding: 14px 32px; background: var(--off-white); color: var(--green); border: 2px solid var(--green); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white'" onmouseout="this.style.background='var(--off-white)';this.style.color='var(--green)'">Schedule a Conversation</a>
       </div>
 
-      <!-- 6. WHERE YOUR MONEY ACTUALLY GOES (bonus content for deep-divers) -->
-      <div class="waterfall">
-        <div class="waterfall-label">Where Your Money Actually Goes</div>
-        <div id="waterfallBars"></div>
-      </div>
-
-      <!-- 7. ASSUMPTIONS -->
+      <!-- 8. ASSUMPTIONS -->
       <div class="assumptions" style="margin-top: 16px;">
         <strong>Assumptions:</strong> 32 scheduled clinical hrs/wk, 30 days PTO/sick/CME. Internal hire ramp: 3-month recruit, 3-week onboard, 3-month credentialing, 3-month payer enrollment (overlapping), 3-month caseload build. Encounter rate: <span id="encRateNote">1.0/hr (therapy)</span>. Avg. encounter revenue: $<span id="ppsNote">230</span> (PPS + copays + secondaries). Legara rate: $<span id="legaraRateNote">155</span>/encounter, all-in. Support staff at 0.25 FTE (~$11K/yr). All figures are estimates — your results will vary.
       </div>
