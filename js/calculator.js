@@ -258,6 +258,7 @@ function calculate() {
       internalCash3Yr: Math.round(internalCash3Yr),
       // Cost components
       salary: salary,
+      multiplier: multiplier,
       fullyLoaded: Math.round(fullyLoaded),
       benefitsCost: Math.round(benefitsCost),
       supportCost: supportCost,

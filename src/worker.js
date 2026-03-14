@@ -185,6 +185,29 @@ async function handleBrevoWebhook(request, env) {
       env
     );
 
+    // Notify Roger of new lead
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: [{ email: "rstellers@fidarehealth.com", name: "Roger Stellers" }],
+        sender: { email: "roger@golegara.com", name: "Legara Lead Alert" },
+        subject: "New ROI Calculator Lead: " + (firstName || "") + " " + (lastName || "") + " — " + (organization || "Unknown org"),
+        htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New Calculator Lead</h2>" +
+          "<table style='width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;'>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;width:140px;'>Name</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (firstName || "") + " " + (lastName || "") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Email</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + email + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Organization</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (organization || "—") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Title</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (title || "—") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Source</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (utm_source || "direct") + " / " + (utm_medium || "—") + " / " + (utm_campaign || "—") + "</td></tr>" +
+          "</table>" +
+          "<p style='font-family:sans-serif;font-size:13px;color:#666;margin-top:16px;'>This lead just downloaded their ROI report and entered Sequence A. Check <a href=\"https://app.hubspot.com\">HubSpot</a> for full details.</p>",
+      }),
+    });
+
     // Set drip state: next email is A2 in 3 days
     await updateContactSequence(
       email,

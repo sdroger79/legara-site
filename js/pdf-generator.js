@@ -176,7 +176,7 @@ function generateReport(orgName) {
     ['Cost Component', 'Amount'],
     [
       ['Base salary (' + d.monthsOnPayroll + ' months on payroll)', fmtD(d.salary)],
-      ['Benefits & taxes (1.4x multiplier)', fmtD(d.benefitsCost)],
+      ['Benefits & taxes (' + (d.multiplier || 1.4) + 'x multiplier)', fmtD(d.benefitsCost)],
       ['Support staff (0.25 FTE PSR)', fmtD(d.supportCost)],
       ['Recruiter / placement fee', fmtD(d.recruiterFee)],
       [{ content: 'Total 12-Month Cost', styles: { fontStyle: 'bold' } }, { content: fmtD(d.internalCostYear1), styles: { fontStyle: 'bold' } }],
