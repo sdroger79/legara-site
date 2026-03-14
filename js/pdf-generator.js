@@ -29,6 +29,7 @@ var PAGE_H = 792;
 var CONTENT_W = PAGE_W - MARGIN * 2;
 
 function generateReport(orgName) {
+  console.log('[PDF] Starting report generation for:', orgName);
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'pt', format: 'letter' });
   var d = lastCalc;
@@ -109,8 +110,13 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 1: PERSONALIZED RESULTS COVER
   // ═══════════════════════════════════════════
-  if (LEGARA_LOGO_B64 && LEGARA_LOGO_B64 !== 'PLACEHOLDER') {
-    doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, MARGIN, 120, 40);
+  console.log('[PDF] Page 1: Cover');
+  try {
+    if (LEGARA_LOGO_B64 && LEGARA_LOGO_B64 !== 'PLACEHOLDER') {
+      doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, MARGIN, 120, 40);
+    }
+  } catch (logoErr) {
+    console.warn('[PDF] Logo failed to load, skipping:', logoErr);
   }
   y = 120;
 
@@ -158,6 +164,7 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 2: DETAILED COST COMPARISON
   // ═══════════════════════════════════════════
+  console.log('[PDF] Page 2: Cost comparison');
   doc.addPage();
   y = MARGIN;
 
@@ -215,6 +222,7 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 3: ECONOMICS STUDY — INTRO
   // ═══════════════════════════════════════════
+  console.log('[PDF] Page 3: Economics intro');
   doc.addPage();
   y = MARGIN;
 
@@ -278,6 +286,7 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 4: CASH GENERATED YEAR-BY-YEAR
   // ═══════════════════════════════════════════
+  console.log('[PDF] Page 4: Cash generated');
   doc.addPage();
   y = MARGIN;
 
@@ -338,6 +347,7 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 5: COST SAVINGS + MACRO CONTEXT
   // ═══════════════════════════════════════════
+  console.log('[PDF] Page 5: Cost savings + macro');
   doc.addPage();
   y = MARGIN;
 
@@ -410,6 +420,7 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   // PAGE 6: HOW LEGARA CHANGES + SOURCES
   // ═══════════════════════════════════════════
+  console.log('[PDF] Page 6: Legara model + sources');
   doc.addPage();
   y = MARGIN;
 
@@ -508,7 +519,10 @@ function generateReport(orgName) {
 
   addFooter(6);
 
-  // ─── SAVE ───
-  var safeName = orgName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-');
-  doc.save('Legara-ROI-Analysis-' + safeName + '.pdf');
+  // ─── RETURN BLOB URL ───
+  console.log('[PDF] Generating blob URL');
+  var blob = doc.output('blob');
+  var blobUrl = URL.createObjectURL(blob);
+  console.log('[PDF] Report ready:', blobUrl);
+  return blobUrl;
 }

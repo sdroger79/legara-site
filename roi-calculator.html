@@ -363,10 +363,34 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         </div>
 
         <!-- Success message (hidden by default) -->
-        <div id="downloadSuccessMessage" style="display: none; text-align: center; padding: 20px 0;">
-          <div style="font-size: 20px; font-weight: 700; color: var(--green); margin-bottom: 8px;">Your report is downloading.</div>
-          <div style="font-size: 15px; color: var(--mist); margin-bottom: 24px;">Want to discuss your results?</div>
-          <a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank" style="display: inline-block; padding: 14px 32px; background: var(--green); color: white; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Schedule a Conversation with Roger</a>
+        <style>@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }</style>
+        <div id="downloadSuccessMessage" style="display: none; text-align: center; padding: 32px 0;">
+          <!-- Animated checkmark -->
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--green); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.3s ease-out;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+
+          <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--slate); margin-bottom: 8px;">Your Personalized Report Is Ready</div>
+          <div style="font-size: 14px; color: var(--mist); margin-bottom: 24px;">Prepared for <strong id="dlOrgConfirm"></strong></div>
+
+          <!-- Primary: View/Download PDF -->
+          <div id="pdfActionArea" style="margin-bottom: 24px;">
+            <a id="pdfViewLink" href="#" target="_blank" style="display: inline-block; padding: 16px 36px; background: var(--green); color: white; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; margin-bottom: 8px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">View Your Report</a>
+            <div style="font-size: 12px; color: var(--mist); margin-top: 8px;">Opens as a PDF in a new tab — save it from there</div>
+          </div>
+
+          <!-- Fallback if PDF failed -->
+          <div id="pdfFallback" style="display: none; background: var(--off-white); border-radius: 8px; padding: 16px; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+            <div style="font-size: 13px; color: var(--mist);">Having trouble with the PDF? We've emailed your results to <strong id="dlEmailConfirm"></strong></div>
+          </div>
+
+          <!-- Divider -->
+          <div style="width: 60px; height: 1px; background: var(--border); margin: 24px auto;"></div>
+
+          <!-- Secondary: Schedule CTA -->
+          <div style="font-size: 15px; color: var(--slate); font-weight: 600; margin-bottom: 8px;">Want to walk through the numbers together?</div>
+          <div style="font-size: 13px; color: var(--mist); margin-bottom: 16px;">30 minutes with Roger. No pressure, no pitch — just your data.</div>
+          <a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank" style="display: inline-block; padding: 14px 32px; background: var(--off-white); color: var(--green); border: 2px solid var(--green); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white'" onmouseout="this.style.background='var(--off-white)';this.style.color='var(--green)'">Schedule a Conversation</a>
         </div>
       </div>
 
@@ -600,12 +624,26 @@ function submitDownloadForm(e) {
     })
   }).catch(function(err) { console.error('Brevo webhook error:', err); });
 
-  // Generate and download the PDF immediately
-  generateReport(org);
-
-  // Show success state
+  // Show success state FIRST (instant feedback)
+  document.getElementById('dlOrgConfirm').textContent = org;
+  document.getElementById('dlEmailConfirm').textContent = email;
   document.getElementById('downloadFormSection').style.display = 'none';
   document.getElementById('downloadSuccessMessage').style.display = 'block';
+
+  // Then generate PDF
+  try {
+    var pdfUrl = generateReport(org);
+    if (pdfUrl) {
+      document.getElementById('pdfViewLink').href = pdfUrl;
+      window.open(pdfUrl, '_blank');
+    } else {
+      throw new Error('PDF generation returned no URL');
+    }
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    document.getElementById('pdfActionArea').style.display = 'none';
+    document.getElementById('pdfFallback').style.display = 'block';
+  }
 }
 
 // Part D: Download form visibility tracking (IntersectionObserver)
