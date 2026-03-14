@@ -155,7 +155,7 @@ function generateReport(orgName) {
   y += 80;
 
   // Summary text
-  y = bodyText('Based on your inputs, switching to Legara\'s encounter-based model could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
+  y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
   y += 8;
   y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California FQHCs.', y);
 
@@ -461,7 +461,7 @@ function generateReport(orgName) {
     'Zero ramp cost: You pay nothing during credentialing and payer enrollment. Legara absorbs the entire onboarding investment.',
     'Encounter-based pricing: One rate per completed, billable encounter. No salary, no benefits, no support staff overhead. Your cost scales linearly with actual clinical output.',
     'Higher utilization: Legara providers operate at 82% effective utilization (vs. ~52% for employed providers) because we\u2019ve removed organizational overhead from their schedules.',
-    'No turnover risk: If a provider leaves, Legara replaces them \u2014 not your HR team. No new recruiter fee, no new ramp period, no gap in coverage.',
+    'No turnover risk: If a provider leaves, Legara handles the backfill \u2014 not your HR team. No new recruiter fee, no new ramp period, no gap in coverage.',
     'Faster time to revenue: Legara providers are typically seeing patients within 5 months vs. 11+ months for a traditional internal hire. That\u2019s 6 additional months of billable encounters in Year 1.'
   ];
 
