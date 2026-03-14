@@ -223,11 +223,11 @@ function generateReport(orgName) {
   doc.setFontSize(11);
   doc.setTextColor.apply(doc, GREEN);
   doc.setFont('helvetica', 'bold');
-  doc.text('How does Legara achieve higher provider utilization?', MARGIN + 12, y + 18);
+  doc.text('Why is Legara\u2019s provider utilization significantly higher than industry norms?', MARGIN + 12, y + 18);
   doc.setFontSize(9);
   doc.setTextColor.apply(doc, DARK);
   doc.setFont('helvetica', 'normal');
-  var ecoLines = doc.splitTextToSize('Legara\u2019s three-layer ecosystem removes the organizational friction that limits employed providers. The workforce network attracts motivated independent clinicians who want schedule flexibility and patient diversity. The operational layer handles all administrative burden \u2014 credentialing, scheduling, compliance, EHR \u2014 so providers focus exclusively on patients. And the financial architecture ensures providers are paid promptly without the cash flow uncertainty of independent practice. The result: demonstrated utilization rates significantly above industry norms, without burnout.', CONTENT_W - 24);
+  var ecoLines = doc.splitTextToSize('Three things that don\u2019t exist inside a traditional employment model: a workforce network built around clinician autonomy, an operational layer that eliminates every administrative distraction, and a financial architecture that removes cash flow uncertainty. The structure changes the math. We\u2019re happy to walk through exactly how \u2014 and what it means for your specific organization.', CONTENT_W - 24);
   doc.text(ecoLines, MARGIN + 12, y + 34);
   y += 120;
   doc.setFillColor.apply(doc, GREEN);
@@ -235,7 +235,7 @@ function generateReport(orgName) {
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.text('Want to see these numbers with your actual organizational data?', MARGIN + 12, y + 20);
+  doc.text('Want to turn these estimates into your organization\u2019s actual business case?', MARGIN + 12, y + 20);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Schedule a 30-minute conversation with Roger: cal.com/roger-golegara.com/legara-roi-review', MARGIN + 12, y + 36);
