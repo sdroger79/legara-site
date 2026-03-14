@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Help Us Test | Legara</title>
+<title>Help Me Test This | Roger Stellers</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="icon" type="image/png" href="/img/logo.png">
@@ -14,36 +14,57 @@
     margin: 0 auto;
     padding: 120px 24px 80px;
   }
-  .test-logo {
-    margin-bottom: 40px;
-  }
-  .test-logo img {
-    height: 32px;
-    width: auto;
-  }
   .test-greeting {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
     font-weight: 700;
     color: var(--charcoal);
     line-height: 1.3;
-    margin-bottom: 20px;
-  }
-  .test-body {
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--slate);
     margin-bottom: 24px;
   }
-  .test-body strong {
+  .test-letter {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--slate);
+    margin-bottom: 32px;
+  }
+  .test-letter p {
+    margin-bottom: 16px;
+  }
+  .test-letter strong {
     color: var(--charcoal);
+  }
+  .test-letter .signature {
+    margin-top: 24px;
+    color: var(--charcoal);
+    font-weight: 500;
+  }
+  .test-privacy {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .test-privacy-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    margin-top: 1px;
+  }
+  .test-privacy-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--mist);
   }
   .test-scenario {
     background: white;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 28px 28px 24px;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
   .test-scenario-label {
     font-size: 11px;
@@ -66,9 +87,6 @@
     color: var(--slate);
     margin-bottom: 12px;
   }
-  .test-scenario p:last-child {
-    margin-bottom: 0;
-  }
   .test-cta {
     display: inline-block;
     padding: 14px 28px;
@@ -82,9 +100,7 @@
     transition: opacity 0.2s;
     margin-top: 8px;
   }
-  .test-cta:hover {
-    opacity: 0.9;
-  }
+  .test-cta:hover { opacity: 0.9; }
   .test-steps {
     margin: 16px 0 4px;
   }
@@ -113,74 +129,165 @@
     line-height: 1.6;
     color: var(--slate);
   }
-  .test-feedback {
+
+  /* Feedback form */
+  .feedback-section {
     background: var(--green-pale);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 28px;
+    padding: 32px 28px;
+    margin-bottom: 32px;
   }
-  .test-feedback-title {
+  .feedback-section-title {
     font-family: 'Playfair Display', serif;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--charcoal);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
-  .test-feedback p {
+  .feedback-section-sub {
     font-size: 14px;
-    line-height: 1.7;
-    color: var(--slate);
-    margin-bottom: 16px;
-  }
-  .test-questions {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .test-questions li {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--charcoal);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .test-questions li:last-child {
-    border-bottom: none;
-  }
-  .test-questions li span {
     color: var(--mist);
-    font-size: 13px;
+    margin-bottom: 28px;
+    line-height: 1.6;
   }
-  .test-privacy {
+  .fb-question {
+    margin-bottom: 24px;
+  }
+  .fb-question:last-of-type {
+    margin-bottom: 0;
+  }
+  .fb-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .fb-hint {
+    font-size: 12px;
+    color: var(--mist);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .fb-input, .fb-textarea, .fb-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--charcoal);
     background: white;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+  .fb-input:focus, .fb-textarea:focus, .fb-select:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .fb-textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .fb-rating {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .fb-rating label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 28px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slate);
+    transition: all 0.15s;
+  }
+  .fb-rating input { display: none; }
+  .fb-rating input:checked + span {
+    /* handled by JS */
+  }
+  .fb-rating label.selected {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+  .fb-yesno {
     display: flex;
-    gap: 12px;
-    align-items: flex-start;
+    gap: 8px;
   }
-  .test-privacy-icon {
-    flex-shrink: 0;
-    font-size: 18px;
-    margin-top: 1px;
+  .fb-yesno label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--slate);
+    transition: all 0.15s;
   }
-  .test-privacy-text {
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--mist);
+  .fb-yesno input { display: none; }
+  .fb-yesno label.selected {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
   }
-  .test-thanks {
+  .fb-submit {
+    width: 100%;
+    padding: 16px;
+    margin-top: 28px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .fb-submit:hover { opacity: 0.9; }
+  .fb-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .fb-success {
+    display: none;
     text-align: center;
-    padding: 20px 0;
+    padding: 40px 20px;
+  }
+  .fb-success-check {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--green);
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fb-success h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+  .fb-success p {
     font-size: 14px;
     color: var(--mist);
     line-height: 1.6;
-  }
-  .test-thanks strong {
-    color: var(--charcoal);
   }
 </style>
 </head>
@@ -192,35 +299,42 @@
 
 <div class="test-page">
 
-  <div class="test-greeting">Hey — thanks for helping me test this.</div>
+  <div class="test-greeting">Hey — I need a favor.</div>
 
-  <p class="test-body">
-    I'm launching a new tool on our site and I need a few real people to try it before it goes live. You don't need to know anything about healthcare or what Legara does — I just need you to go through the experience like a normal visitor would and tell me what you think.
-  </p>
-  <p class="test-body">
-    <strong>It'll take about 5 minutes.</strong> Just follow the steps below, then text me your thoughts. That's it.
-  </p>
+  <div class="test-letter">
+    <p>I'm asking a small group of personal friends and family to help me do some live user testing before we spend money on a paid advertising campaign. You're one of those people, so thank you in advance.</p>
+
+    <p>My company Legara built a tool that helps healthcare organizations figure out how much money they're leaving on the table with their current staffing model. We're about to launch a marketing campaign to drive people to it, and <strong>I need to know if the experience actually works before real prospects see it.</strong></p>
+
+    <p>You don't need to know anything about healthcare. I just need you to pretend you run a health center, go through the experience below like a real visitor would, and then answer a few quick questions at the bottom of this page. <strong>The whole thing takes about 5 minutes.</strong></p>
+
+    <p>Your honest feedback is what I need most — not "looks good." If something is confusing, clunky, slow, or doesn't make sense, that's exactly what I want to hear. You can't hurt my feelings on this one.</p>
+
+    <p>Thank you — seriously. This is the kind of help that actually moves the needle.</p>
+
+    <p class="signature">— Roger</p>
+  </div>
 
   <div class="test-privacy">
     <div class="test-privacy-icon">&#128274;</div>
     <div class="test-privacy-text">
-      <strong style="color: var(--charcoal);">Please use your real name and email</strong> — I need to test that the full system works end-to-end (emails, PDF delivery, etc.). I'll delete all test data before we go live. Your info won't be shared or used for anything else.
+      <strong style="color: var(--charcoal);">Please use your real name and email</strong> — I need to test that emails, PDFs, and the full system work end-to-end with real addresses. All test data will be deleted before we go live. Your info won't be shared, sold, or used for anything else. Promise.
     </div>
   </div>
 
   <div class="test-scenario">
-    <div class="test-scenario-label">Your Scenario</div>
-    <div class="test-scenario-title">You run a community health center</div>
-    <p>Imagine you're an executive at a healthcare organization. You've heard about Legara and landed on this page to figure out whether it could help your organization. You don't know much yet — just poke around and see what you think.</p>
+    <div class="test-scenario-label">What to Do</div>
+    <div class="test-scenario-title">Pretend you run a community health center</div>
+    <p>Imagine you're a CEO or CFO at a healthcare organization. You've heard about Legara and want to figure out whether it could help. You don't know much — just explore and see what happens.</p>
 
     <div class="test-steps">
       <div class="test-step">
         <div class="test-step-num">1</div>
-        <div class="test-step-text">Start on the <a href="roi-calculator.html" style="color: var(--green); font-weight: 600;">ROI Calculator page</a> — play with the inputs, look at the results</div>
+        <div class="test-step-text">Go to the <a href="roi-calculator.html" style="color: var(--green); font-weight: 600;">ROI Calculator</a> — play with the inputs and look at the results</div>
       </div>
       <div class="test-step">
         <div class="test-step-num">2</div>
-        <div class="test-step-text">When you see the form, fill it out with your <strong>real name and email</strong> and a made-up organization name (e.g. "Sunrise Health Center")</div>
+        <div class="test-step-text">Fill out the form with your <strong>real name and email</strong> and a made-up organization name (e.g. "Sunrise Health Center")</div>
       </div>
       <div class="test-step">
         <div class="test-step-num">3</div>
@@ -228,37 +342,218 @@
       </div>
       <div class="test-step">
         <div class="test-step-num">4</div>
-        <div class="test-step-text">Check your email — you should receive something from me within a minute or two</div>
+        <div class="test-step-text">Check your email — you should get something from me within a minute or two <span style="color: var(--mist);">(check spam if you don't see it)</span></div>
       </div>
       <div class="test-step">
         <div class="test-step-num">5</div>
-        <div class="test-step-text">Text me your feedback (see questions below)</div>
+        <div class="test-step-text">Try to <a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank" style="color: var(--green); font-weight: 600;">book an appointment with me</a> — you don't have to actually keep it, I just need to test the booking flow</div>
+      </div>
+      <div class="test-step">
+        <div class="test-step-num">6</div>
+        <div class="test-step-text">Come back here and fill out the feedback form below</div>
       </div>
     </div>
 
     <a href="roi-calculator.html" class="test-cta">Start the Test</a>
   </div>
 
-  <div class="test-feedback">
-    <div class="test-feedback-title">What I'd love to hear back</div>
-    <p>Don't overthink it — quick gut reactions are the most useful. Just text me whatever comes to mind.</p>
-    <ul class="test-questions">
-      <li>Did the calculator make sense? Was anything confusing?</li>
-      <li>Did the PDF download work? How did it look?</li>
-      <li>Did you get an email? How quickly? <span>(check spam if not)</span></li>
-      <li>What was your overall impression of the site?</li>
-      <li>Anything feel broken, slow, or weird?</li>
-      <li>Would you actually book a call if this were relevant to you?</li>
-    </ul>
-  </div>
+  <!-- FEEDBACK FORM -->
+  <div class="feedback-section" id="feedbackSection">
+    <div class="feedback-section-title">Your Feedback</div>
+    <div class="feedback-section-sub">Be honest — "looks good" isn't helpful. Confusing, clunky, slow, weird? That's what I need to hear.</div>
 
-  <div class="test-thanks">
-    <strong>Seriously — thank you.</strong><br>
-    This kind of feedback is incredibly hard to get and I really appreciate you taking the time.
-    <br><br>— Roger
+    <form id="feedbackForm" onsubmit="submitFeedback(event)">
+
+      <div class="fb-question">
+        <div class="fb-label">Your name</div>
+        <input type="text" class="fb-input" id="fbName" placeholder="So I know who this is from" required>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Overall, how would you rate the experience?</div>
+        <div class="fb-hint">1 = frustrating, 5 = smooth and professional</div>
+        <div class="fb-rating" id="ratingOverall">
+          <label onclick="selectRating('ratingOverall', this)"><input type="radio" name="rating_overall" value="1"><span>1</span></label>
+          <label onclick="selectRating('ratingOverall', this)"><input type="radio" name="rating_overall" value="2"><span>2</span></label>
+          <label onclick="selectRating('ratingOverall', this)"><input type="radio" name="rating_overall" value="3"><span>3</span></label>
+          <label onclick="selectRating('ratingOverall', this)"><input type="radio" name="rating_overall" value="4"><span>4</span></label>
+          <label onclick="selectRating('ratingOverall', this)"><input type="radio" name="rating_overall" value="5"><span>5</span></label>
+        </div>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Did the calculator make sense?</div>
+        <div class="fb-hint">Were the inputs clear? Did the results mean anything to you? Anything confusing?</div>
+        <textarea class="fb-textarea" id="fbCalculator" placeholder="What made sense, what didn't..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Did the PDF report download and open correctly?</div>
+        <div class="fb-yesno" id="pdfWorked">
+          <label onclick="selectYesNo('pdfWorked', this)"><input type="radio" name="pdf_worked" value="Yes"><span>Yes</span></label>
+          <label onclick="selectYesNo('pdfWorked', this)"><input type="radio" name="pdf_worked" value="No"><span>No</span></label>
+          <label onclick="selectYesNo('pdfWorked', this)"><input type="radio" name="pdf_worked" value="Didn't try"><span>Didn't try</span></label>
+        </div>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">How did the PDF look?</div>
+        <div class="fb-hint">Professional? Cheap? Too long? Too short?</div>
+        <textarea class="fb-textarea" id="fbPdf" placeholder="Your impression of the report..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Did you receive an email?</div>
+        <div class="fb-yesno" id="emailReceived">
+          <label onclick="selectYesNo('emailReceived', this)"><input type="radio" name="email_received" value="Yes"><span>Yes</span></label>
+          <label onclick="selectYesNo('emailReceived', this)"><input type="radio" name="email_received" value="No"><span>No</span></label>
+          <label onclick="selectYesNo('emailReceived', this)"><input type="radio" name="email_received" value="In spam"><span>In spam</span></label>
+        </div>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">How did the email look and feel?</div>
+        <div class="fb-hint">Did it feel personal or automated? Professional or spammy? Would you open it if you didn't know me?</div>
+        <textarea class="fb-textarea" id="fbEmail" placeholder="Your impression of the email..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Were you able to book an appointment?</div>
+        <div class="fb-yesno" id="bookingWorked">
+          <label onclick="selectYesNo('bookingWorked', this)"><input type="radio" name="booking_worked" value="Yes"><span>Yes</span></label>
+          <label onclick="selectYesNo('bookingWorked', this)"><input type="radio" name="booking_worked" value="No"><span>No</span></label>
+          <label onclick="selectYesNo('bookingWorked', this)"><input type="radio" name="booking_worked" value="Didn't try"><span>Didn't try</span></label>
+        </div>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">If this were actually relevant to your job, would you book a call?</div>
+        <div class="fb-hint">Based purely on what you saw — does it earn enough trust?</div>
+        <div class="fb-yesno" id="wouldBook">
+          <label onclick="selectYesNo('wouldBook', this)"><input type="radio" name="would_book" value="Definitely"><span>Definitely</span></label>
+          <label onclick="selectYesNo('wouldBook', this)"><input type="radio" name="would_book" value="Maybe"><span>Maybe</span></label>
+          <label onclick="selectYesNo('wouldBook', this)"><input type="radio" name="would_book" value="Probably not"><span>Probably not</span></label>
+          <label onclick="selectYesNo('wouldBook', this)"><input type="radio" name="would_book" value="No"><span>No</span></label>
+        </div>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">What was the most confusing or annoying part?</div>
+        <div class="fb-hint">Even small things — a word that didn't make sense, a button in the wrong place, something that loaded slow.</div>
+        <textarea class="fb-textarea" id="fbPainPoints" placeholder="The thing that bugged you most..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">What was the best part?</div>
+        <textarea class="fb-textarea" id="fbBestPart" placeholder="Anything that stood out positively..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">Anything else?</div>
+        <div class="fb-hint">Typos, broken links, things that looked off on your device, random thoughts — all useful.</div>
+        <textarea class="fb-textarea" id="fbAnything" placeholder="Whatever comes to mind..."></textarea>
+      </div>
+
+      <div class="fb-question">
+        <div class="fb-label">What device are you on?</div>
+        <select class="fb-select" id="fbDevice">
+          <option value="">Select...</option>
+          <option value="iPhone">iPhone</option>
+          <option value="Android phone">Android phone</option>
+          <option value="iPad / tablet">iPad / tablet</option>
+          <option value="Mac laptop/desktop">Mac laptop/desktop</option>
+          <option value="Windows laptop/desktop">Windows laptop/desktop</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="fb-submit" id="fbSubmitBtn">Submit Feedback</button>
+    </form>
+
+    <!-- Success state -->
+    <div class="fb-success" id="fbSuccess">
+      <div class="fb-success-check">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h3>Got it — thank you!</h3>
+      <p>Your feedback has been recorded. I really appreciate you taking the time to do this.</p>
+    </div>
   </div>
 
 </div>
+
+<script>
+function selectRating(groupId, label) {
+  var labels = document.getElementById(groupId).querySelectorAll('label');
+  labels.forEach(function(l) { l.classList.remove('selected'); });
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+}
+
+function selectYesNo(groupId, label) {
+  var labels = document.getElementById(groupId).querySelectorAll('label');
+  labels.forEach(function(l) { l.classList.remove('selected'); });
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+}
+
+function getRadioValue(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : '';
+}
+
+function submitFeedback(e) {
+  e.preventDefault();
+  var btn = document.getElementById('fbSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  var data = {
+    name: document.getElementById('fbName').value.trim(),
+    rating_overall: getRadioValue('rating_overall'),
+    calculator_feedback: document.getElementById('fbCalculator').value.trim(),
+    pdf_worked: getRadioValue('pdf_worked'),
+    pdf_feedback: document.getElementById('fbPdf').value.trim(),
+    email_received: getRadioValue('email_received'),
+    email_feedback: document.getElementById('fbEmail').value.trim(),
+    booking_worked: getRadioValue('booking_worked'),
+    would_book: getRadioValue('would_book'),
+    pain_points: document.getElementById('fbPainPoints').value.trim(),
+    best_part: document.getElementById('fbBestPart').value.trim(),
+    anything_else: document.getElementById('fbAnything').value.trim(),
+    device: document.getElementById('fbDevice').value,
+    submitted_at: new Date().toISOString(),
+    user_agent: navigator.userAgent
+  };
+
+  // Send to our worker endpoint
+  fetch('/api/beta-feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function() {
+    document.getElementById('feedbackForm').style.display = 'none';
+    document.getElementById('fbSuccess').style.display = 'block';
+  }).catch(function(err) {
+    console.error('Feedback submit error:', err);
+    // Show success anyway — we'll also email it
+    document.getElementById('feedbackForm').style.display = 'none';
+    document.getElementById('fbSuccess').style.display = 'block';
+  });
+
+  // Also email to Roger as backup
+  fetch('/api/brevo-webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: 'rstellers@fidarehealth.com',
+      firstName: 'Beta Feedback',
+      lastName: data.name,
+      organization: 'BETA TEST: ' + JSON.stringify(data).substring(0, 200)
+    })
+  }).catch(function() {});
+}
+</script>
 
 </body>
 </html>

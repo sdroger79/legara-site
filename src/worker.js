@@ -65,6 +65,16 @@ export default {
       });
     }
 
+    if (url.pathname === "/api/beta-feedback") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      if (request.method === "POST") {
+        return handleBetaFeedback(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
+    }
+
     if (url.pathname === "/api/brevo-events") {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: WEBHOOK_CORS_HEADERS });
@@ -626,6 +636,61 @@ async function handleBrevoEvents(request, env) {
     console.error("brevo-events error:", err);
     return webhookJson({ error: err.message }, 500);
   }
+}
+
+// --- Beta feedback handler ---
+
+async function handleBetaFeedback(request, env) {
+  try {
+    const data = await request.json();
+    console.log("Beta feedback received:", JSON.stringify(data));
+
+    // Format as a readable email
+    const lines = [
+      `<h2 style="color:#1a6b4a;font-family:sans-serif;">Beta Test Feedback</h2>`,
+      `<p style="font-family:sans-serif;color:#666;font-size:13px;">Submitted ${new Date(data.submitted_at || Date.now()).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })} PT</p>`,
+      `<table style="width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;">`,
+      row("Tester", data.name),
+      row("Device", data.device),
+      row("Overall Rating", data.rating_overall ? data.rating_overall + " / 5" : "—"),
+      row("Calculator Feedback", data.calculator_feedback),
+      row("PDF Worked?", data.pdf_worked),
+      row("PDF Feedback", data.pdf_feedback),
+      row("Email Received?", data.email_received),
+      row("Email Feedback", data.email_feedback),
+      row("Booking Worked?", data.booking_worked),
+      row("Would Book a Call?", data.would_book),
+      row("Biggest Pain Point", data.pain_points),
+      row("Best Part", data.best_part),
+      row("Anything Else", data.anything_else),
+      `</table>`,
+      `<p style="font-family:sans-serif;color:#999;font-size:11px;margin-top:16px;">User agent: ${data.user_agent || "unknown"}</p>`,
+    ].join("");
+
+    // Send formatted email to Roger via Brevo transactional
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: [{ email: "rstellers@fidarehealth.com", name: "Roger Stellers" }],
+        sender: { email: "roger@golegara.com", name: "Legara Beta Test" },
+        subject: `Beta Feedback: ${data.name || "Anonymous"} — ${data.rating_overall || "?"}/5`,
+        htmlContent: lines,
+      }),
+    });
+
+    return json({ ok: true }, 200);
+  } catch (err) {
+    console.error("Beta feedback error:", err);
+    return json({ error: err.message }, 500);
+  }
+}
+
+function row(label, value) {
+  return `<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;color:#1c2b24;vertical-align:top;width:180px;">${label}</td><td style="padding:10px 12px;border-bottom:1px solid #eee;color:#4a5e54;">${value || "—"}</td></tr>`;
 }
 
 // --- Response helpers ---
