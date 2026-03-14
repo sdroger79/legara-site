@@ -155,9 +155,9 @@ function generateReport(orgName) {
   y += 80;
 
   // Summary text
-  y = bodyText('Based on your inputs, switching to Legara\'s encounter-based model could save your health center ' + fmtK(d.total3Yr) + ' over three years compared to traditional employment. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s all-in rate of ' + fmtD(d.legaraRate) + '/encounter.', y);
+  y = bodyText('Based on your inputs, switching to Legara\'s encounter-based model could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
   y += 8;
-  y = bodyText('The following pages break down the detailed cost comparison and include our full study on behavioral health economics for California FQHCs.', y);
+  y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California FQHCs.', y);
 
   addFooter(1);
 
@@ -216,6 +216,30 @@ function generateReport(orgName) {
   );
 
   y = bodyText('Timeline: Internal hires take approximately ' + d.totalRampMonths + ' months to reach full productivity (recruiting, onboarding, credentialing, payer enrollment, and caseload building). Legara providers are typically seeing patients within 5 months, at zero cost to your health center during the ramp period.', y);
+
+  y += 12;
+  doc.setFillColor(232, 245, 238);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 108, 4, 4, 'F');
+  doc.setFontSize(11);
+  doc.setTextColor.apply(doc, GREEN);
+  doc.setFont('helvetica', 'bold');
+  doc.text('How does Legara achieve higher provider utilization?', MARGIN + 12, y + 18);
+  doc.setFontSize(9);
+  doc.setTextColor.apply(doc, DARK);
+  doc.setFont('helvetica', 'normal');
+  var ecoLines = doc.splitTextToSize('Legara\u2019s three-layer ecosystem removes the organizational friction that limits employed providers. The workforce network attracts motivated independent clinicians who want schedule flexibility and patient diversity. The operational layer handles all administrative burden \u2014 credentialing, scheduling, compliance, EHR \u2014 so providers focus exclusively on patients. And the financial architecture ensures providers are paid promptly without the cash flow uncertainty of independent practice. The result: demonstrated utilization rates significantly above industry norms, without burnout.', CONTENT_W - 24);
+  doc.text(ecoLines, MARGIN + 12, y + 34);
+  y += 120;
+  doc.setFillColor.apply(doc, GREEN);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 52, 4, 4, 'F');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Want to see these numbers with your actual organizational data?', MARGIN + 12, y + 20);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Schedule a 30-minute conversation with Roger: cal.com/roger-golegara.com/legara-roi-review', MARGIN + 12, y + 36);
+  y += 64;
 
   addFooter(2);
 
@@ -384,6 +408,12 @@ function generateReport(orgName) {
       }
     }
   );
+
+  doc.setFontSize(8);
+  doc.setTextColor.apply(doc, MUTED);
+  doc.setFont('helvetica', 'italic');
+  doc.text('*Rates shown reflect standard encounter rates by provider type. Final rates are confirmed during contracting and may vary based on licensure, encounter complexity, and agreement terms.', MARGIN, y, { maxWidth: CONTENT_W });
+  y += 20;
 
   y = heading('3. Why This Matters Now \u2014 Especially in California', y);
   y += 4;
