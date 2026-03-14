@@ -364,17 +364,19 @@ function calculate() {
   if (tl) {
     tl.innerHTML = '';
     [
-      { label: 'Recruit', months: recruitMonths, cls: 'recruit' },
-      { label: 'Onboard', months: onboardMonths, cls: 'onboard' },
-      { label: 'Credential', months: credentialMonths, cls: 'credential' },
-      { label: 'Payer', months: payerPanelMonths, cls: 'payer' },
-      { label: 'Panel', months: panelBuildMonths, cls: 'panel' }
+      { label: 'Recruiting', months: recruitMonths, cls: 'recruit' },
+      { label: 'Onboarding', months: onboardMonths, cls: 'onboard' },
+      { label: 'Credentialing', months: credentialMonths, cls: 'credential' },
+      { label: 'Payer enrollment', months: payerPanelMonths, cls: 'payer' },
+      { label: 'Panel building', months: panelBuildMonths, cls: 'panel' }
     ].forEach(function(s) {
       if (s.months > 0) {
+        var pct = s.months / totalForBar * 100;
         var div = document.createElement('div');
         div.className = 'timeline-bar-segment ' + s.cls;
-        div.style.width = (s.months / totalForBar * 100) + '%';
-        div.textContent = s.label;
+        div.style.width = pct + '%';
+        div.title = s.label + ' (' + (s.months < 1 ? Math.round(s.months * 4.3) + ' wks' : s.months + ' mo') + ')';
+        div.textContent = pct >= 10 ? s.label : '';
         tl.appendChild(div);
       }
     });

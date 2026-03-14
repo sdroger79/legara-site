@@ -694,11 +694,14 @@ section.content-section {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: white;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  padding: 0 2px;
   transition: width 0.5s ease;
 }
 

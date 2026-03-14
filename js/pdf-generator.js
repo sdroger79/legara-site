@@ -157,7 +157,7 @@ function generateReport(orgName) {
   // Summary text
   y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
   y += 8;
-  y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California FQHCs.', y);
+  y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California Federally Qualified Health Centers (FQHCs).', y);
 
   addFooter(1);
 
@@ -186,6 +186,7 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.65 }, 1: { halign: 'right' } } }
   );
 
+  y += 4; // extra breathing room between tables
   y = subheading('With Legara (Year 1)', y);
   y = autoTable(y,
     ['', 'Amount'],
@@ -197,6 +198,7 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.65 }, 1: { halign: 'right' } } }
   );
 
+  y += 4; // extra breathing room between tables
   y = subheading('Cash Generated for Your Mission', y);
 
   function missionColor(n) { return n >= 0 ? GREEN : RED; }
@@ -217,25 +219,39 @@ function generateReport(orgName) {
 
   y = bodyText('Timeline: Internal hires take approximately ' + d.totalRampMonths + ' months to reach full productivity (recruiting, onboarding, credentialing, payer enrollment, and caseload building). Legara providers are typically seeing patients within 5 months, at zero cost to your health center during the ramp period.', y);
 
+  // Check if callout + CTA block fits on this page (need ~170pt)
+  var calloutBlockHeight = 100 + 12 + 52 + 40; // callout + gap + CTA + breathing room
+  if (y + calloutBlockHeight > PAGE_H - 50) {
+    addFooter(2);
+    doc.addPage();
+    y = MARGIN;
+  }
+
   y += 12;
+  // Measure callout text first to size the box dynamically
+  doc.setFontSize(9);
+  var ecoText = 'Three things that don\'t exist inside a traditional employment model: a workforce network built around clinician autonomy, an operational layer that eliminates every administrative distraction, and a financial architecture that removes cash flow uncertainty. The structure changes the math. We\'re happy to walk through exactly how -- and what it means for your specific organization.';
+  var ecoLines = doc.splitTextToSize(ecoText, CONTENT_W - 24);
+  var calloutBoxH = 38 + ecoLines.length * 13 + 12; // heading + text + padding
+
   doc.setFillColor(232, 245, 238);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 108, 4, 4, 'F');
+  doc.roundedRect(MARGIN, y, CONTENT_W, calloutBoxH, 4, 4, 'F');
   doc.setFontSize(11);
   doc.setTextColor.apply(doc, GREEN);
   doc.setFont('helvetica', 'bold');
-  doc.text('Why is Legara\u2019s provider utilization significantly higher than industry norms?', MARGIN + 12, y + 18);
+  doc.text('Why is Legara\'s provider utilization significantly higher than industry norms?', MARGIN + 12, y + 18);
   doc.setFontSize(9);
   doc.setTextColor.apply(doc, DARK);
   doc.setFont('helvetica', 'normal');
-  var ecoLines = doc.splitTextToSize('Three things that don\u2019t exist inside a traditional employment model: a workforce network built around clinician autonomy, an operational layer that eliminates every administrative distraction, and a financial architecture that removes cash flow uncertainty. The structure changes the math. We\u2019re happy to walk through exactly how \u2014 and what it means for your specific organization.', CONTENT_W - 24);
   doc.text(ecoLines, MARGIN + 12, y + 34);
-  y += 120;
+  y += calloutBoxH + 12;
+
   doc.setFillColor.apply(doc, GREEN);
   doc.roundedRect(MARGIN, y, CONTENT_W, 52, 4, 4, 'F');
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.text('Want to turn these estimates into your organization\u2019s actual business case?', MARGIN + 12, y + 20);
+  doc.text('Want to turn these estimates into your organization\'s actual business case?', MARGIN + 12, y + 20);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('Schedule a 30-minute conversation with Roger: cal.com/roger-golegara.com/legara-roi-review', MARGIN + 12, y + 36);
