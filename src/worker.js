@@ -149,36 +149,71 @@ function calculateNextSend(delayDays) {
 
 async function handleBrevoWebhook(request, env) {
   try {
-    const { email, firstName, lastName, organization, title, utm_source, utm_medium, utm_campaign } =
-      await request.json();
+    const data = await request.json();
+    const {
+      email, firstName, lastName, organization, title, phone,
+      utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+      roi_provider_type, roi_number_of_providers, roi_annual_salary,
+      roi_year_1_savings, roi_3year_savings, roi_internal_cpe_y1,
+      roi_legara_rate, roi_mission_advantage, roi_mission_cash_legara,
+      roi_calculator_version
+    } = data;
 
     if (!email) {
       return json({ error: "email is required" }, 400);
     }
 
-    // Create/update contact in Brevo on List 5
-    const brevoRes = await fetch("https://api.brevo.com/v3/contacts", {
-      method: "POST",
-      headers: {
-        "api-key": env.BREVO_API_KEY,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        attributes: {
-          FIRSTNAME: firstName || "",
-          LASTNAME: lastName || "",
-          COMPANY: organization || "",
-          JOBTITLE: title || "",
-          UTM_SOURCE: utm_source || "",
-          UTM_MEDIUM: utm_medium || "",
-          UTM_CAMPAIGN: utm_campaign || "",
+    // Run Brevo contact creation and HubSpot CRM upsert in parallel
+    const [brevoRes] = await Promise.all([
+      // 1. Create/update contact in Brevo on List 5
+      fetch("https://api.brevo.com/v3/contacts", {
+        method: "POST",
+        headers: {
+          "api-key": env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        listIds: [5],
-        updateEnabled: true,
+        body: JSON.stringify({
+          email,
+          attributes: {
+            FIRSTNAME: firstName || "",
+            LASTNAME: lastName || "",
+            COMPANY: organization || "",
+            JOBTITLE: title || "",
+            UTM_SOURCE: utm_source || "",
+            UTM_MEDIUM: utm_medium || "",
+            UTM_CAMPAIGN: utm_campaign || "",
+          },
+          listIds: [5],
+          updateEnabled: true,
+        }),
       }),
-    });
+
+      // 2. Create/update HubSpot contact via CRM API (reliable server-side path)
+      upsertHubSpotContact(email, {
+        firstname: firstName || "",
+        lastname: lastName || "",
+        company: organization || "",
+        jobtitle: title || "",
+        phone: phone || "",
+        roi_provider_type: roi_provider_type || "",
+        roi_organization_name: organization || "",
+        roi_number_of_providers: roi_number_of_providers || "1",
+        roi_annual_salary: roi_annual_salary || "0",
+        roi_year_1_savings: roi_year_1_savings || "0",
+        roi_3year_savings: roi_3year_savings || "0",
+        roi_internal_cpe_y1: roi_internal_cpe_y1 || "0",
+        roi_legara_rate: roi_legara_rate || "155",
+        roi_mission_advantage: roi_mission_advantage || "0",
+        roi_mission_cash_legara: roi_mission_cash_legara || "0",
+        roi_calculator_version: roi_calculator_version || "public",
+        utm_campaign: utm_campaign || "",
+        utm_medium: utm_medium || "",
+        utm_content: utm_content || "",
+        utm_term: utm_term || "",
+        hs_lead_status: "NEW",
+      }, env),
+    ]);
 
     const body = await brevoRes.text();
 
@@ -195,7 +230,9 @@ async function handleBrevoWebhook(request, env) {
       env
     );
 
-    // Notify Roger of new lead
+    // Notify Roger of new lead (include ROI data in the email)
+    const savings3yr = roi_3year_savings ? "$" + Number(roi_3year_savings).toLocaleString() : "—";
+    const missionAdv = roi_mission_advantage ? "$" + Number(roi_mission_advantage).toLocaleString() : "—";
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -212,6 +249,9 @@ async function handleBrevoWebhook(request, env) {
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Email</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + email + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Organization</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (organization || "—") + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Title</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (title || "—") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Provider Type</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (roi_provider_type || "—") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Mission Advantage</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + missionAdv + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>3-Year Impact</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + savings3yr + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Source</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (utm_source || "direct") + " / " + (utm_medium || "—") + " / " + (utm_campaign || "—") + "</td></tr>" +
           "</table>" +
           "<p style='font-family:sans-serif;font-size:13px;color:#666;margin-top:16px;'>This lead just downloaded their ROI report and entered Sequence A. Check <a href=\"https://app.hubspot.com\">HubSpot</a> for full details.</p>",
@@ -233,6 +273,94 @@ async function handleBrevoWebhook(request, env) {
     });
   } catch (err) {
     return json({ error: err.message }, 500);
+  }
+}
+
+// --- HubSpot CRM contact upsert (server-side, reliable) ---
+
+let _cachedOwnerId = null;
+
+async function getDefaultOwnerId(hsHeaders) {
+  if (_cachedOwnerId) return _cachedOwnerId;
+  try {
+    const res = await fetch("https://api.hubapi.com/crm/v3/owners?limit=1", {
+      headers: hsHeaders,
+    });
+    const data = await res.json();
+    if (data.results && data.results.length > 0) {
+      _cachedOwnerId = data.results[0].id;
+      console.log(`Cached HubSpot owner ID: ${_cachedOwnerId}`);
+    }
+  } catch (err) {
+    console.error("Failed to fetch HubSpot owner:", err);
+  }
+  return _cachedOwnerId;
+}
+
+async function upsertHubSpotContact(email, properties, env) {
+  const HS_TOKEN = env.HUBSPOT_TOKEN;
+  const hsHeaders = {
+    Authorization: `Bearer ${HS_TOKEN}`,
+    "Content-Type": "application/json",
+  };
+
+  try {
+    // Get owner ID for auto-assignment
+    const ownerId = await getDefaultOwnerId(hsHeaders);
+    if (ownerId) {
+      properties.hubspot_owner_id = ownerId;
+    }
+
+    // Search for existing contact
+    const searchRes = await fetch(
+      "https://api.hubapi.com/crm/v3/objects/contacts/search",
+      {
+        method: "POST",
+        headers: hsHeaders,
+        body: JSON.stringify({
+          filterGroups: [{
+            filters: [{ propertyName: "email", operator: "EQ", value: email }],
+          }],
+        }),
+      }
+    );
+    const searchData = await searchRes.json();
+
+    let contactId;
+
+    if (searchData.total > 0) {
+      // Update existing contact with ROI data
+      contactId = searchData.results[0].id;
+      const updateRes = await fetch(
+        `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`,
+        {
+          method: "PATCH",
+          headers: hsHeaders,
+          body: JSON.stringify({ properties }),
+        }
+      );
+      console.log(`HubSpot upsert (update) ${email}: ${updateRes.status}`);
+    } else {
+      // Create new contact with all data
+      const createRes = await fetch(
+        "https://api.hubapi.com/crm/v3/objects/contacts",
+        {
+          method: "POST",
+          headers: hsHeaders,
+          body: JSON.stringify({
+            properties: { email, ...properties },
+          }),
+        }
+      );
+      const createData = await createRes.json();
+      contactId = createData.id;
+      console.log(`HubSpot upsert (create) ${email}: ${createRes.status}`);
+    }
+
+    return contactId;
+  } catch (err) {
+    console.error(`HubSpot upsert failed for ${email}:`, err);
+    return null;
   }
 }
 
@@ -356,6 +484,32 @@ async function updateBrevo(email, firstName, lastName, organization, meetingDate
   }
 }
 
+// Cache pipeline/stage IDs to avoid repeated lookups
+let _cachedPipelineId = null;
+let _cachedStageId = null;
+
+async function getLegaraPipelineStage(hsHeaders) {
+  if (_cachedPipelineId && _cachedStageId) {
+    return { pipelineId: _cachedPipelineId, stageId: _cachedStageId };
+  }
+  try {
+    const res = await fetch("https://api.hubapi.com/crm/v3/pipelines/deals", {
+      headers: hsHeaders,
+    });
+    const data = await res.json();
+    const pipeline = (data.results || []).find(p => p.label.includes("Legara"));
+    if (pipeline) {
+      _cachedPipelineId = pipeline.id;
+      const stage = pipeline.stages.find(s => s.label.includes("ROI Review Scheduled"));
+      _cachedStageId = stage ? stage.id : pipeline.stages[0]?.id;
+      console.log(`Cached pipeline: ${_cachedPipelineId}, stage: ${_cachedStageId}`);
+    }
+  } catch (err) {
+    console.error("Failed to fetch pipeline:", err);
+  }
+  return { pipelineId: _cachedPipelineId, stageId: _cachedStageId };
+}
+
 async function updateHubSpot(email, firstName, lastName, organization, payload, env) {
   const HS_TOKEN = env.HUBSPOT_TOKEN;
   const hsHeaders = {
@@ -411,17 +565,19 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
     }
 
     // 2. Update lifecycle stage and lead status
+    const ownerId = await getDefaultOwnerId(hsHeaders);
+    const updateProps = {
+      lifecyclestage: "salesqualifiedlead",
+      hs_lead_status: "OPEN",
+    };
+    if (ownerId) updateProps.hubspot_owner_id = ownerId;
+
     const updateRes = await fetch(
       `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`,
       {
         method: "PATCH",
         headers: hsHeaders,
-        body: JSON.stringify({
-          properties: {
-            lifecyclestage: "salesqualifiedlead",
-            hs_lead_status: "OPEN",
-          },
-        }),
+        body: JSON.stringify({ properties: updateProps }),
       }
     );
     console.log("HubSpot update contact:", updateRes.status);
@@ -463,6 +619,42 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
       }
     );
     console.log("HubSpot create note:", noteRes.status);
+
+    // 4. Auto-create Deal in Legara Sales Pipeline (stage: ROI Review Scheduled)
+    const { pipelineId, stageId } = await getLegaraPipelineStage(hsHeaders);
+    if (pipelineId && contactId) {
+      const dealName = `${organization || ((firstName || "") + " " + (lastName || "")).trim()} — ROI Review`;
+      const dealProps = {
+        dealname: dealName,
+        pipeline: pipelineId,
+        dealstage: stageId,
+        hs_priority: "medium",
+      };
+      if (ownerId) dealProps.hubspot_owner_id = ownerId;
+
+      const dealRes = await fetch(
+        "https://api.hubapi.com/crm/v3/objects/deals",
+        {
+          method: "POST",
+          headers: hsHeaders,
+          body: JSON.stringify({
+            properties: dealProps,
+            associations: [
+              {
+                to: { id: contactId },
+                types: [
+                  {
+                    associationCategory: "HUBSPOT_DEFINED",
+                    associationTypeId: 3, // deal-to-contact
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      );
+      console.log("HubSpot create deal:", dealRes.status);
+    }
   } catch (err) {
     console.error("HubSpot update failed:", err);
   }

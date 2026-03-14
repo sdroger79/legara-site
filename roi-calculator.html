@@ -630,7 +630,7 @@ function submitDownloadForm(e) {
     })
   }).catch(function(err) { console.error('HubSpot submission error:', err); });
 
-  // Fire-and-forget: Brevo
+  // Fire-and-forget: Brevo + HubSpot CRM (server-side, reliable)
   fetch('/api/brevo-webhook', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -640,9 +640,22 @@ function submitDownloadForm(e) {
       lastName: lastName,
       organization: org,
       title: title,
+      phone: phone,
       utm_source: utm.utm_source || '',
       utm_medium: utm.utm_medium || '',
-      utm_campaign: utm.utm_campaign || ''
+      utm_campaign: utm.utm_campaign || '',
+      utm_content: utm.utm_content || '',
+      utm_term: utm.utm_term || '',
+      roi_provider_type: currentType,
+      roi_number_of_providers: String(document.getElementById('providerCount').value || '1'),
+      roi_annual_salary: String(document.getElementById('salary').value || '0'),
+      roi_year_1_savings: String(lastCalc.year1Savings || 0),
+      roi_3year_savings: String(lastCalc.total3Yr || 0),
+      roi_internal_cpe_y1: String(Math.round(lastCalc.internalCPE1 || 0)),
+      roi_legara_rate: String(lastCalc.legaraRate || 155),
+      roi_mission_advantage: String(lastCalc.missionAdvantage || 0),
+      roi_mission_cash_legara: String(lastCalc.legaraCashYear1 || 0),
+      roi_calculator_version: 'public'
     })
   }).catch(function(err) { console.error('Brevo webhook error:', err); });
 
