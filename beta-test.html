@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Help Us Test | Legara</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/png" href="/img/logo.png">
+<style>
+  .test-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 120px 24px 80px;
+  }
+  .test-logo {
+    margin-bottom: 40px;
+  }
+  .test-logo img {
+    height: 32px;
+    width: auto;
+  }
+  .test-greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--charcoal);
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  .test-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--slate);
+    margin-bottom: 24px;
+  }
+  .test-body strong {
+    color: var(--charcoal);
+  }
+  .test-scenario {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    margin-bottom: 28px;
+  }
+  .test-scenario-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  .test-scenario-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+  }
+  .test-scenario p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--slate);
+    margin-bottom: 12px;
+  }
+  .test-scenario p:last-child {
+    margin-bottom: 0;
+  }
+  .test-cta {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--green);
+    color: white;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+  .test-cta:hover {
+    opacity: 0.9;
+  }
+  .test-steps {
+    margin: 16px 0 4px;
+  }
+  .test-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .test-step-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--green);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .test-step-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--slate);
+  }
+  .test-feedback {
+    background: var(--green-pale);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 28px;
+  }
+  .test-feedback-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+  }
+  .test-feedback p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--slate);
+    margin-bottom: 16px;
+  }
+  .test-questions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .test-questions li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--charcoal);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .test-questions li:last-child {
+    border-bottom: none;
+  }
+  .test-questions li span {
+    color: var(--mist);
+    font-size: 13px;
+  }
+  .test-privacy {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .test-privacy-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    margin-top: 1px;
+  }
+  .test-privacy-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--mist);
+  }
+  .test-thanks {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    color: var(--mist);
+    line-height: 1.6;
+  }
+  .test-thanks strong {
+    color: var(--charcoal);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Legara"></a>
+</nav>
+
+<div class="test-page">
+
+  <div class="test-greeting">Hey — thanks for helping me test this.</div>
+
+  <p class="test-body">
+    I'm launching a new tool on our site and I need a few real people to try it before it goes live. You don't need to know anything about healthcare or what Legara does — I just need you to go through the experience like a normal visitor would and tell me what you think.
+  </p>
+  <p class="test-body">
+    <strong>It'll take about 5 minutes.</strong> Just follow the steps below, then text me your thoughts. That's it.
+  </p>
+
+  <div class="test-privacy">
+    <div class="test-privacy-icon">&#128274;</div>
+    <div class="test-privacy-text">
+      <strong style="color: var(--charcoal);">Please use your real name and email</strong> — I need to test that the full system works end-to-end (emails, PDF delivery, etc.). I'll delete all test data before we go live. Your info won't be shared or used for anything else.
+    </div>
+  </div>
+
+  <div class="test-scenario">
+    <div class="test-scenario-label">Your Scenario</div>
+    <div class="test-scenario-title">You run a community health center</div>
+    <p>Imagine you're an executive at a healthcare organization. You've heard about Legara and landed on this page to figure out whether it could help your organization. You don't know much yet — just poke around and see what you think.</p>
+
+    <div class="test-steps">
+      <div class="test-step">
+        <div class="test-step-num">1</div>
+        <div class="test-step-text">Start on the <a href="roi-calculator.html" style="color: var(--green); font-weight: 600;">ROI Calculator page</a> — play with the inputs, look at the results</div>
+      </div>
+      <div class="test-step">
+        <div class="test-step-num">2</div>
+        <div class="test-step-text">When you see the form, fill it out with your <strong>real name and email</strong> and a made-up organization name (e.g. "Sunrise Health Center")</div>
+      </div>
+      <div class="test-step">
+        <div class="test-step-num">3</div>
+        <div class="test-step-text">Download the report and take a look at it</div>
+      </div>
+      <div class="test-step">
+        <div class="test-step-num">4</div>
+        <div class="test-step-text">Check your email — you should receive something from me within a minute or two</div>
+      </div>
+      <div class="test-step">
+        <div class="test-step-num">5</div>
+        <div class="test-step-text">Text me your feedback (see questions below)</div>
+      </div>
+    </div>
+
+    <a href="roi-calculator.html" class="test-cta">Start the Test</a>
+  </div>
+
+  <div class="test-feedback">
+    <div class="test-feedback-title">What I'd love to hear back</div>
+    <p>Don't overthink it — quick gut reactions are the most useful. Just text me whatever comes to mind.</p>
+    <ul class="test-questions">
+      <li>Did the calculator make sense? Was anything confusing?</li>
+      <li>Did the PDF download work? How did it look?</li>
+      <li>Did you get an email? How quickly? <span>(check spam if not)</span></li>
+      <li>What was your overall impression of the site?</li>
+      <li>Anything feel broken, slow, or weird?</li>
+      <li>Would you actually book a call if this were relevant to you?</li>
+    </ul>
+  </div>
+
+  <div class="test-thanks">
+    <strong>Seriously — thank you.</strong><br>
+    This kind of feedback is incredibly hard to get and I really appreciate you taking the time.
+    <br><br>— Roger
+  </div>
+
+</div>
+
+</body>
+</html>
