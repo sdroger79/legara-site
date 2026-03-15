@@ -27,6 +27,7 @@ var MARGIN = 54; // 0.75in
 var PAGE_W = 612;
 var PAGE_H = 792;
 var CONTENT_W = PAGE_W - MARGIN * 2;
+var CONTENT_TOP = 72; // y where content starts on pages with header
 
 function generateReport(orgName) {
   console.log('[PDF] Starting report generation for:', orgName);
@@ -34,9 +35,10 @@ function generateReport(orgName) {
   var doc = new jsPDF({ unit: 'pt', format: 'letter' });
   var d = lastCalc;
   var y;
+  var pageNum = 0; // incremented by newPage()
 
   // ─── HELPERS ───
-  function addFooter(pageNum) {
+  function addFooter() {
     doc.setFontSize(8);
     doc.setTextColor.apply(doc, MUTED);
     doc.setFont('helvetica', 'normal');
@@ -47,15 +49,28 @@ function generateReport(orgName) {
   function addHeader() {
     try {
       if (LEGARA_LOGO_B64 && LEGARA_LOGO_B64 !== 'PLACEHOLDER') {
-        doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, 20, 80, 27);
-        // Thin green line under logo
-        doc.setDrawColor.apply(doc, GREEN);
-        doc.setLineWidth(0.5);
-        doc.line(MARGIN, 50, PAGE_W - MARGIN, 50);
+        doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, 18, 72, 24);
       }
     } catch (e) {
       console.warn('[PDF] Header logo failed:', e);
     }
+    doc.setDrawColor.apply(doc, GREEN);
+    doc.setLineWidth(0.5);
+    doc.line(MARGIN, 54, PAGE_W - MARGIN, 54);
+  }
+
+  // Start a new page with header. Returns the y position for content.
+  function newPage() {
+    if (pageNum > 0) addFooter(); // footer for the page we're leaving
+    doc.addPage();
+    pageNum++;
+    addHeader();
+    return CONTENT_TOP;
+  }
+
+  // How much vertical space remains before the footer area
+  function remaining(currentY) {
+    return PAGE_H - 50 - currentY; // 50pt reserved for footer
   }
 
   function heading(text, yPos, size) {
@@ -63,7 +78,7 @@ function generateReport(orgName) {
     doc.setTextColor.apply(doc, GREEN);
     doc.setFont('helvetica', 'bold');
     doc.text(text, MARGIN, yPos);
-    return yPos + (size || 16) + 8;
+    return yPos + (size || 16) + 6;
   }
 
   function subheading(text, yPos) {
@@ -71,7 +86,7 @@ function generateReport(orgName) {
     doc.setTextColor.apply(doc, DARK);
     doc.setFont('helvetica', 'bold');
     doc.text(text, MARGIN, yPos);
-    return yPos + 18;
+    return yPos + 16;
   }
 
   function bodyText(text, yPos, opts) {
@@ -80,7 +95,7 @@ function generateReport(orgName) {
     doc.setFont('helvetica', 'normal');
     var lines = doc.splitTextToSize(text, (opts && opts.width) || CONTENT_W);
     doc.text(lines, (opts && opts.x) || MARGIN, yPos);
-    return yPos + lines.length * 14;
+    return yPos + lines.length * 13;
   }
 
   function fmtD(n) { return '$' + Math.round(Math.abs(n)).toLocaleString(); }
@@ -93,15 +108,15 @@ function generateReport(orgName) {
 
   function statBox(x, yPos, w, label, value, color) {
     doc.setFillColor(245, 247, 246);
-    doc.roundedRect(x, yPos, w, 58, 4, 4, 'F');
+    doc.roundedRect(x, yPos, w, 54, 4, 4, 'F');
     doc.setFontSize(9);
     doc.setTextColor.apply(doc, MUTED);
     doc.setFont('helvetica', 'normal');
-    doc.text(label, x + w / 2, yPos + 18, { align: 'center' });
-    doc.setFontSize(22);
+    doc.text(label, x + w / 2, yPos + 16, { align: 'center' });
+    doc.setFontSize(20);
     doc.setTextColor.apply(doc, color || GREEN);
     doc.setFont('helvetica', 'bold');
-    doc.text(value, x + w / 2, yPos + 44, { align: 'center' });
+    doc.text(value, x + w / 2, yPos + 40, { align: 'center' });
   }
 
   function autoTable(yPos, head, body, opts) {
@@ -114,17 +129,18 @@ function generateReport(orgName) {
       bodyStyles: { fontSize: 9, textColor: DARK },
       alternateRowStyles: { fillColor: ALT_ROW },
       columnStyles: opts && opts.columnStyles || {},
-      styles: { cellPadding: 6, lineWidth: 0 },
+      styles: { cellPadding: 5, lineWidth: 0 },
       theme: 'plain',
       didParseCell: opts && opts.didParseCell || undefined
     });
-    return doc.lastAutoTable.finalY + 16;
+    return doc.lastAutoTable.finalY + 12;
   }
 
   // ═══════════════════════════════════════════
   // PAGE 1: PERSONALIZED RESULTS COVER
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 1: Cover');
+  pageNum = 1;
   try {
     if (LEGARA_LOGO_B64 && LEGARA_LOGO_B64 !== 'PLACEHOLDER') {
       doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, MARGIN, 120, 40);
@@ -159,32 +175,30 @@ function generateReport(orgName) {
   doc.setDrawColor.apply(doc, GREEN);
   doc.setLineWidth(2);
   doc.line(MARGIN, y, PAGE_W - MARGIN, y);
-  y += 32;
+  y += 28;
 
   // Three stat boxes
   var boxW = (CONTENT_W - 20) / 3;
   statBox(MARGIN, y, boxW, 'Year 1 Savings', fmtK(d.year1Savings), GREEN);
   statBox(MARGIN + boxW + 10, y, boxW, '3-Year Savings', fmtK(d.total3Yr), GREEN);
   statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'Internal Cost/Encounter', fmtD(d.internalCPE1), RED);
-  y += 80;
+  y += 74;
 
   // Summary text
   y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 - significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
-  y += 8;
+  y += 6;
   y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California Federally Qualified Health Centers (FQHCs).', y);
 
-  addFooter(1);
+  addFooter();
 
   // ═══════════════════════════════════════════
   // PAGE 2: DETAILED COST COMPARISON
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 2: Cost comparison');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  y = newPage();
 
-  y = heading('Detailed Cost Comparison', y, 20);
-  y += 8;
+  y = heading('Detailed Cost Comparison', y, 18);
+  y += 4;
 
   y = subheading('True Cost of Hiring Internally (Year 1)', y);
   y = autoTable(y,
@@ -201,7 +215,6 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.65 }, 1: { halign: 'right' } } }
   );
 
-  y += 4; // extra breathing room between tables
   y = subheading('With Legara (Year 1)', y);
   y = autoTable(y,
     ['', 'Amount'],
@@ -213,7 +226,6 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.65 }, 1: { halign: 'right' } } }
   );
 
-  y += 4; // extra breathing room between tables
   y = subheading('Cash Generated for Your Mission', y);
 
   function missionColor(n) { return n >= 0 ? GREEN : RED; }
@@ -234,79 +246,74 @@ function generateReport(orgName) {
 
   y = bodyText('Timeline: Internal hires take approximately ' + d.totalRampMonths + ' months to reach full productivity (recruiting, onboarding, credentialing, payer enrollment, and caseload building). Legara providers are typically seeing patients within 5 months, at zero cost to your health center during the ramp period.', y);
 
-  // Check if callout + CTA block fits on this page (need ~170pt)
-  var calloutBlockHeight = 100 + 12 + 52 + 40; // callout + gap + CTA + breathing room
-  if (y + calloutBlockHeight > PAGE_H - 50) {
-    addFooter(2);
-    doc.addPage();
-    addHeader();
-    y = 62;
+  // Utilization callout + CTA block
+  doc.setFontSize(9);
+  var ecoText = 'Three things that don\'t exist inside a traditional employment model: a workforce network built around clinician autonomy, an operational layer that eliminates every administrative distraction, and a financial architecture that removes cash flow uncertainty. The structure changes the math. We\'re happy to walk through exactly how this applies to your specific organization.';
+  var ecoLines = doc.splitTextToSize(ecoText, CONTENT_W - 24);
+  var calloutBoxH = 36 + ecoLines.length * 12 + 10;
+  var ctaBlockH = calloutBoxH + 12 + 52; // callout + gap + CTA bar
+
+  // Break to new page if callout + CTA won't fit
+  if (remaining(y) < ctaBlockH + 20) {
+    addFooter();
+    y = newPage();
   }
 
-  y += 12;
-  // Measure callout text first to size the box dynamically
-  doc.setFontSize(9);
-  var ecoText = 'Three things that don\'t exist inside a traditional employment model: a workforce network built around clinician autonomy, an operational layer that eliminates every administrative distraction, and a financial architecture that removes cash flow uncertainty. The structure changes the math. We\'re happy to walk through exactly how -- and what it means for your specific organization.';
-  var ecoLines = doc.splitTextToSize(ecoText, CONTENT_W - 24);
-  var calloutBoxH = 38 + ecoLines.length * 13 + 12; // heading + text + padding
-
+  y += 10;
   doc.setFillColor(232, 245, 238);
   doc.roundedRect(MARGIN, y, CONTENT_W, calloutBoxH, 4, 4, 'F');
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.setTextColor.apply(doc, GREEN);
   doc.setFont('helvetica', 'bold');
-  doc.text('Why is Legara\'s provider utilization significantly higher than industry norms?', MARGIN + 12, y + 18);
+  doc.text('Why is Legara\'s provider utilization significantly higher than industry norms?', MARGIN + 12, y + 16);
   doc.setFontSize(9);
   doc.setTextColor.apply(doc, DARK);
   doc.setFont('helvetica', 'normal');
-  doc.text(ecoLines, MARGIN + 12, y + 34);
-  y += calloutBoxH + 12;
+  doc.text(ecoLines, MARGIN + 12, y + 30);
+  y += calloutBoxH + 10;
 
   doc.setFillColor.apply(doc, GREEN);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 52, 4, 4, 'F');
+  doc.roundedRect(MARGIN, y, CONTENT_W, 48, 4, 4, 'F');
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.text('Want to turn these estimates into your organization\'s actual business case?', MARGIN + 12, y + 20);
+  doc.text('Want to turn these estimates into your organization\'s actual business case?', MARGIN + 12, y + 18);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text('Schedule a 30-minute conversation with Roger: cal.com/roger-golegara.com/legara-roi-review', MARGIN + 12, y + 36);
-  y += 64;
+  doc.text('Schedule a 30-minute conversation with Roger: cal.com/roger-golegara.com/legara-roi-review', MARGIN + 12, y + 34);
+  y += 56;
 
-  addFooter(2);
+  addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 3: ECONOMICS STUDY — INTRO
+  // PAGE 3: ECONOMICS STUDY - INTRO
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 3: Economics intro');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  y = newPage();
 
-  doc.setFontSize(22);
+  doc.setFontSize(20);
   doc.setTextColor.apply(doc, GREEN);
   doc.setFont('helvetica', 'bold');
   doc.text('Behavioral Health Economics', MARGIN, y);
-  y += 28;
+  y += 24;
   doc.text('for California FQHCs', MARGIN, y);
-  y += 40;
+  y += 36;
 
   // Three stat boxes
   statBox(MARGIN, y, boxW, 'California FQHCs', '174', DARK);
   statBox(MARGIN + boxW + 10, y, boxW, 'Counties Served', 'All 58', DARK);
   statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'Behavioral Health Deficit', '40.6%', RED);
-  y += 80;
+  y += 74;
 
   y = bodyText('California\u2019s Prospective Payment System (PPS) creates strong economics for behavioral health encounters at FQHCs - rates of $200\u2013$350+ per visit make behavioral health services among the most reimbursable in community health. But the employment model that most centers use to deliver those services is quietly eroding the financial advantage.', y);
-  y += 8;
+  y += 6;
   y = bodyText('The true cost of an employed behavioral health provider - once you account for benefits, taxes, recruitment, ramp time, support staff, and turnover - routinely exceeds what most CFOs budget. And the gap between what you\u2019re paying and what you\u2019re collecting per encounter is often far wider than it appears on a spreadsheet.', y);
-  y += 16;
+  y += 12;
 
   y = heading('1. The Cost Structure FQHCs Underestimate', y);
-  y += 4;
 
   y = bodyText('When an FQHC hires a behavioral health provider, the CFO typically budgets for salary plus benefits. But the real 12-month cost includes recruiter fees, onboarding, credentialing lag (3\u20136 months of salary before the first billable encounter), payer enrollment delays, support staff, and a ramp period where the provider is being paid at full salary but producing a fraction of their eventual output.', y);
-  y += 8;
+  y += 6;
 
   y = subheading('Therapist (LCSW/LMFT) - $135K Base', y);
   y = autoTable(y,
@@ -323,6 +330,12 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.45 }, 1: { halign: 'right' }, 2: { halign: 'right' } } }
   );
 
+  // Check if PMHNP table fits (~160pt for subheading + 7-row table)
+  if (remaining(y) < 160) {
+    addFooter();
+    y = newPage();
+  }
+
   y = subheading('PMHNP - $200K Base', y);
   y = autoTable(y,
     ['', 'CFO Budget', '12-Month Reality'],
@@ -338,21 +351,18 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.45 }, 1: { halign: 'right' }, 2: { halign: 'right' } } }
   );
 
-  addFooter(3);
+  addFooter();
 
   // ═══════════════════════════════════════════
   // PAGE 4: CASH GENERATED YEAR-BY-YEAR
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 4: Cash generated');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  y = newPage();
 
   y = heading('2. Cash Generated for Your Mission: Year-by-Year', y);
-  y += 4;
 
   y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer behavioral health services - it\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
-  y += 8;
+  y += 6;
 
   y = subheading('Therapist (LCSW/LMFT) at $230 PPS', y);
   y = autoTable(y,
@@ -384,31 +394,29 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.28 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } } }
   );
 
-  y += 4;
+  // Year 1 callout box
   doc.setFillColor(245, 247, 246);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 72, 4, 4, 'F');
-  doc.setFontSize(11);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 68, 4, 4, 'F');
+  doc.setFontSize(10);
   doc.setTextColor.apply(doc, GREEN);
   doc.setFont('helvetica', 'bold');
-  doc.text('Why does the internal hire lose cash in Year 1?', MARGIN + 12, y + 20);
+  doc.text('Why does the internal hire lose cash in Year 1?', MARGIN + 12, y + 18);
   doc.setFontSize(9);
   doc.setTextColor.apply(doc, DARK);
   doc.setFont('helvetica', 'normal');
   var calloutLines = doc.splitTextToSize('Because you\u2019re paying full salary and benefits during the 3\u20136 month ramp period (recruiting, credentialing, payer enrollment, caseload building) while generating few or no billable encounters. The provider\u2019s cost is front-loaded, but their revenue is back-loaded. Legara charges $0 during ramp - you only pay for completed encounters.', CONTENT_W - 24);
-  doc.text(calloutLines, MARGIN + 12, y + 36);
-  y += 88;
+  doc.text(calloutLines, MARGIN + 12, y + 32);
+  y += 80;
 
   y = bodyText('The gap is most dramatic in Year 1 because of the ramp period. By Year 2, internal hires reach steady state - but even at full productivity, the employment model\u2019s overhead (benefits, taxes, support staff, turnover costs) means you keep less of each encounter\u2019s revenue.', y);
 
-  addFooter(4);
+  addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 5: COST SAVINGS + MACRO CONTEXT
+  // PAGE 5: COST SAVINGS + STEADY STATE
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 5: Cost savings + macro');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  console.log('[PDF] Page 5: Cost savings');
+  y = newPage();
 
   y = subheading('Cost Savings Across All Provider Types', y);
 
@@ -450,18 +458,15 @@ function generateReport(orgName) {
   doc.text('*Rates shown reflect standard encounter rates by provider type. Final rates are confirmed during contracting and may vary based on licensure, encounter complexity, and agreement terms.', MARGIN, y, { maxWidth: CONTENT_W });
   y += 20;
 
-  addFooter(5);
+  addFooter();
 
   // ═══════════════════════════════════════════
   // PAGE 6: WHY THIS MATTERS NOW
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 6: Why this matters now');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  y = newPage();
 
   y = heading('3. Why This Matters Now - Especially in California', y);
-  y += 4;
 
   var macroItems = [
     ['Workforce shortage:', 'California faces a 40.6% behavioral health workforce deficit, with rural and underserved counties hit hardest. Traditional recruiting timelines of 3\u20136 months are stretching even longer.'],
@@ -480,28 +485,24 @@ function generateReport(orgName) {
     doc.setTextColor.apply(doc, DARK);
     doc.setFont('helvetica', 'normal');
     var lines = doc.splitTextToSize(item[1], CONTENT_W - labelW);
-    // First line continues after label
     doc.text(lines[0], MARGIN + labelW, y);
     if (lines.length > 1) {
-      doc.text(lines.slice(1), MARGIN, y + 14);
-      y += 14 + (lines.length - 1) * 14 + 10;
+      doc.text(lines.slice(1), MARGIN, y + 13);
+      y += 13 + (lines.length - 1) * 13 + 8;
     } else {
-      y += 22;
+      y += 20;
     }
   });
 
-  addFooter(6);
+  addFooter();
 
   // ═══════════════════════════════════════════
   // PAGE 7: HOW LEGARA CHANGES + SOURCES
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 7: Legara model + sources');
-  doc.addPage();
-  addHeader();
-  y = 62;
+  y = newPage();
 
   y = heading('How Legara Changes the Equation', y);
-  y += 4;
 
   var bullets = [
     'Zero ramp cost: You pay nothing during credentialing and payer enrollment.',
@@ -516,63 +517,58 @@ function generateReport(orgName) {
     var boldPart = parts[0] + ':';
     var normalPart = parts.slice(1).join(':').trim();
 
-    // Print bullet point
     doc.setFontSize(10);
     doc.setTextColor.apply(doc, GREEN);
     doc.setFont('helvetica', 'bold');
     doc.text('\u2022', MARGIN, y);
 
-    // Print bold label
     doc.text(boldPart, MARGIN + 12, y);
     var bW = doc.getTextWidth(boldPart) + 4;
 
-    // Print normal text, wrapping to full width on subsequent lines
     doc.setTextColor.apply(doc, DARK);
     doc.setFont('helvetica', 'normal');
 
-    // First line: starts after the bold label
     var firstLineWidth = CONTENT_W - 12 - bW;
     var firstLineWords = normalPart.split(' ');
     var firstLine = '';
-    var remaining = '';
+    var bulletRemaining = '';
 
     for (var i = 0; i < firstLineWords.length; i++) {
       var test = firstLine ? firstLine + ' ' + firstLineWords[i] : firstLineWords[i];
       if (doc.getTextWidth(test) <= firstLineWidth) {
         firstLine = test;
       } else {
-        remaining = firstLineWords.slice(i).join(' ');
+        bulletRemaining = firstLineWords.slice(i).join(' ');
         break;
       }
     }
 
     doc.text(firstLine, MARGIN + 12 + bW, y);
-    y += 14;
+    y += 13;
 
-    // Remaining lines: full width starting at MARGIN + 12
-    if (remaining) {
-      var wrapLines = doc.splitTextToSize(remaining, CONTENT_W - 12);
+    if (bulletRemaining) {
+      var wrapLines = doc.splitTextToSize(bulletRemaining, CONTENT_W - 12);
       doc.text(wrapLines, MARGIN + 12, y);
-      y += wrapLines.length * 14;
+      y += wrapLines.length * 13;
     }
 
-    y += 6; // consistent gap between bullets
+    y += 5;
   });
 
-  y += 8;
+  y += 6;
 
   // Bottom line callout
   doc.setFillColor.apply(doc, GREEN);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 56, 4, 4, 'F');
-  doc.setFontSize(12);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 52, 4, 4, 'F');
+  doc.setFontSize(11);
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.text('Bottom line:', MARGIN + 16, y + 22);
+  doc.text('Bottom line:', MARGIN + 16, y + 20);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   var blLines = doc.splitTextToSize('The FQHCs that will thrive are the ones that match the right staffing model to the right economics. Legara exists to make that possible.', CONTENT_W - 32);
-  doc.text(blLines, MARGIN + 16, y + 38);
-  y += 72;
+  doc.text(blLines, MARGIN + 16, y + 36);
+  y += 64;
 
   // CTA
   doc.setFontSize(11);
@@ -582,19 +578,19 @@ function generateReport(orgName) {
   doc.setFont('helvetica', 'normal');
   doc.setTextColor.apply(doc, DARK);
   doc.text('golegara.com/roi-calculator', MARGIN, y + 16);
-  y += 40;
+  y += 36;
 
   // Sources
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.5);
   doc.line(MARGIN, y, PAGE_W - MARGIN, y);
-  y += 16;
+  y += 14;
 
   doc.setFontSize(8);
   doc.setTextColor.apply(doc, MUTED);
   doc.setFont('helvetica', 'bold');
   doc.text('Sources', MARGIN, y);
-  y += 12;
+  y += 10;
 
   var sources = [
     '1. HRSA UDS 2022 data; California Primary Care Association analysis',
@@ -613,16 +609,15 @@ function generateReport(orgName) {
   doc.setFont('helvetica', 'normal');
   sources.forEach(function(s) {
     doc.text(s, MARGIN, y);
-    y += 11;
+    y += 10;
   });
 
-  addFooter(7);
+  addFooter();
 
   // ─── RETURN BLOB URL ───
   var filename = 'Legara ROI Analysis - ' + orgName.replace(/[^a-zA-Z0-9 ]/g, '') + '.pdf';
   var blob = doc.output('blob');
   var blobUrl = URL.createObjectURL(blob);
-  // Store filename for the download link
   window._legaraPdfFilename = filename;
 
   // Fire-and-forget: email the PDF to the lead
