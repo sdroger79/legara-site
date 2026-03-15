@@ -169,7 +169,7 @@ function generateReport(orgName) {
   y += 80;
 
   // Summary text
-  y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 \u2014 significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
+  y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1 - significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
   y += 8;
   y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California Federally Qualified Health Centers (FQHCs).', y);
 
@@ -297,9 +297,9 @@ function generateReport(orgName) {
   statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'BH Workforce Deficit', '40.6%', RED);
   y += 80;
 
-  y = bodyText('California\u2019s Prospective Payment System (PPS) creates strong economics for behavioral health encounters at FQHCs \u2014 rates of $200\u2013$350+ per visit make BH services among the most reimbursable in community health. But the employment model that most centers use to deliver those services is quietly eroding the financial advantage.', y);
+  y = bodyText('California\u2019s Prospective Payment System (PPS) creates strong economics for behavioral health encounters at FQHCs - rates of $200\u2013$350+ per visit make BH services among the most reimbursable in community health. But the employment model that most centers use to deliver those services is quietly eroding the financial advantage.', y);
   y += 8;
-  y = bodyText('The true cost of an employed behavioral health provider \u2014 once you account for benefits, taxes, recruitment, ramp time, support staff, and turnover \u2014 routinely exceeds what most CFOs budget. And the gap between what you\u2019re paying and what you\u2019re collecting per encounter is often far wider than it appears on a spreadsheet.', y);
+  y = bodyText('The true cost of an employed behavioral health provider - once you account for benefits, taxes, recruitment, ramp time, support staff, and turnover - routinely exceeds what most CFOs budget. And the gap between what you\u2019re paying and what you\u2019re collecting per encounter is often far wider than it appears on a spreadsheet.', y);
   y += 16;
 
   y = heading('1. The Cost Structure FQHCs Underestimate', y);
@@ -308,7 +308,7 @@ function generateReport(orgName) {
   y = bodyText('When an FQHC hires a behavioral health provider, the CFO typically budgets for salary plus benefits. But the real 12-month cost includes recruiter fees, onboarding, credentialing lag (3\u20136 months of salary before the first billable encounter), payer enrollment delays, support staff, and a ramp period where the provider is being paid at full salary but producing a fraction of their eventual output.', y);
   y += 8;
 
-  y = subheading('Therapist (LCSW/LMFT) \u2014 $135K Base', y);
+  y = subheading('Therapist (LCSW/LMFT) - $135K Base', y);
   y = autoTable(y,
     ['', 'CFO Budget', '12-Month Reality'],
     [
@@ -323,7 +323,7 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.45 }, 1: { halign: 'right' }, 2: { halign: 'right' } } }
   );
 
-  y = subheading('PMHNP \u2014 $200K Base', y);
+  y = subheading('PMHNP - $200K Base', y);
   y = autoTable(y,
     ['', 'CFO Budget', '12-Month Reality'],
     [
@@ -351,7 +351,7 @@ function generateReport(orgName) {
   y = heading('2. Cash Generated for Your Mission: Year-by-Year', y);
   y += 4;
 
-  y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer BH services \u2014 it\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
+  y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer BH services - it\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
   y += 8;
 
   y = subheading('Therapist (LCSW/LMFT) at $230 PPS', y);
@@ -394,11 +394,11 @@ function generateReport(orgName) {
   doc.setFontSize(9);
   doc.setTextColor.apply(doc, DARK);
   doc.setFont('helvetica', 'normal');
-  var calloutLines = doc.splitTextToSize('Because you\u2019re paying full salary and benefits during the 3\u20136 month ramp period (recruiting, credentialing, payer enrollment, caseload building) while generating few or no billable encounters. The provider\u2019s cost is front-loaded, but their revenue is back-loaded. Legara charges $0 during ramp \u2014 you only pay for completed encounters.', CONTENT_W - 24);
+  var calloutLines = doc.splitTextToSize('Because you\u2019re paying full salary and benefits during the 3\u20136 month ramp period (recruiting, credentialing, payer enrollment, caseload building) while generating few or no billable encounters. The provider\u2019s cost is front-loaded, but their revenue is back-loaded. Legara charges $0 during ramp - you only pay for completed encounters.', CONTENT_W - 24);
   doc.text(calloutLines, MARGIN + 12, y + 36);
   y += 88;
 
-  y = bodyText('The gap is most dramatic in Year 1 because of the ramp period. By Year 2, internal hires reach steady state \u2014 but even at full productivity, the employment model\u2019s overhead (benefits, taxes, support staff, turnover costs) means you keep less of each encounter\u2019s revenue.', y);
+  y = bodyText('The gap is most dramatic in Year 1 because of the ramp period. By Year 2, internal hires reach steady state - but even at full productivity, the employment model\u2019s overhead (benefits, taxes, support staff, turnover costs) means you keep less of each encounter\u2019s revenue.', y);
 
   addFooter(4);
 
@@ -460,12 +460,12 @@ function generateReport(orgName) {
   addHeader();
   y = 62;
 
-  y = heading('3. Why This Matters Now \u2014 Especially in California', y);
+  y = heading('3. Why This Matters Now - Especially in California', y);
   y += 4;
 
   var macroItems = [
     ['Workforce shortage:', 'California faces a 40.6% behavioral health workforce deficit, with rural and underserved counties hit hardest. Traditional recruiting timelines of 3\u20136 months are stretching even longer.'],
-    ['CalAIM transformation:', 'Enhanced Care Management (ECM) and Community Supports are expanding the scope of BH services FQHCs are expected to deliver \u2014 requiring more provider capacity at precisely the time it\u2019s hardest to hire.'],
+    ['CalAIM transformation:', 'Enhanced Care Management (ECM) and Community Supports are expanding the scope of BH services FQHCs are expected to deliver - requiring more provider capacity at precisely the time it\u2019s hardest to hire.'],
     ['Proposition 1 funding:', '$6.4 billion in new behavioral health infrastructure means demand for BH providers will spike across the state, further tightening an already-constrained labor market.'],
     ['SB 221 access standards:', 'California\u2019s timely access law requires BH appointments within 10 business days. FQHCs that can\u2019t meet this standard face regulatory scrutiny and patient attrition.'],
     ['Turnover costs:', 'BH provider turnover at FQHCs averages 25\u201335% annually. Each departure triggers a new recruiting cycle, a new ramp period, and another year of suboptimal cost-per-encounter economics.']
@@ -505,9 +505,9 @@ function generateReport(orgName) {
 
   var bullets = [
     'Zero ramp cost: You pay nothing during credentialing and payer enrollment.',
-    'Encounter-based pricing: One rate per completed, billable encounter. No other costs. For you \u2014 no salary, no benefits, no support staff overhead.',
+    'Encounter-based pricing: One rate per completed, billable encounter. No other costs. For you - no salary, no benefits, no support staff overhead.',
     'Higher utilization: Legara providers operate at 82% effective utilization (vs. ~52% for employed providers) because we\u2019ve removed organizational overhead from their schedules.',
-    'No turnover risk: If a provider leaves, Legara handles the backfill \u2014 not your HR team. No new recruiter fee, no new ramp period, no gap in coverage.',
+    'No turnover risk: If a provider leaves, Legara handles the backfill - not your HR team. No new recruiter fee, no new ramp period, no gap in coverage.',
     'Faster time to revenue: Legara providers are typically seeing patients within 5 months vs. 11+ months for a traditional internal hire. That\u2019s 6 additional months of billable encounters in Year 1.'
   ];
 
