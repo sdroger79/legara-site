@@ -348,7 +348,7 @@
       </div>
       <div class="test-step">
         <div class="test-step-num">5</div>
-        <div class="test-step-text">Try to <a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank" style="color: var(--green); font-weight: 600;">book an appointment with me</a> — you don't have to actually keep it, I just need to test the booking flow</div>
+        <div class="test-step-text">Try to <a href="https://cal.com/roger-golegara.com/legara-roi-review?utm_source=website&utm_medium=cta&utm_campaign=beta-test" target="_blank" style="color: var(--green); font-weight: 600;">book an appointment with me</a> — you don't have to actually keep it, I just need to test the booking flow</div>
       </div>
       <div class="test-step">
         <div class="test-step-num">6</div>
@@ -556,6 +556,8 @@ function submitFeedback(e) {
   }).catch(function() {});
 }
 </script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="js/turnstile-gate.js"></script>
 
 </body>
 </html>

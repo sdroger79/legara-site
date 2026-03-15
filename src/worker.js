@@ -10,6 +10,8 @@ const WEBHOOK_CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+const GA4_MEASUREMENT_ID = "G-GC0KH378ZK";
+
 const SEQUENCES = {
   A: {
     name: "Post-Calculator Nurture",
@@ -143,6 +145,35 @@ async function updateContactSequence(email, seq, step, nextSendDate, env) {
 function calculateNextSend(delayDays) {
   if (!delayDays) return "";
   return new Date(Date.now() + delayDays * 86400000).toISOString();
+}
+
+// --- GA4 Measurement Protocol ---
+
+async function sendGA4Event(eventName, params, email, env) {
+  try {
+    if (!env.GA4_MP_SECRET) return;
+    // Deterministic client_id from email hash
+    const encoder = new TextEncoder();
+    const data = encoder.encode(email);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const clientId = hashArray.slice(0, 16).map(b => b.toString(16).padStart(2, "0")).join("");
+
+    await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${env.GA4_MP_SECRET}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_id: clientId,
+          events: [{ name: eventName, params: { ...params, engagement_time_msec: "1" } }],
+        }),
+      }
+    );
+    console.log(`GA4 event '${eventName}' sent for ${email}`);
+  } catch (err) {
+    console.error(`GA4 event failed:`, err);
+  }
 }
 
 // --- Webhook handlers ---
@@ -496,10 +527,14 @@ async function handleMeetingBooked(request, env) {
       }) + " PT";
     }
 
-    // Run Brevo and HubSpot updates in parallel
+    // Run Brevo, HubSpot, and GA4 updates in parallel
     const [, meetingHsResult] = await Promise.all([
       updateBrevo(email, firstName, lastName, organization, meetingDate, meetingTime, env),
       updateHubSpot(email, firstName, lastName, organization, booking, env),
+      sendGA4Event("meeting_booked", {
+        source: "cal_webhook",
+        email_domain: email.split("@")[1] || "unknown",
+      }, email, env),
     ]);
     if (meetingHsResult && !meetingHsResult.success) {
       console.error(`HubSpot failed for meeting-booked ${email}: ${meetingHsResult.error}`);
@@ -987,7 +1022,7 @@ async function handleEmailReport(request, env) {
         sender: { name: "Roger Stellers | Legara", email: "roger@golegara.com" },
         to: [{ email, name: ((firstName || "") + " " + (lastName || "")).trim() }],
         subject: "Your Legara ROI Analysis for " + (organization || "Your Health Center"),
-        htmlContent: "<html><body style='font-family: sans-serif; color: #1c2b24; max-width: 600px; margin: 0 auto;'><p style='margin-bottom: 16px;'>Hi " + (firstName || "there") + ",</p><p style='margin-bottom: 16px;'>Your personalized ROI analysis is attached. These results use industry benchmarks. Your organization's real numbers tell a more specific story.</p><p style='margin-bottom: 16px;'>If you'd like to see what the analysis looks like with your actual data, I'd welcome a quick conversation.</p><p style='margin-bottom: 24px;'><a href='https://cal.com/roger-golegara.com/legara-roi-review' style='background: #1a6b4a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;'>Schedule a 30-Minute Conversation</a></p><p style='margin-bottom: 4px;'>Roger Stellers</p><p style='color: #4a5e54; font-size: 14px;'>CEO, Legara Inc.</p><p style='color: #8fa89e; font-size: 13px;'>roger@golegara.com | 760-479-7860</p></body></html>",
+        htmlContent: "<html><body style='font-family: sans-serif; color: #1c2b24; max-width: 600px; margin: 0 auto;'><p style='margin-bottom: 16px;'>Hi " + (firstName || "there") + ",</p><p style='margin-bottom: 16px;'>Your personalized ROI analysis is attached. These results use industry benchmarks. Your organization's real numbers tell a more specific story.</p><p style='margin-bottom: 16px;'>If you'd like to see what the analysis looks like with your actual data, I'd welcome a quick conversation.</p><p style='margin-bottom: 24px;'><a href='https://cal.com/roger-golegara.com/legara-roi-review?utm_source=brevo&utm_medium=email&utm_campaign=roi-pdf-report' style='background: #1a6b4a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;'>Schedule a 30-Minute Conversation</a></p><p style='margin-bottom: 4px;'>Roger Stellers</p><p style='color: #4a5e54; font-size: 14px;'>CEO, Legara Inc.</p><p style='color: #8fa89e; font-size: 13px;'>roger@golegara.com | 760-479-7860</p></body></html>",
         params: { FIRSTNAME: firstName || "", ORGNAME: organization || "" },
         attachment: [{ content: pdfBase64, name: filename || "Legara ROI Analysis.pdf" }],
       }),
