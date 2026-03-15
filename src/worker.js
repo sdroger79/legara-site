@@ -150,6 +150,31 @@ function calculateNextSend(delayDays) {
 async function handleBrevoWebhook(request, env) {
   try {
     const data = await request.json();
+
+    // Honeypot check: bots fill hidden fields, humans don't
+    if (data.website) {
+      console.log("Honeypot triggered, silently dropping submission");
+      return json({ ok: true }, 200);
+    }
+
+    // Turnstile verification
+    const cfToken = data["cf-turnstile-response"];
+    if (cfToken && env.TURNSTILE_SECRET) {
+      const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: env.TURNSTILE_SECRET,
+          response: cfToken,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        console.log("Turnstile verification failed:", JSON.stringify(verifyData));
+        return json({ error: "Human verification failed" }, 403);
+      }
+    }
+
     const {
       email, firstName, lastName, organization, title, phone,
       utm_source, utm_medium, utm_campaign, utm_content, utm_term,
