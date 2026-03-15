@@ -431,6 +431,15 @@ function generateReport(orgName) {
   doc.text('*Rates shown reflect standard encounter rates by provider type. Final rates are confirmed during contracting and may vary based on licensure, encounter complexity, and agreement terms.', MARGIN, y, { maxWidth: CONTENT_W });
   y += 20;
 
+  addFooter(5);
+
+  // ═══════════════════════════════════════════
+  // PAGE 6: WHY THIS MATTERS NOW
+  // ═══════════════════════════════════════════
+  console.log('[PDF] Page 6: Why this matters now');
+  doc.addPage();
+  y = MARGIN;
+
   y = heading('3. Why This Matters Now \u2014 Especially in California', y);
   y += 4;
 
@@ -461,12 +470,12 @@ function generateReport(orgName) {
     }
   });
 
-  addFooter(5);
+  addFooter(6);
 
   // ═══════════════════════════════════════════
-  // PAGE 6: HOW LEGARA CHANGES + SOURCES
+  // PAGE 7: HOW LEGARA CHANGES + SOURCES
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 6: Legara model + sources');
+  console.log('[PDF] Page 7: Legara model + sources');
   doc.addPage();
   y = MARGIN;
 
@@ -482,28 +491,51 @@ function generateReport(orgName) {
   ];
 
   bullets.forEach(function(b) {
+    var parts = b.split(':');
+    var boldPart = parts[0] + ':';
+    var normalPart = parts.slice(1).join(':').trim();
+
+    // Print bullet point
     doc.setFontSize(10);
     doc.setTextColor.apply(doc, GREEN);
     doc.setFont('helvetica', 'bold');
     doc.text('\u2022', MARGIN, y);
-    doc.setTextColor.apply(doc, DARK);
-    var parts = b.split(':');
-    var boldPart = parts[0] + ':';
-    var normalPart = parts.slice(1).join(':');
-    var bW = doc.getTextWidth(boldPart) + 4;
+
+    // Print bold label
     doc.text(boldPart, MARGIN + 12, y);
+    var bW = doc.getTextWidth(boldPart) + 4;
+
+    // Print normal text, wrapping to full width on subsequent lines
+    doc.setTextColor.apply(doc, DARK);
     doc.setFont('helvetica', 'normal');
-    var lines = doc.splitTextToSize(normalPart.trim(), CONTENT_W - 12 - bW);
-    doc.text(lines[0], MARGIN + 12 + bW, y);
-    if (lines.length > 1) {
-      var wrapLines = doc.splitTextToSize(normalPart.trim(), CONTENT_W - 12);
-      // Reflow: print entire normal text starting from next line
-      doc.text('', MARGIN + 12, y);
-      var fullLines = doc.splitTextToSize(boldPart + ' ' + normalPart.trim(), CONTENT_W - 12);
-      y += fullLines.length * 14 + 6;
-    } else {
-      y += 20;
+
+    // First line: starts after the bold label
+    var firstLineWidth = CONTENT_W - 12 - bW;
+    var firstLineWords = normalPart.split(' ');
+    var firstLine = '';
+    var remaining = '';
+
+    for (var i = 0; i < firstLineWords.length; i++) {
+      var test = firstLine ? firstLine + ' ' + firstLineWords[i] : firstLineWords[i];
+      if (doc.getTextWidth(test) <= firstLineWidth) {
+        firstLine = test;
+      } else {
+        remaining = firstLineWords.slice(i).join(' ');
+        break;
+      }
     }
+
+    doc.text(firstLine, MARGIN + 12 + bW, y);
+    y += 14;
+
+    // Remaining lines: full width starting at MARGIN + 12
+    if (remaining) {
+      var wrapLines = doc.splitTextToSize(remaining, CONTENT_W - 12);
+      doc.text(wrapLines, MARGIN + 12, y);
+      y += wrapLines.length * 14;
+    }
+
+    y += 6; // consistent gap between bullets
   });
 
   y += 8;
@@ -563,7 +595,7 @@ function generateReport(orgName) {
     y += 11;
   });
 
-  addFooter(6);
+  addFooter(7);
 
   // ─── RETURN BLOB URL ───
   var filename = 'Legara ROI Analysis - ' + orgName.replace(/[^a-zA-Z0-9 ]/g, '') + '.pdf';
