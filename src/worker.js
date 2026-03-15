@@ -249,7 +249,7 @@ async function handleBrevoWebhook(request, env) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: [{ email: "rstellers@fidarehealth.com", name: "Roger Stellers" }],
+        to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
         sender: { email: "roger@golegara.com", name: "Legara Lead Alert" },
         subject: "New ROI Calculator Lead: " + (firstName || "") + " " + (lastName || "") + " — " + (organization || "Unknown org"),
         htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New Calculator Lead</h2>" +
@@ -1015,7 +1015,7 @@ async function handleBetaFeedback(request, env) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: [{ email: "rstellers@fidarehealth.com", name: "Roger Stellers" }],
+        to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
         sender: { email: "roger@golegara.com", name: "Legara Beta Test" },
         subject: `Beta Feedback: ${data.name || "Anonymous"} — ${data.rating_overall || "?"}/5`,
         htmlContent: lines,
