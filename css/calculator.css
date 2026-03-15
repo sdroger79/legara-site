@@ -806,6 +806,67 @@ section.content-section {
   color: var(--slate);
 }
 
+/* Methodology expandable section */
+.methodology-detail {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.methodology-detail summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.02em;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.methodology-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+.methodology-detail summary::before {
+  content: '▸';
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.methodology-detail[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.methodology-grid {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.methodology-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--off-white);
+  border-radius: 6px;
+}
+
+.methodology-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.methodology-source {
+  font-size: 11px;
+  color: var(--mist);
+  line-height: 1.5;
+}
+
 /* ═══ CTA ═══ */
 
 .calc-cta {

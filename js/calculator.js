@@ -423,6 +423,10 @@ function calculate() {
   setEl('ppsNote', ppsRate);
   setEl('legaraRateNote', legaraRate);
 
+  // Update methodology section dynamic values
+  document.querySelectorAll('.meth-pps').forEach(function(el) { el.textContent = ppsRate; });
+  document.querySelectorAll('.meth-legara-rate').forEach(function(el) { el.textContent = legaraRate; });
+
   // ─── PUBLIC: track engagement ───
   if (CALC_MODE === 'public') {
     calcCount++;

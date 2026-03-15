@@ -501,6 +501,40 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <!-- 8. ASSUMPTIONS -->
       <div class="assumptions" style="margin-top: 16px;">
         <strong>Assumptions:</strong> 32 scheduled clinical hrs/wk, 30 days PTO/sick/CME. Internal hire ramp: 3-month recruit, 3-week onboard, 3-month credentialing, 3-month payer enrollment (overlapping), 3-month caseload build. Encounter rate: <span id="encRateNote">1.0/hr (therapy)</span>. Avg. encounter revenue: $<span id="ppsNote">230</span> (PPS + copays + secondaries). Legara rate: $<span id="legaraRateNote">155</span>/encounter, all-in.* Support staff at 0.25 FTE (~$11K/yr). All figures are estimates — your results will vary.<br><span style="color: var(--mist); font-size: 12px;">*Rates shown reflect standard encounter rates by provider type. Final rates are confirmed during contracting and may vary based on licensure, encounter complexity, and agreement terms.</span>
+
+        <details class="methodology-detail">
+          <summary>How we calculate this</summary>
+          <div class="methodology-grid">
+            <div class="methodology-item">
+              <span class="methodology-label">Benefits &amp; tax multiplier (1.4×)</span>
+              <span class="methodology-source">Bureau of Labor Statistics, Employer Costs for Employee Compensation (ECEC). Healthcare employer benefits average 29–38% of total compensation.</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Provider turnover (30%)</span>
+              <span class="methodology-source">National Association of Community Health Centers (NACHC) workforce surveys; behavioral health turnover at FQHCs consistently ranges 25–35%.</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Ramp timeline (11.2 months internal vs. 5 months Legara)</span>
+              <span class="methodology-source">Based on standard credentialing and payer enrollment timelines reported by FQHC operations leaders. Legara's timeline is shorter because our providers are pre-credentialed with major payers.</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Ramp productivity (25% → 65% → 100%)</span>
+              <span class="methodology-source">Graduated productivity during credential/payer enrollment (25%) and caseload build (65%) reflects typical panel-loading curves. Zero revenue during recruit and onboard phases.</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Encounter revenue ($<span class="meth-pps">230</span>/encounter)</span>
+              <span class="methodology-source">Prospective Payment System (PPS) reimbursement plus patient copays and secondary insurance. Varies by state and FQHC — adjust this input to match your actual rate.</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Legara flat rate ($<span class="meth-legara-rate">155</span>–$165/encounter)</span>
+              <span class="methodology-source">All-inclusive: provider compensation, platform, and MSO servicing. No additional costs for benefits, recruitment, supervision, or support staff. Rate varies by provider type (therapy vs. prescriber).</span>
+            </div>
+            <div class="methodology-item">
+              <span class="methodology-label">Recruiter/placement fee ($8,000)</span>
+              <span class="methodology-source">Industry average for behavioral health provider recruitment in community health settings.</span>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   </div>
