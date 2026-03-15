@@ -164,7 +164,7 @@ async function handleBrevoWebhook(request, env) {
     }
 
     // Run Brevo contact creation and HubSpot CRM upsert in parallel
-    const [brevoRes] = await Promise.all([
+    const [brevoRes, hsResult] = await Promise.all([
       // 1. Create/update contact in Brevo on List 5
       fetch("https://api.brevo.com/v3/contacts", {
         method: "POST",
@@ -230,9 +230,12 @@ async function handleBrevoWebhook(request, env) {
       env
     );
 
-    // Notify Roger of new lead (include ROI data in the email)
+    // Notify Roger of new lead (include ROI data + HubSpot status)
     const savings3yr = roi_3year_savings ? "$" + Number(roi_3year_savings).toLocaleString() : "—";
     const missionAdv = roi_mission_advantage ? "$" + Number(roi_mission_advantage).toLocaleString() : "—";
+    const hsStatus = hsResult && hsResult.success
+      ? "✓ " + (hsResult.action || "synced") + " (ID: " + hsResult.contactId + ")"
+      : "✗ FAILED — " + (hsResult && hsResult.error ? hsResult.error.substring(0, 120) : "unknown error");
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -253,6 +256,7 @@ async function handleBrevoWebhook(request, env) {
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Mission Advantage</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + missionAdv + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>3-Year Impact</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + savings3yr + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Source</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (utm_source || "direct") + " / " + (utm_medium || "—") + " / " + (utm_campaign || "—") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>HubSpot</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + hsStatus + "</td></tr>" +
           "</table>" +
           "<p style='font-family:sans-serif;font-size:13px;color:#666;margin-top:16px;'>This lead just downloaded their ROI report and entered Sequence A. Check <a href=\"https://app.hubspot.com\">HubSpot</a> for full details.</p>",
       }),
@@ -298,13 +302,13 @@ async function getDefaultOwnerId(hsHeaders) {
 }
 
 async function upsertHubSpotContact(email, properties, env) {
-  const HS_TOKEN = env.HUBSPOT_TOKEN;
-  const hsHeaders = {
-    Authorization: `Bearer ${HS_TOKEN}`,
-    "Content-Type": "application/json",
-  };
+  async function attempt() {
+    const HS_TOKEN = env.HUBSPOT_TOKEN;
+    const hsHeaders = {
+      Authorization: `Bearer ${HS_TOKEN}`,
+      "Content-Type": "application/json",
+    };
 
-  try {
     // Get owner ID for auto-assignment
     const ownerId = await getDefaultOwnerId(hsHeaders);
     if (ownerId) {
@@ -327,10 +331,11 @@ async function upsertHubSpotContact(email, properties, env) {
     const searchData = await searchRes.json();
 
     let contactId;
+    let action;
 
     if (searchData.total > 0) {
-      // Update existing contact with ROI data
       contactId = searchData.results[0].id;
+      action = "updated";
       const updateRes = await fetch(
         `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`,
         {
@@ -339,9 +344,13 @@ async function upsertHubSpotContact(email, properties, env) {
           body: JSON.stringify({ properties }),
         }
       );
+      if (!updateRes.ok) {
+        const errBody = await updateRes.text();
+        throw new Error(`Update failed (${updateRes.status}): ${errBody}`);
+      }
       console.log(`HubSpot upsert (update) ${email}: ${updateRes.status}`);
     } else {
-      // Create new contact with all data
+      action = "created";
       const createRes = await fetch(
         "https://api.hubapi.com/crm/v3/objects/contacts",
         {
@@ -352,15 +361,31 @@ async function upsertHubSpotContact(email, properties, env) {
           }),
         }
       );
+      if (!createRes.ok) {
+        const errBody = await createRes.text();
+        throw new Error(`Create failed (${createRes.status}): ${errBody}`);
+      }
       const createData = await createRes.json();
       contactId = createData.id;
       console.log(`HubSpot upsert (create) ${email}: ${createRes.status}`);
     }
 
-    return contactId;
-  } catch (err) {
-    console.error(`HubSpot upsert failed for ${email}:`, err);
-    return null;
+    return { success: true, contactId, action };
+  }
+
+  try {
+    return await attempt();
+  } catch (firstErr) {
+    console.error(`HubSpot upsert attempt 1 failed for ${email}:`, firstErr.message);
+    // Retry once after 2 seconds
+    await new Promise(r => setTimeout(r, 2000));
+    try {
+      console.log(`HubSpot upsert retry for ${email}...`);
+      return await attempt();
+    } catch (retryErr) {
+      console.error(`HubSpot upsert retry failed for ${email}:`, retryErr.message);
+      return { success: false, contactId: null, action: null, error: retryErr.message };
+    }
   }
 }
 
@@ -416,10 +441,15 @@ async function handleMeetingBooked(request, env) {
     }
 
     // Run Brevo and HubSpot updates in parallel
-    await Promise.all([
+    const [, meetingHsResult] = await Promise.all([
       updateBrevo(email, firstName, lastName, organization, meetingDate, meetingTime, env),
       updateHubSpot(email, firstName, lastName, organization, booking, env),
     ]);
+    if (meetingHsResult && !meetingHsResult.success) {
+      console.error(`HubSpot failed for meeting-booked ${email}: ${meetingHsResult.error}`);
+    } else {
+      console.log(`HubSpot meeting-booked OK for ${email}: contact ${meetingHsResult?.contactId}`);
+    }
 
     // Send Seq-B1 immediately via transactional API
     const sendParams = {
@@ -511,13 +541,13 @@ async function getLegaraPipelineStage(hsHeaders) {
 }
 
 async function updateHubSpot(email, firstName, lastName, organization, payload, env) {
-  const HS_TOKEN = env.HUBSPOT_TOKEN;
-  const hsHeaders = {
-    Authorization: `Bearer ${HS_TOKEN}`,
-    "Content-Type": "application/json",
-  };
+  async function attempt() {
+    const HS_TOKEN = env.HUBSPOT_TOKEN;
+    const hsHeaders = {
+      Authorization: `Bearer ${HS_TOKEN}`,
+      "Content-Type": "application/json",
+    };
 
-  try {
     // 1. Search for contact by email
     const searchRes = await fetch(
       "https://api.hubapi.com/crm/v3/objects/contacts/search",
@@ -559,6 +589,10 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
           }),
         }
       );
+      if (!createRes.ok) {
+        const errBody = await createRes.text();
+        throw new Error(`Create contact failed (${createRes.status}): ${errBody}`);
+      }
       const createData = await createRes.json();
       console.log("HubSpot create contact:", createRes.status, JSON.stringify(createData));
       contactId = createData.id;
@@ -655,8 +689,22 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
       );
       console.log("HubSpot create deal:", dealRes.status);
     }
-  } catch (err) {
-    console.error("HubSpot update failed:", err);
+
+    return { success: true, contactId };
+  }
+
+  try {
+    return await attempt();
+  } catch (firstErr) {
+    console.error(`HubSpot meeting-booked attempt 1 failed for ${email}:`, firstErr.message);
+    await new Promise(r => setTimeout(r, 2000));
+    try {
+      console.log(`HubSpot meeting-booked retry for ${email}...`);
+      return await attempt();
+    } catch (retryErr) {
+      console.error(`HubSpot meeting-booked retry failed for ${email}:`, retryErr.message);
+      return { success: false, error: retryErr.message };
+    }
   }
 }
 
