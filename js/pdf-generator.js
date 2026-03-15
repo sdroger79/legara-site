@@ -474,8 +474,8 @@ function generateReport(orgName) {
   y += 4;
 
   var bullets = [
-    'Zero ramp cost: You pay nothing during credentialing and payer enrollment. Legara absorbs the entire onboarding investment.',
-    'Encounter-based pricing: One rate per completed, billable encounter. No salary, no benefits, no support staff overhead. Your cost scales linearly with actual clinical output.',
+    'Zero ramp cost: You pay nothing during credentialing and payer enrollment.',
+    'Encounter-based pricing: One rate per completed, billable encounter. No other costs. For you \u2014 no salary, no benefits, no support staff overhead.',
     'Higher utilization: Legara providers operate at 82% effective utilization (vs. ~52% for employed providers) because we\u2019ve removed organizational overhead from their schedules.',
     'No turnover risk: If a provider leaves, Legara handles the backfill \u2014 not your HR team. No new recruiter fee, no new ramp period, no gap in coverage.',
     'Faster time to revenue: Legara providers are typically seeing patients within 5 months vs. 11+ months for a traditional internal hire. That\u2019s 6 additional months of billable encounters in Year 1.'
