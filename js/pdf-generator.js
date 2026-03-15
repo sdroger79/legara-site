@@ -44,6 +44,20 @@ function generateReport(orgName) {
     doc.text('Page ' + pageNum, PAGE_W - MARGIN, PAGE_H - 30, { align: 'right' });
   }
 
+  function addHeader() {
+    try {
+      if (LEGARA_LOGO_B64 && LEGARA_LOGO_B64 !== 'PLACEHOLDER') {
+        doc.addImage(LEGARA_LOGO_B64, 'PNG', MARGIN, 20, 80, 27);
+        // Thin green line under logo
+        doc.setDrawColor.apply(doc, GREEN);
+        doc.setLineWidth(0.5);
+        doc.line(MARGIN, 50, PAGE_W - MARGIN, 50);
+      }
+    } catch (e) {
+      console.warn('[PDF] Header logo failed:', e);
+    }
+  }
+
   function heading(text, yPos, size) {
     doc.setFontSize(size || 16);
     doc.setTextColor.apply(doc, GREEN);
@@ -166,7 +180,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 2: Cost comparison');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   y = heading('Detailed Cost Comparison', y, 20);
   y += 8;
@@ -224,7 +239,8 @@ function generateReport(orgName) {
   if (y + calloutBlockHeight > PAGE_H - 50) {
     addFooter(2);
     doc.addPage();
-    y = MARGIN;
+    addHeader();
+    y = 62;
   }
 
   y += 12;
@@ -264,7 +280,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 3: Economics intro');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   doc.setFontSize(22);
   doc.setTextColor.apply(doc, GREEN);
@@ -328,7 +345,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 4: Cash generated');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   y = heading('2. Cash Generated for Your Mission: Year-by-Year', y);
   y += 4;
@@ -389,7 +407,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 5: Cost savings + macro');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   y = subheading('Cost Savings Across All Provider Types', y);
 
@@ -438,7 +457,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 6: Why this matters now');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   y = heading('3. Why This Matters Now \u2014 Especially in California', y);
   y += 4;
@@ -477,7 +497,8 @@ function generateReport(orgName) {
   // ═══════════════════════════════════════════
   console.log('[PDF] Page 7: Legara model + sources');
   doc.addPage();
-  y = MARGIN;
+  addHeader();
+  y = 62;
 
   y = heading('How Legara Changes the Equation', y);
   y += 4;
