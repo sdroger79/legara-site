@@ -233,9 +233,15 @@ async function handleBrevoWebhook(request, env) {
     // Notify Roger of new lead (include ROI data + HubSpot status)
     const savings3yr = roi_3year_savings ? "$" + Number(roi_3year_savings).toLocaleString() : "—";
     const missionAdv = roi_mission_advantage ? "$" + Number(roi_mission_advantage).toLocaleString() : "—";
-    const hsStatus = hsResult && hsResult.success
-      ? "✓ " + (hsResult.action || "synced") + " (ID: " + hsResult.contactId + ")"
-      : "✗ FAILED — " + (hsResult && hsResult.error ? hsResult.error.substring(0, 120) : "unknown error");
+    let hsStatus;
+    if (hsResult && hsResult.success) {
+      hsStatus = "✓ " + (hsResult.action || "synced") + " (ID: " + hsResult.contactId + ")";
+      if (hsResult.strippedFields) {
+        hsStatus += " | Data lost: " + hsResult.strippedFields.join(", ");
+      }
+    } else {
+      hsStatus = "✗ FAILED — " + (hsResult && hsResult.error ? hsResult.error.substring(0, 120) : "unknown error");
+    }
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -373,11 +379,36 @@ async function upsertHubSpotContact(email, properties, env) {
     return { success: true, contactId, action };
   }
 
+  // Safe fields that never cause validation errors
+  const SAFE_FIELDS = ["firstname", "lastname", "company", "jobtitle", "phone", "hubspot_owner_id", "hs_lead_status"];
+
   try {
     return await attempt();
   } catch (firstErr) {
     console.error(`HubSpot upsert attempt 1 failed for ${email}:`, firstErr.message);
-    // Retry once after 2 seconds
+
+    // If it's a 400 validation error, retry with only safe fields
+    if (firstErr.message.includes("400")) {
+      console.log(`HubSpot: validation error detected, retrying with safe fields only for ${email}`);
+      const strippedFields = Object.keys(properties).filter(k => !SAFE_FIELDS.includes(k));
+      console.log(`HubSpot: stripping fields: ${strippedFields.join(", ")}`);
+      const safeProps = {};
+      for (const key of SAFE_FIELDS) {
+        if (properties[key] !== undefined) safeProps[key] = properties[key];
+      }
+      properties = safeProps;
+      try {
+        const result = await attempt();
+        result.strippedFields = strippedFields;
+        result.action = (result.action || "synced") + " (safe fields only)";
+        return result;
+      } catch (safeErr) {
+        console.error(`HubSpot safe-field retry also failed for ${email}:`, safeErr.message);
+        return { success: false, contactId: null, action: null, error: safeErr.message, strippedFields };
+      }
+    }
+
+    // Non-validation error: simple retry after 2 seconds
     await new Promise(r => setTimeout(r, 2000));
     try {
       console.log(`HubSpot upsert retry for ${email}...`);
