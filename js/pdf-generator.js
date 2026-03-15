@@ -294,10 +294,10 @@ function generateReport(orgName) {
   // Three stat boxes
   statBox(MARGIN, y, boxW, 'California FQHCs', '174', DARK);
   statBox(MARGIN + boxW + 10, y, boxW, 'Counties Served', 'All 58', DARK);
-  statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'BH Workforce Deficit', '40.6%', RED);
+  statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'Behavioral Health Deficit', '40.6%', RED);
   y += 80;
 
-  y = bodyText('California\u2019s Prospective Payment System (PPS) creates strong economics for behavioral health encounters at FQHCs - rates of $200\u2013$350+ per visit make BH services among the most reimbursable in community health. But the employment model that most centers use to deliver those services is quietly eroding the financial advantage.', y);
+  y = bodyText('California\u2019s Prospective Payment System (PPS) creates strong economics for behavioral health encounters at FQHCs - rates of $200\u2013$350+ per visit make behavioral health services among the most reimbursable in community health. But the employment model that most centers use to deliver those services is quietly eroding the financial advantage.', y);
   y += 8;
   y = bodyText('The true cost of an employed behavioral health provider - once you account for benefits, taxes, recruitment, ramp time, support staff, and turnover - routinely exceeds what most CFOs budget. And the gap between what you\u2019re paying and what you\u2019re collecting per encounter is often far wider than it appears on a spreadsheet.', y);
   y += 16;
@@ -314,8 +314,8 @@ function generateReport(orgName) {
     [
       ['Base salary', '$135,000', '$135,000'],
       ['Benefits & taxes (1.4x)', '$54,000', '$54,000'],
-      ['Recruiter fee', '\u2014', '$8,000'],
-      ['Support staff (0.25 FTE)', '\u2014', '$11,000'],
+      ['Recruiter fee', '-', '$8,000'],
+      ['Support staff (0.25 FTE)', '-', '$11,000'],
       [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: '$189,000', styles: { fontStyle: 'bold' } }, { content: '$208,000', styles: { fontStyle: 'bold' } }],
       ['Completed encounters (Year 1)', '~1,350', '~690'],
       [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: '$140', styles: { fontStyle: 'bold' } }, { content: '$301', styles: { fontStyle: 'bold', textColor: RED } }]
@@ -329,8 +329,8 @@ function generateReport(orgName) {
     [
       ['Base salary', '$200,000', '$200,000'],
       ['Benefits & taxes (1.4x)', '$80,000', '$80,000'],
-      ['Recruiter fee', '\u2014', '$8,000'],
-      ['Support staff (0.25 FTE)', '\u2014', '$11,000'],
+      ['Recruiter fee', '-', '$8,000'],
+      ['Support staff (0.25 FTE)', '-', '$11,000'],
       [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: '$280,000', styles: { fontStyle: 'bold' } }, { content: '$299,000', styles: { fontStyle: 'bold' } }],
       ['Completed encounters (Year 1)', '~2,025', '~1,035'],
       [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: '$138', styles: { fontStyle: 'bold' } }, { content: '$289', styles: { fontStyle: 'bold', textColor: RED } }]
@@ -351,7 +351,7 @@ function generateReport(orgName) {
   y = heading('2. Cash Generated for Your Mission: Year-by-Year', y);
   y += 4;
 
-  y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer BH services - it\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
+  y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer behavioral health services - it\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
   y += 8;
 
   y = subheading('Therapist (LCSW/LMFT) at $230 PPS', y);
@@ -465,10 +465,10 @@ function generateReport(orgName) {
 
   var macroItems = [
     ['Workforce shortage:', 'California faces a 40.6% behavioral health workforce deficit, with rural and underserved counties hit hardest. Traditional recruiting timelines of 3\u20136 months are stretching even longer.'],
-    ['CalAIM transformation:', 'Enhanced Care Management (ECM) and Community Supports are expanding the scope of BH services FQHCs are expected to deliver - requiring more provider capacity at precisely the time it\u2019s hardest to hire.'],
-    ['Proposition 1 funding:', '$6.4 billion in new behavioral health infrastructure means demand for BH providers will spike across the state, further tightening an already-constrained labor market.'],
-    ['SB 221 access standards:', 'California\u2019s timely access law requires BH appointments within 10 business days. FQHCs that can\u2019t meet this standard face regulatory scrutiny and patient attrition.'],
-    ['Turnover costs:', 'BH provider turnover at FQHCs averages 25\u201335% annually. Each departure triggers a new recruiting cycle, a new ramp period, and another year of suboptimal cost-per-encounter economics.']
+    ['CalAIM transformation:', 'Enhanced Care Management (ECM) and Community Supports are expanding the scope of behavioral health services FQHCs are expected to deliver - requiring more provider capacity at precisely the time it\u2019s hardest to hire.'],
+    ['Proposition 1 funding:', '$6.4 billion in new behavioral health infrastructure means demand for behavioral health providers will spike across the state, further tightening an already-constrained labor market.'],
+    ['SB 221 access standards:', 'California\u2019s timely access law requires behavioral health appointments within 10 business days. FQHCs that can\u2019t meet this standard face regulatory scrutiny and patient attrition.'],
+    ['Turnover costs:', 'Behavioral health provider turnover at FQHCs averages 25\u201335% annually. Each departure triggers a new recruiting cycle, a new ramp period, and another year of suboptimal cost-per-encounter economics.']
   ];
 
   macroItems.forEach(function(item) {
