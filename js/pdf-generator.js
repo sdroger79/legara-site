@@ -179,13 +179,13 @@ function generateReport(orgName) {
 
   // Three stat boxes
   var boxW = (CONTENT_W - 20) / 3;
-  statBox(MARGIN, y, boxW, 'Year 1 Savings', fmtK(d.year1Savings), GREEN);
-  statBox(MARGIN + boxW + 10, y, boxW, '3-Year Savings', fmtK(d.total3Yr), GREEN);
+  statBox(MARGIN, y, boxW, 'Year 1 Mission Cash', fmtK(d.year1Savings), GREEN);
+  statBox(MARGIN + boxW + 10, y, boxW, '3-Year Mission Cash', fmtK(d.total3Yr), GREEN);
   statBox(MARGIN + (boxW + 10) * 2, y, boxW, 'Internal Cost/Encounter', fmtD(d.internalCPE1), RED);
   y += 74;
 
   // Summary text
-  y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1, significantly above Legara\'s rate of ' + fmtD(d.legaraRate) + '/encounter.*', y);
+  y = bodyText('Based on your inputs, adding Legara\'s encounter-based model to your workforce strategy could generate ' + fmtK(d.missionAdvantage3Yr || d.total3Yr) + ' more cash for your mission over three years. Your internal cost per completed behavioral health encounter is ' + fmtD(d.internalCPE1) + ' in Year 1, compared to a Legara encounter rate of ' + fmtD(d.legaraRate) + '.*', y);
   y += 6;
   y = bodyText('The following pages break down the detailed comparison, explain why Legara providers achieve significantly higher utilization, and include our full study on behavioral health economics for California Federally Qualified Health Centers (FQHCs).', y);
 
@@ -219,7 +219,7 @@ function generateReport(orgName) {
   y = autoTable(y,
     ['', 'Amount'],
     [
-      ['Legara rate per encounter', fmtD(d.legaraRate)],
+      ['Legara encounter rate (' + d.providerLabel + ')', fmtD(d.legaraRate)],
       ['Year 1 completed encounters', d.legaraEnc1.toLocaleString()],
       [{ content: 'Total Cost Year 1', styles: { fontStyle: 'bold' } }, { content: fmtD(d.legaraCostYear1), styles: { fontStyle: 'bold' } }]
     ],
@@ -434,12 +434,12 @@ function generateReport(orgName) {
   y = subheading('Steady-State Cost Per Encounter Comparison', y);
 
   y = autoTable(y,
-    ['Provider Type', 'Internal CPE', 'Legara Rate', 'Savings/Encounter'],
+    ['Provider Type', 'Internal CPE', 'Legara Encounter Rate*', 'Difference/Encounter'],
     [
-      ['LCSW/LMFT', '$174', '$155', '$19'],
-      ['Psychologist', '$199', '$165', '$34'],
-      ['PMHNP', '$175', '$165', '$10'],
-      ['Psychiatrist', '$214', '$165', '$49']
+      ['LCSW/LMFT', '$174', '$148\u2013$168', '$6\u2013$26'],
+      ['Psychologist', '$199', '$158\u2013$178', '$21\u2013$41'],
+      ['PMHNP', '$175', '$158\u2013$176', '$0\u2013$17'],
+      ['Psychiatrist', '$214', '$173\u2013$188', '$26\u2013$41']
     ],
     {
       columnStyles: { 0: { cellWidth: CONTENT_W * 0.3 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } },
@@ -455,7 +455,7 @@ function generateReport(orgName) {
   doc.setFontSize(8);
   doc.setTextColor.apply(doc, MUTED);
   doc.setFont('helvetica', 'italic');
-  doc.text('*Rates shown reflect standard encounter rates by provider type. Final rates are confirmed during contracting and may vary based on licensure, encounter complexity, and agreement terms.', MARGIN, y, { maxWidth: CONTENT_W });
+  doc.text('*Legara encounter rates shown reflect actual fee schedule ranges by provider type and visit complexity. Final rates are confirmed during contracting.', MARGIN, y, { maxWidth: CONTENT_W });
   y += 20;
 
   addFooter();
