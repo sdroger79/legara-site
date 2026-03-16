@@ -176,6 +176,30 @@ async function sendGA4Event(eventName, params, email, env) {
   }
 }
 
+// --- Form validation ---
+
+function validateFormData({ firstName, lastName, organization, title, roi_annual_salary }) {
+  var onlyNumbers = /^\d+$/;
+
+  if (!firstName || firstName.trim().length < 2) return { valid: false, reason: "firstName too short" };
+  if (!lastName || lastName.trim().length < 2) return { valid: false, reason: "lastName too short" };
+  if (!organization || organization.trim().length < 3) return { valid: false, reason: "organization too short" };
+  if (!title || title.trim().length < 2) return { valid: false, reason: "title too short" };
+
+  if (onlyNumbers.test(firstName.trim())) return { valid: false, reason: "firstName is only numbers" };
+  if (onlyNumbers.test(lastName.trim())) return { valid: false, reason: "lastName is only numbers" };
+  if (onlyNumbers.test(organization.trim())) return { valid: false, reason: "organization is only numbers" };
+  if (onlyNumbers.test(title.trim())) return { valid: false, reason: "title is only numbers" };
+
+  var salary = Number(roi_annual_salary);
+  if (roi_annual_salary && !isNaN(salary)) {
+    if (salary > 500000) return { valid: false, reason: "salary too high: " + salary };
+    if (salary < 30000) return { valid: false, reason: "salary too low: " + salary };
+  }
+
+  return { valid: true, reason: "" };
+}
+
 // --- Webhook handlers ---
 
 async function handleBrevoWebhook(request, env) {
@@ -217,6 +241,13 @@ async function handleBrevoWebhook(request, env) {
 
     if (!email) {
       return json({ error: "email is required" }, 400);
+    }
+
+    // Server-side form validation (silent rejection for junk submissions)
+    const validation = validateFormData({ firstName, lastName, organization, title, roi_annual_salary });
+    if (!validation.valid) {
+      console.log("Form validation rejected:", email, validation.reason);
+      return json({ success: true }, 200);
     }
 
     // Run Brevo contact creation and HubSpot CRM upsert in parallel
