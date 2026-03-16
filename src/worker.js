@@ -27,8 +27,8 @@ const SEQUENCES = {
   },
   C: {
     name: "Long-Term Nurture",
-    templateIds: [7, 8, 9, 10, 11, 12, 13, 14],
-    delays: [0, 14, 14, 14, 14, 14, 14, 14],
+    templateIds: [7, 8, 9, 10, 29, 11, 12, 13, 14],
+    delays: [0, 14, 14, 14, 14, 14, 14, 14, 14],
     nextSequence: "DONE",
   },
 };
