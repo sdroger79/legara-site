@@ -604,6 +604,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <script>
 // ─── PUBLIC CALCULATOR CONFIG ───
 const CALC_MODE = 'public';
+
+// LinkedIn: Calculator Engagement conversion (fire once on page load)
+setTimeout(function() {
+  if (typeof lintrk === 'function') {
+    lintrk('track', { conversion_id: 24768060 });
+  }
+}, 1500);
 let lastCalc = {};
 let calcCount = 0;
 
@@ -636,6 +643,11 @@ function submitDownloadForm(e) {
       form_name: 'roi_download_form',
       calculator_version: 'public'
     });
+  }
+
+  // LinkedIn: Calculator Lead conversion
+  if (typeof lintrk === 'function') {
+    lintrk('track', { conversion_id: 24768068 });
   }
 
   // Fire-and-forget: HubSpot
