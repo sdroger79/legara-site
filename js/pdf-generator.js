@@ -286,9 +286,79 @@ function generateReport(orgName) {
   addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 3: ECONOMICS STUDY - INTRO
+  // PAGE 3: OPERATIONAL MODEL
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 3: Economics intro');
+  console.log('[PDF] Page 3: Operational model');
+  y = newPage();
+
+  y = heading('The Operational Infrastructure Behind Every Provider', y, 16);
+  y += 4;
+
+  y = bodyText('Legara is not a staffing agency that places a clinician and walks away. Every provider deployed through Legara is backed by dedicated operational infrastructure designed to maximize utilization, minimize disruption, and ensure care quality. This infrastructure is the product of a decade of FQHC workforce deployments.', y);
+  y += 8;
+
+  y = subheading('Patient Service Representatives (PSRs)', y);
+  y = bodyText('Every Legara clinician is supported by a dedicated, full-time Patient Service Representative. Each PSR handles no more than 3 to 4 providers. They coordinate scheduling within your EHR, manage patient flow, follow through on documentation, and handle administrative overhead. PSRs are the reason utilization runs at 82%, no-shows stay low, and every chart note is complete and locked within 24 hours. When you add a second or third provider, you are not building new infrastructure. You are assigning a PSR who already knows your workflows.', y);
+  y += 8;
+
+  y = subheading('Partner Relationship Owners (PROs)', y);
+  y = bodyText('Every health center has a named Partner Relationship Owner as their single point of contact at Legara. Each PRO serves 2 to 5 health centers. Their job is making the partnership work on both sides: coordinating with your BH Director as a peer, managing the operational relationship, handling escalations, and ensuring nothing falls through the cracks. One call, one person, one answer.', y);
+  y += 8;
+
+  y = subheading('Quality Assurance Protocols', y);
+  y = bodyText('Every encounter is documented and locked within 24 hours. Biweekly nonclinical chart spot-checks cover a minimum of 3% of all encounters or five per clinician, whichever is greater. Findings are delivered to your Compliance Officer within ten banking days. Clinical QA and QI oversight remain entirely with your health center.', y);
+  y += 8;
+
+  y = subheading('Compliance Architecture', y);
+  y = bodyText('Legara operates through a three-entity structure designed around California\'s corporate practice of medicine law. Your health center retains full clinical authority, credentialing and privileging control, scheduling approval, and billing responsibility. Legara never exercises clinical control over any clinician. Compensation is fixed per encounter, not tied to referral volume. Financial flows are separated through a dedicated clearinghouse. The Clinician Facilitation Agreement is structured for HRSA operational site visit review.', y);
+  y += 12;
+
+  // Performance stats row
+  var opsStatsY = y;
+  var opsStatW = (CONTENT_W - 30) / 4;
+
+  doc.setFillColor(240, 247, 243);
+  doc.roundedRect(MARGIN, opsStatsY, CONTENT_W, 50, 3, 3, 'F');
+
+  var opsStats = [
+    { num: '<3%', label: 'Annual Turnover' },
+    { num: '82%', label: 'Provider Utilization' },
+    { num: '24hrs', label: 'Chart Completion' },
+    { num: '4.76', label: 'Patient Satisfaction' }
+  ];
+
+  opsStats.forEach(function(stat, i) {
+    var x = MARGIN + 10 + (i * (opsStatW + 10));
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(26, 107, 74);
+    doc.text(stat.num, x + opsStatW/2, opsStatsY + 20, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(136, 136, 136);
+    doc.text(stat.label, x + opsStatW/2, opsStatsY + 32, { align: 'center' });
+  });
+
+  y = opsStatsY + 60;
+
+  // Callout box
+  doc.setFillColor(26, 107, 74);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 40, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text('This operational layer is why the numbers work.', MARGIN + 12, y + 15);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Nobody else in this space builds dedicated support infrastructure around every provider. That is what', MARGIN + 12, y + 27);
+  doc.text('produces 82% utilization, under 3% turnover, and the financial results on the previous page.', MARGIN + 12, y + 35);
+
+  addFooter();
+
+  // ═══════════════════════════════════════════
+  // PAGE 4: ECONOMICS STUDY - INTRO
+  // ═══════════════════════════════════════════
+  console.log('[PDF] Page 4: Economics intro');
   y = newPage();
 
   doc.setFontSize(20);
@@ -354,9 +424,9 @@ function generateReport(orgName) {
   addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 4: CASH GENERATED YEAR-BY-YEAR
+  // PAGE 5: CASH GENERATED YEAR-BY-YEAR
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 4: Cash generated');
+  console.log('[PDF] Page 5: Cash generated');
   y = newPage();
 
   y = heading('2. Cash Generated for Your Mission: Year-by-Year', y);
@@ -413,15 +483,15 @@ function generateReport(orgName) {
   addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 5: COST SAVINGS + STEADY STATE
+  // PAGE 6: MISSION CASH ADVANTAGE + STEADY STATE
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 5: Cost savings');
+  console.log('[PDF] Page 6: Mission cash advantage');
   y = newPage();
 
-  y = subheading('Cost Savings Across All Provider Types', y);
+  y = subheading('Mission Cash Advantage by Provider Type', y);
 
   y = autoTable(y,
-    ['Provider Type', 'Year 1 Savings', 'Year 2 Savings', 'Year 3 Savings', '3-Year Total'],
+    ['Provider Type', 'Year 1 Advantage', 'Year 2 Advantage', 'Year 3 Advantage', '3-Year Total'],
     [
       ['LCSW/LMFT ($135K)', '$52,097', '$25,788', '$25,788', '$103,673'],
       ['Psychologist ($155K)', '$61,977', '$33,588', '$33,588', '$129,153'],
@@ -461,9 +531,9 @@ function generateReport(orgName) {
   addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 6: WHY THIS MATTERS NOW
+  // PAGE 7: WHY THIS MATTERS NOW
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 6: Why this matters now');
+  console.log('[PDF] Page 7: Why this matters now');
   y = newPage();
 
   y = heading('3. Why This Matters Now, Especially in California', y);
@@ -497,9 +567,9 @@ function generateReport(orgName) {
   addFooter();
 
   // ═══════════════════════════════════════════
-  // PAGE 7: HOW LEGARA CHANGES + SOURCES
+  // PAGE 8: HOW LEGARA CHANGES + SOURCES
   // ═══════════════════════════════════════════
-  console.log('[PDF] Page 7: Legara model + sources');
+  console.log('[PDF] Page 8: Legara model + sources');
   y = newPage();
 
   y = heading('How Legara Changes the Equation', y);
@@ -556,6 +626,21 @@ function generateReport(orgName) {
   });
 
   y += 6;
+
+  // Testimonial
+  y += 2;
+  doc.setFillColor(245, 245, 245);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 36, 3, 3, 'F');
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(10);
+  doc.setTextColor(68, 68, 68);
+  doc.text('"Legara allows us to increase access to care while improving outcomes for our patients.', MARGIN + 12, y + 14);
+  doc.text('Their consistency has been remarkable."', MARGIN + 12, y + 24);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(26, 107, 74);
+  doc.text('Kevin Mattson, CEO, San Ysidro Health', MARGIN + 12, y + 32);
+  y += 44;
 
   // Bottom line callout
   doc.setFillColor.apply(doc, GREEN);
