@@ -220,6 +220,73 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
 
   </div>
+
+  <style>
+    .team-bio {
+      max-height: 7.5em;
+      overflow: hidden;
+      position: relative;
+      transition: max-height 0.4s ease;
+    }
+    .team-bio.clamped::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2.5em;
+      background: linear-gradient(transparent, var(--off-white, #f4f7f5));
+    }
+    .team-bio.expanded {
+      max-height: 600px;
+    }
+    .team-bio.expanded::after {
+      display: none;
+    }
+    .bio-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--green, #1a6b4a);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 0;
+      margin-top: 4px;
+      font-family: inherit;
+    }
+    .bio-toggle:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
+  (function() {
+    document.querySelectorAll('.team-bio').forEach(function(bio) {
+      // Wait for render
+      requestAnimationFrame(function() {
+        if (bio.scrollHeight > bio.clientHeight + 2) {
+          bio.classList.add('clamped');
+          var btn = document.createElement('button');
+          btn.className = 'bio-toggle';
+          btn.style.display = 'inline-block';
+          btn.textContent = 'Read more';
+          btn.addEventListener('click', function() {
+            if (bio.classList.contains('expanded')) {
+              bio.classList.remove('expanded');
+              bio.classList.add('clamped');
+              btn.textContent = 'Read more';
+            } else {
+              bio.classList.remove('clamped');
+              bio.classList.add('expanded');
+              btn.textContent = 'Read less';
+            }
+          });
+          bio.parentNode.insertBefore(btn, bio.nextSibling);
+        }
+      });
+    });
+  })();
+  </script>
 </section>
 
 <!-- VALUES / PRINCIPLES -->
