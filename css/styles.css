@@ -1514,6 +1514,145 @@ footer {
   .team-photo-placeholder svg { width: 40px; height: 40px; }
   .team-info { padding: 24px; }
   .team-name { font-size: 20px; }
+
+  /* Hide inline proof bar dividers on mobile */
+  div[style*="width: 1px"][style*="height: 32px"] {
+    display: none !important;
+  }
+
+  /* Comparison table rows: stack on mobile */
+  .why-aside .comparison-row {
+    flex-wrap: wrap;
+  }
+
+  .comparison-header {
+    gap: 20px !important;
+  }
+
+  /* Override inline padding on proof-bar-style flex rows */
+  div[style*="padding: 20px 48px"] {
+    padding: 16px 20px !important;
+  }
+
+  div[style*="padding: 24px 40px"] {
+    padding: 16px 20px !important;
+  }
+}
+
+/* ─── SMALL MOBILE (≤600px) ─── */
+@media (max-width: 600px) {
+  /* Team grid: force single column (fixes about.html inline style) */
+  .team-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .team-photo {
+    height: 200px !important;
+  }
+
+  .team-info {
+    padding: 24px 20px !important;
+  }
+
+  /* Pillars: force single column (fixes how-it-works.html inline style) */
+  .pillars {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Responsibility grid: force single column (fixes how-it-works.html inline style) */
+  .responsibility-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Partner grids: force single column (fixes partners.html inline styles) */
+  .impact-outcomes-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .partner-profiles-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ops-depth-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Section padding: tighten for small screens */
+  section {
+    padding: 48px 20px !important;
+  }
+
+  .page-header {
+    padding: 90px 20px 40px !important;
+  }
+
+  /* Proof bar: tighten padding */
+  .proof-bar {
+    padding: 16px 20px !important;
+    gap: 16px !important;
+  }
+
+  .proof-num {
+    font-size: 20px;
+  }
+
+  .proof-text {
+    font-size: 12px;
+  }
+
+  /* Footer: single column */
+  .footer-top {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* CTA band: tighten */
+  .cta-band {
+    padding: 48px 20px !important;
+  }
+
+  /* Forms: tighten padding */
+  .contact-form,
+  #providerFormContainer {
+    padding: 24px 16px !important;
+  }
+
+  /* Stat highlight blocks */
+  .stat-highlight {
+    padding: 32px 20px !important;
+  }
+
+  /* Info cards */
+  .info-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Comparison table: reduce gap */
+  .why-aside .comparison-row div[style*="gap:40px"],
+  .why-aside .comparison-row div[style*="gap: 40px"] {
+    gap: 20px !important;
+  }
+
+  .comp-head {
+    width: 48px !important;
+    font-size: 10px !important;
+  }
+
+  .comparison-feature {
+    font-size: 13px !important;
+  }
+
+  /* Force narrow gap on all inline flex rows with 40px gap */
+  div[style*="gap:40px"],
+  div[style*="gap: 40px"] {
+    gap: 16px !important;
+  }
+
+  /* Form container padding override */
+  div[style*="padding: 40px"] {
+    padding: 24px 16px !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════
