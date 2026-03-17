@@ -29,6 +29,100 @@ var PAGE_H = 792;
 var CONTENT_W = PAGE_W - MARGIN * 2;
 var CONTENT_TOP = 72; // y where content starts on pages with header
 
+// Compute ROI data for any provider type using DEFAULTS + BAKED constants
+function computeForType(type, ppsRate) {
+  var def = DEFAULTS[type];
+  var salary = def.salary;
+  var encPerHour = def.encPerHour;
+  var legaraRate = def.legaraRate;
+  var multiplier = BAKED.loadedMultiplier;
+  var recruiterFee = BAKED.recruiterFee;
+  var turnover = BAKED.turnoverRate;
+  var pps = ppsRate || 230;
+
+  var fullyLoaded = salary * multiplier;
+  var benefitsCost = fullyLoaded - salary;
+  var supportCost = SUPPORT_STAFF_COST;
+  var ptoWeeks = BAKED.ptoDays / 5;
+  var availWeeks = 52 - ptoWeeks;
+  var effectiveHours = BAKED.scheduledHours * (1 - 0.04);
+  var effectiveEncPerWeek = effectiveHours * encPerHour * (1 - 0.18);
+  var fullYearEnc = effectiveEncPerWeek * availWeeks;
+
+  var onboardMonths = BAKED.onboardWeeks / 4.33;
+  var credPanelOverlap = Math.min(BAKED.credentialMonths, BAKED.payerPanelMonths) * 0.5;
+  var credPanelMonths = BAKED.credentialMonths + BAKED.payerPanelMonths - credPanelOverlap;
+  var totalRampMonths = BAKED.recruitMonths + onboardMonths + credPanelMonths + BAKED.panelBuildMonths;
+
+  function phaseEnc(months, productivity) {
+    var weeks = months * 4.33;
+    var pto = ptoWeeks * (months / 12);
+    return effectiveEncPerWeek * Math.max(weeks - pto, 0) * productivity;
+  }
+
+  var internalEnc1 =
+    phaseEnc(BAKED.recruitMonths, 0) +
+    phaseEnc(onboardMonths, 0) +
+    phaseEnc(credPanelMonths, 0.25) +
+    phaseEnc(BAKED.panelBuildMonths, 0.65) +
+    phaseEnc(Math.max(12 - totalRampMonths, 0), 1.0);
+
+  var monthsOnPayroll = Math.max(12 - BAKED.recruitMonths, 0);
+  var proratedSalary = fullyLoaded * (monthsOnPayroll / 12);
+  var proratedSupport = supportCost * (monthsOnPayroll / 12);
+  var internalCostYear1 = proratedSalary + proratedSupport + recruiterFee;
+  var internalCPE1 = internalEnc1 > 0 ? internalCostYear1 / internalEnc1 : 0;
+  var cfoBudget = salary + benefitsCost;
+  var cfoCPE = fullYearEnc > 0 ? cfoBudget / fullYearEnc : 0;
+
+  var legaraProdMonths1 = Math.max(12 - LEGARA_RAMP_MONTHS, 0);
+  var legaraProdWeeks1 = legaraProdMonths1 * 4.33;
+  var legaraPTOWeeks1 = ptoWeeks * (legaraProdMonths1 / 12);
+  var legaraEnc1 = effectiveEncPerWeek * Math.max(legaraProdWeeks1 - legaraPTOWeeks1, 0);
+  var legaraCostYear1 = legaraEnc1 * legaraRate;
+
+  var turnoverCost = turnover * (recruiterFee + fullyLoaded * Math.min(totalRampMonths / 12, 1) * 0.5);
+  var internalCostSteady = fullyLoaded + supportCost + turnoverCost;
+  var legaraCostSteady = fullYearEnc * legaraRate;
+
+  var legaraNetPerEnc = pps - legaraRate;
+  var legaraCashYear1 = legaraEnc1 * legaraNetPerEnc;
+  var legaraCashSteady = fullYearEnc * legaraNetPerEnc;
+  var internalCashYear1 = (internalEnc1 * pps) - internalCostYear1;
+  var internalCashSteady = (fullYearEnc * pps) - internalCostSteady;
+
+  var year1Savings = internalCostYear1 - legaraCostYear1;
+  var year2Savings = internalCostSteady - legaraCostSteady;
+  var total3Yr = year1Savings + year2Savings + year2Savings;
+  var missionAdvY1 = legaraCashYear1 - internalCashYear1;
+  var missionAdvSteady = legaraCashSteady - internalCashSteady;
+  var missionAdvantage3Yr = (legaraCashYear1 + legaraCashSteady * 2) - (internalCashYear1 + internalCashSteady * 2);
+
+  return {
+    label: def.label, salary: salary, multiplier: multiplier,
+    benefitsCost: Math.round(benefitsCost), fullyLoaded: Math.round(fullyLoaded),
+    supportCost: supportCost, recruiterFee: recruiterFee,
+    internalCostYear1: Math.round(internalCostYear1),
+    internalEnc1: Math.round(internalEnc1), internalCPE1: internalCPE1,
+    cfoBudget: Math.round(cfoBudget), cfoCPE: Math.round(cfoCPE),
+    fullYearEnc: Math.round(fullYearEnc),
+    legaraRate: legaraRate, legaraEnc1: Math.round(legaraEnc1),
+    legaraCostYear1: Math.round(legaraCostYear1),
+    legaraCashYear1: Math.round(legaraCashYear1),
+    legaraCashSteady: Math.round(legaraCashSteady),
+    internalCashYear1: Math.round(internalCashYear1),
+    internalCashSteady: Math.round(internalCashSteady),
+    year1Savings: Math.round(year1Savings), total3Yr: Math.round(total3Yr),
+    missionAdvY1: Math.round(missionAdvY1),
+    missionAdvSteady: Math.round(missionAdvSteady),
+    missionAdvantage3Yr: Math.round(missionAdvantage3Yr),
+    monthsOnPayroll: Math.round(12 - BAKED.recruitMonths),
+    totalRampMonths: Math.round(totalRampMonths),
+    legaraCash3Yr: Math.round(legaraCashYear1 + legaraCashSteady * 2),
+    internalCash3Yr: Math.round(internalCashYear1 + internalCashSteady * 2)
+  };
+}
+
 function generateReport(orgName) {
   console.log('[PDF] Starting report generation for:', orgName);
   var jsPDF = window.jspdf.jsPDF;
@@ -385,38 +479,45 @@ function generateReport(orgName) {
   y = bodyText('When an FQHC hires a behavioral health provider, the CFO typically budgets for salary plus benefits. But the real 12-month cost includes recruiter fees, onboarding, credentialing lag (3\u20136 months of salary before the first billable encounter), payer enrollment delays, support staff, and a ramp period where the provider is being paid at full salary but producing a fraction of their eventual output.', y);
   y += 6;
 
-  y = subheading('Therapist (LCSW/LMFT) at $135K Base', y);
+  // Primary: prospect's chosen provider type with their actual data
+  var ppsRate = d.legaraRate ? (d.legaraCashYear1 / d.legaraEnc1 + d.legaraRate) : 230;
+  if (isNaN(ppsRate) || ppsRate <= 0) ppsRate = 230;
+
+  y = subheading(d.providerLabel + ' at ' + fmtD(d.salary) + ' Base (Your Data)', y);
   y = autoTable(y,
     ['', 'CFO Budget', '12-Month Reality'],
     [
-      ['Base salary', '$135,000', '$135,000'],
-      ['Benefits & taxes (1.4x)', '$54,000', '$54,000'],
-      ['Recruiter fee', '-', '$8,000'],
-      ['Support staff (0.25 FTE)', '-', '$11,000'],
-      [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: '$189,000', styles: { fontStyle: 'bold' } }, { content: '$208,000', styles: { fontStyle: 'bold' } }],
-      ['Completed encounters (Year 1)', '~1,350', '~690'],
-      [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: '$140', styles: { fontStyle: 'bold' } }, { content: '$301', styles: { fontStyle: 'bold', textColor: RED } }]
+      ['Base salary', fmtD(d.salary), fmtD(d.salary)],
+      ['Benefits & taxes (' + (d.multiplier || 1.4) + 'x)', fmtD(d.benefitsCost), fmtD(d.benefitsCost)],
+      ['Recruiter fee', '-', fmtD(d.recruiterFee)],
+      ['Support staff (0.25 FTE)', '-', fmtD(d.supportCost)],
+      [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: fmtD((d.salary + d.benefitsCost)), styles: { fontStyle: 'bold' } }, { content: fmtD(d.internalCostYear1), styles: { fontStyle: 'bold' } }],
+      ['Completed encounters (Year 1)', '~' + d.fullYearEncounters.toLocaleString(), '~' + d.internalEnc1.toLocaleString()],
+      [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: fmtD((d.salary + d.benefitsCost) / d.fullYearEncounters), styles: { fontStyle: 'bold' } }, { content: fmtD(d.internalCPE1), styles: { fontStyle: 'bold', textColor: RED } }]
     ],
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.45 }, 1: { halign: 'right' }, 2: { halign: 'right' } } }
   );
 
-  // Check if PMHNP table fits (~160pt for subheading + 7-row table)
+  // Secondary: contrasting provider type
+  var contrastType = (currentType === 'lcsw_lmft' || currentType === 'psychologist') ? 'pmhnp' : 'lcsw_lmft';
+  var c = computeForType(contrastType, 230);
+
   if (remaining(y) < 160) {
     addFooter();
     y = newPage();
   }
 
-  y = subheading('PMHNP at $200K Base', y);
+  y = subheading(c.label + ' at ' + fmtD(c.salary) + ' Base (Comparison)', y);
   y = autoTable(y,
     ['', 'CFO Budget', '12-Month Reality'],
     [
-      ['Base salary', '$200,000', '$200,000'],
-      ['Benefits & taxes (1.4x)', '$80,000', '$80,000'],
-      ['Recruiter fee', '-', '$8,000'],
-      ['Support staff (0.25 FTE)', '-', '$11,000'],
-      [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: '$280,000', styles: { fontStyle: 'bold' } }, { content: '$299,000', styles: { fontStyle: 'bold' } }],
-      ['Completed encounters (Year 1)', '~2,025', '~1,035'],
-      [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: '$138', styles: { fontStyle: 'bold' } }, { content: '$289', styles: { fontStyle: 'bold', textColor: RED } }]
+      ['Base salary', fmtD(c.salary), fmtD(c.salary)],
+      ['Benefits & taxes (1.4x)', fmtD(c.benefitsCost), fmtD(c.benefitsCost)],
+      ['Recruiter fee', '-', fmtD(c.recruiterFee)],
+      ['Support staff (0.25 FTE)', '-', fmtD(c.supportCost)],
+      [{ content: 'Total Cost', styles: { fontStyle: 'bold' } }, { content: fmtD(c.cfoBudget), styles: { fontStyle: 'bold' } }, { content: fmtD(c.internalCostYear1), styles: { fontStyle: 'bold' } }],
+      ['Completed encounters (Year 1)', '~' + c.fullYearEnc.toLocaleString(), '~' + c.internalEnc1.toLocaleString()],
+      [{ content: 'Cost per encounter', styles: { fontStyle: 'bold' } }, { content: fmtD(c.cfoCPE), styles: { fontStyle: 'bold' } }, { content: fmtD(c.internalCPE1), styles: { fontStyle: 'bold', textColor: RED } }]
     ],
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.45 }, 1: { halign: 'right' }, 2: { halign: 'right' } } }
   );
@@ -434,32 +535,34 @@ function generateReport(orgName) {
   y = bodyText('Every behavioral health encounter generates revenue. The question isn\u2019t whether you should offer behavioral health services. It\u2019s which model generates more cash to reinvest in your mission. Below, we compare the net cash each model produces annually.', y);
   y += 6;
 
-  y = subheading('Therapist (LCSW/LMFT) at $230 PPS', y);
+  // Primary: prospect's actual data
+  y = subheading(d.providerLabel + ' (Your Data)', y);
   y = autoTable(y,
     ['', 'Year 1', 'Year 2', 'Year 3', '3-Year Total'],
     [
-      ['With Legara', '$51,750', '$100,125', '$100,125', '$252,000'],
-      ['Internal Hire', '-$28,938', '$50,730', '$50,730', '$72,522'],
+      ['With Legara', fmtD(d.legaraCashYear1), fmtD(d.legaraCashSteady), fmtD(d.legaraCashSteady), fmtD(d.legaraCash3Yr)],
+      ['Internal Hire', fmtD(d.internalCashYear1), fmtD(d.internalCashSteady), fmtD(d.internalCashSteady), fmtD(d.internalCash3Yr)],
       [{ content: 'Legara Advantage', styles: { fontStyle: 'bold' } },
-        { content: '+$80,688', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$49,395', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$49,395', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$179,478', styles: { fontStyle: 'bold', textColor: GREEN } }]
+        { content: fmtDSigned(d.missionAdvY1), styles: { fontStyle: 'bold', textColor: missionColor(d.missionAdvY1) } },
+        { content: fmtDSigned(d.missionAdvSteady), styles: { fontStyle: 'bold', textColor: missionColor(d.missionAdvSteady) } },
+        { content: fmtDSigned(d.missionAdvSteady), styles: { fontStyle: 'bold', textColor: missionColor(d.missionAdvSteady) } },
+        { content: fmtDSigned(d.missionAdvantage3Yr), styles: { fontStyle: 'bold', textColor: missionColor(d.missionAdvantage3Yr) } }]
     ],
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.28 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } } }
   );
 
-  y = subheading('PMHNP at $230 PPS', y);
+  // Secondary: contrasting provider type
+  y = subheading(c.label + ' (Comparison)', y);
   y = autoTable(y,
     ['', 'Year 1', 'Year 2', 'Year 3', '3-Year Total'],
     [
-      ['With Legara', '$44,850', '$86,775', '$86,775', '$218,400'],
-      ['Internal Hire', '-$62,288', '$73,843', '$73,843', '$85,398'],
+      ['With Legara', fmtD(c.legaraCashYear1), fmtD(c.legaraCashSteady), fmtD(c.legaraCashSteady), fmtD(c.legaraCash3Yr)],
+      ['Internal Hire', fmtD(c.internalCashYear1), fmtD(c.internalCashSteady), fmtD(c.internalCashSteady), fmtD(c.internalCash3Yr)],
       [{ content: 'Legara Advantage', styles: { fontStyle: 'bold' } },
-        { content: '+$107,138', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$12,932', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$12,932', styles: { fontStyle: 'bold', textColor: GREEN } },
-        { content: '+$133,002', styles: { fontStyle: 'bold', textColor: GREEN } }]
+        { content: fmtDSigned(c.missionAdvY1), styles: { fontStyle: 'bold', textColor: missionColor(c.missionAdvY1) } },
+        { content: fmtDSigned(c.missionAdvSteady), styles: { fontStyle: 'bold', textColor: missionColor(c.missionAdvSteady) } },
+        { content: fmtDSigned(c.missionAdvSteady), styles: { fontStyle: 'bold', textColor: missionColor(c.missionAdvSteady) } },
+        { content: fmtDSigned(c.missionAdvantage3Yr), styles: { fontStyle: 'bold', textColor: missionColor(c.missionAdvantage3Yr) } }]
     ],
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.28 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } } }
   );
@@ -490,15 +593,24 @@ function generateReport(orgName) {
 
   y = subheading('Mission Cash Advantage by Provider Type', y);
 
+  // Compute for all 4 provider types
+  var allTypes = ['lcsw_lmft', 'psychologist', 'pmhnp', 'psychiatrist'];
+  var allRows = allTypes.map(function(t) {
+    var r = computeForType(t, 230);
+    var isSelected = (t === currentType);
+    var rowLabel = r.label + ' (' + fmtD(r.salary) + ')';
+    return [
+      isSelected ? { content: rowLabel, styles: { fontStyle: 'bold' } } : rowLabel,
+      isSelected ? { content: fmtD(r.year1Savings), styles: { fontStyle: 'bold' } } : fmtD(r.year1Savings),
+      isSelected ? { content: fmtD(r.total3Yr - r.year1Savings) + '/yr', styles: { fontStyle: 'bold' } } : fmtD((r.total3Yr - r.year1Savings) / 2) + '/yr',
+      isSelected ? { content: fmtD(r.total3Yr), styles: { fontStyle: 'bold', textColor: GREEN } } : fmtD(r.total3Yr)
+    ];
+  });
+
   y = autoTable(y,
-    ['Provider Type', 'Year 1 Advantage', 'Year 2 Advantage', 'Year 3 Advantage', '3-Year Total'],
-    [
-      ['LCSW/LMFT ($135K)', '$52,097', '$25,788', '$25,788', '$103,673'],
-      ['Psychologist ($155K)', '$61,977', '$33,588', '$33,588', '$129,153'],
-      ['PMHNP ($200K)', '$79,627', '$13,022', '$13,022', '$105,671'],
-      ['Psychiatrist ($330K)', '$166,677', '$79,672', '$79,672', '$326,021']
-    ],
-    { columnStyles: { 0: { cellWidth: CONTENT_W * 0.28 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } } }
+    ['Provider Type', 'Year 1 Advantage', 'Year 2-3 Advantage', '3-Year Total'],
+    allRows,
+    { columnStyles: { 0: { cellWidth: CONTENT_W * 0.3 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } } }
   );
 
   y = subheading('Steady-State Cost Per Encounter Comparison', y);
