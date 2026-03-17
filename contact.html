@@ -184,7 +184,7 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
             <textarea name="message" placeholder="Tell us what you're looking for or how we can help..." style="background: var(--white);"></textarea>
           </div>
           <div style="position:absolute;left:-9999px;"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAACrW0wLzmWlGZuLt" data-theme="light" data-size="compact" style="margin-bottom: 12px;"></div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAACrW0wLzmWlGZuLt" data-theme="light" data-size="compact" data-retry="never" style="margin-bottom: 12px;"></div>
           <button type="submit" class="btn-primary" style="text-align: center; width: 100%;">Send Message</button>
         </form>
       </div>
@@ -260,8 +260,24 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   </div>
 </footer>
 
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="js/tracking.js"></script>
+<script>
+// Render Turnstile explicitly
+document.addEventListener('DOMContentLoaded', function() {
+  var checkTurnstile = setInterval(function() {
+    if (typeof turnstile !== 'undefined') {
+      clearInterval(checkTurnstile);
+      turnstile.render('.cf-turnstile', {
+        sitekey: '0x4AAAAAAACrW0wLzmWlGZuLt',
+        theme: 'light',
+        size: 'compact'
+      });
+    }
+  }, 200);
+  setTimeout(function() { clearInterval(checkTurnstile); }, 5000);
+});
+</script>
 <script>
 function getHubspotCookie() {
   var match = document.cookie.match(/hubspotutk=([^;]+)/);
