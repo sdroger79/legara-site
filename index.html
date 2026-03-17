@@ -493,58 +493,49 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
     <div class="why-aside">
       <div class="why-aside-label">How Legara compares</div>
-      <div class="comparison-header">
-        <div class="comp-head">Traditional Hiring</div>
-        <div class="comp-head">Legara</div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Time to first encounter</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">11+ months</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">~5 months</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Cost during ramp</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">Full salary</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">$0</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Dedicated scheduling support</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">Your staff</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">PSR (3-4 max)</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Named relationship owner</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">N/A</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">PRO</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Annual turnover</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">30%+</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">Under 3%</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Provider utilization</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">~52%</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">82%</span>
-        </div>
-      </div>
-      <div class="comparison-row">
-        <span class="comparison-feature">Compliance architecture</span>
-        <div style="display:flex; gap:40px;">
-          <span class="comparison-no" style="width:80px; text-align:center; font-size: 13px;">Varies</span>
-          <span class="comparison-yes" style="width:80px; text-align:center; font-size: 13px;">CPOM-compliant</span>
-        </div>
+      <style>
+        .compare-table { width: 100%; border-collapse: collapse; }
+        .compare-table th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mist); padding: 0 0 12px; text-align: center; }
+        .compare-table th:first-child { text-align: left; }
+        .compare-table td { padding: 14px 8px; border-bottom: 1px solid var(--border); font-size: 14px; text-align: center; }
+        .compare-table td:first-child { text-align: left; font-weight: 500; color: var(--charcoal); }
+        .compare-table .val-old { color: #c0392b; font-weight: 600; }
+        .compare-table .val-new { color: var(--green); font-weight: 600; }
+        @media (max-width: 480px) {
+          .compare-table th, .compare-table td { font-size: 12px; padding: 10px 4px; }
+        }
+      </style>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Traditional Hiring</th>
+            <th>Legara</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Time to first encounter</td>
+            <td class="val-old">11+ months</td>
+            <td class="val-new">~5 months</td>
+          </tr>
+          <tr>
+            <td>Cost during ramp</td>
+            <td class="val-old">Full salary</td>
+            <td class="val-new">$0</td>
+          </tr>
+          <tr>
+            <td>Annual provider turnover</td>
+            <td class="val-old">30%+</td>
+            <td class="val-new">Under 3%</td>
+          </tr>
+          <tr>
+            <td>FTE commitment required</td>
+            <td class="val-old">Yes</td>
+            <td class="val-new">No</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
     </div>
   </div>
