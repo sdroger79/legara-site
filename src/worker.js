@@ -123,7 +123,10 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(processScheduledEmails(env));
+    ctx.waitUntil((async () => {
+      await syncHubSpotSequenceChanges(env);
+      await processScheduledEmails(env);
+    })());
   },
 };
 
@@ -321,6 +324,7 @@ async function handleBrevoWebhook(request, env) {
         utm_content: utm_content || "",
         utm_term: utm_term || "",
         hs_lead_status: "NEW",
+        email_sequence: "calculator_followup",
       }, env),
     ]);
 
@@ -854,6 +858,208 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
 
 // --- Cron: process scheduled emails ---
 
+// --- HubSpot ↔ Brevo sequence sync (runs in cron before email processing) ---
+
+async function updateHubSpotEmailSequence(email, hsValue, env) {
+  try {
+    const hsHeaders = { Authorization: `Bearer ${env.HUBSPOT_TOKEN}`, "Content-Type": "application/json" };
+    const res = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+      method: "POST", headers: hsHeaders,
+      body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: email }] }] }),
+    });
+    const data = await res.json();
+    if (data.total > 0) {
+      await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${data.results[0].id}`, {
+        method: "PATCH", headers: hsHeaders,
+        body: JSON.stringify({ properties: { email_sequence: hsValue } }),
+      });
+    }
+  } catch (err) {
+    console.error(`Failed to update HubSpot email_sequence for ${email}:`, err.message);
+  }
+}
+
+const HS_TO_BREVO_SEQ = { calculator_followup: "A", long_term_nurture: "C" };
+const BREVO_TO_HS_SEQ = { A: "calculator_followup", B: "none", C: "long_term_nurture", DONE: "none" };
+
+async function syncHubSpotSequenceChanges(env) {
+  console.log("Sync: checking HubSpot ↔ Brevo sequence alignment...");
+  const hsHeaders = { Authorization: `Bearer ${env.HUBSPOT_TOKEN}`, "Content-Type": "application/json" };
+  let synced = 0;
+
+  try {
+    // Step 1-3: HubSpot → Brevo (contacts with active sequences in HubSpot)
+    for (const [hsValue, brevoSeq] of Object.entries(HS_TO_BREVO_SEQ)) {
+      const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+        method: "POST", headers: hsHeaders,
+        body: JSON.stringify({
+          filterGroups: [{ filters: [{ propertyName: "email_sequence", operator: "EQ", value: hsValue }] }],
+          properties: ["email", "email_sequence", "firstname", "lastname"],
+          limit: 100,
+        }),
+      });
+      const searchData = await searchRes.json();
+
+      for (const contact of (searchData.results || [])) {
+        const email = contact.properties.email;
+        if (!email) continue;
+
+        try {
+          // Check Brevo state
+          const brevoRes = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+            headers: { "api-key": env.BREVO_API_KEY },
+          });
+
+          if (brevoRes.ok) {
+            const brevoData = await brevoRes.json();
+            const currentSeq = (brevoData.attributes || {}).SEQ;
+            if (currentSeq === brevoSeq) continue; // Already in sync
+          } else if (brevoRes.status === 404) {
+            // Create contact in Brevo
+            await fetch("https://api.brevo.com/v3/contacts", {
+              method: "POST",
+              headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email,
+                attributes: { FIRSTNAME: contact.properties.firstname || "", LASTNAME: contact.properties.lastname || "" },
+                updateEnabled: true,
+              }),
+            });
+          }
+
+          // Update Brevo: set sequence, add to list, remove from others
+          await updateContactSequence(email, brevoSeq, 0, new Date().toISOString(), env);
+          const targetList = SEQ_TO_LIST[brevoSeq];
+          if (targetList) {
+            await fetch(`https://api.brevo.com/v3/contacts/lists/${targetList}/contacts/add`, {
+              method: "POST",
+              headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+              body: JSON.stringify({ emails: [email] }),
+            });
+            for (const lid of Object.values(SEQ_TO_LIST)) {
+              if (lid !== targetList) {
+                await fetch(`https://api.brevo.com/v3/contacts/lists/${lid}/contacts/remove`, {
+                  method: "POST",
+                  headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+                  body: JSON.stringify({ emails: [email] }),
+                });
+              }
+            }
+          }
+          console.log(`Sync: enrolled ${email} in Seq ${brevoSeq} (from HubSpot ${hsValue})`);
+          synced++;
+        } catch (err) {
+          console.error(`Sync: failed for ${email}:`, err.message);
+        }
+      }
+    }
+
+    // Step 4: Handle HubSpot "none" → stop active Brevo sequences
+    // Check Brevo lists for contacts whose HubSpot says "none"
+    for (const listId of [5, 6, 7]) {
+      let offset = 0;
+      let hasMore = true;
+      while (hasMore) {
+        const res = await fetch(
+          `https://api.brevo.com/v3/contacts/lists/${listId}/contacts?limit=50&offset=${offset}`,
+          { headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" } }
+        );
+        const data = await res.json();
+        const contacts = data.contacts || [];
+
+        for (const contact of contacts) {
+          const attrs = contact.attributes || {};
+          if (!attrs.SEQ || attrs.SEQ === "DONE") continue;
+
+          // Check HubSpot
+          try {
+            const hsRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+              method: "POST", headers: hsHeaders,
+              body: JSON.stringify({
+                filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: contact.email }] }],
+                properties: ["email_sequence"],
+              }),
+            });
+            const hsData = await hsRes.json();
+            if (hsData.total > 0) {
+              const hsSeq = hsData.results[0].properties.email_sequence || "none";
+              if (hsSeq === "none") {
+                // HubSpot says none, Brevo still active: stop it
+                await updateContactSequence(contact.email, "DONE", 0, "", env);
+                for (const lid of [5, 6, 7]) {
+                  await fetch(`https://api.brevo.com/v3/contacts/lists/${lid}/contacts/remove`, {
+                    method: "POST",
+                    headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+                    body: JSON.stringify({ emails: [contact.email] }),
+                  });
+                }
+                console.log(`Sync: stopped ${contact.email} (HubSpot set to none)`);
+                synced++;
+              }
+            }
+          } catch (err) {
+            console.error(`Sync: HubSpot check failed for ${contact.email}:`, err.message);
+          }
+        }
+
+        hasMore = contacts.length === 50;
+        offset += 50;
+      }
+    }
+
+    // Step 5: Reverse sync — Brevo → HubSpot (auto-enrolled contacts)
+    for (const listId of [5, 6, 7]) {
+      let offset = 0;
+      let hasMore = true;
+      while (hasMore) {
+        const res = await fetch(
+          `https://api.brevo.com/v3/contacts/lists/${listId}/contacts?limit=50&offset=${offset}`,
+          { headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" } }
+        );
+        const data = await res.json();
+        const contacts = data.contacts || [];
+
+        for (const contact of contacts) {
+          const seq = (contact.attributes || {}).SEQ;
+          if (!seq) continue;
+          const expectedHs = BREVO_TO_HS_SEQ[seq] || "none";
+
+          try {
+            const hsRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+              method: "POST", headers: hsHeaders,
+              body: JSON.stringify({
+                filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: contact.email }] }],
+                properties: ["email_sequence"],
+              }),
+            });
+            const hsData = await hsRes.json();
+            if (hsData.total > 0) {
+              const currentHs = hsData.results[0].properties.email_sequence || "none";
+              if (currentHs !== expectedHs) {
+                await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${hsData.results[0].id}`, {
+                  method: "PATCH", headers: hsHeaders,
+                  body: JSON.stringify({ properties: { email_sequence: expectedHs } }),
+                });
+                console.log(`Sync: updated HubSpot for ${contact.email}: email_sequence → ${expectedHs}`);
+                synced++;
+              }
+            }
+          } catch (err) {
+            console.error(`Sync: reverse sync failed for ${contact.email}:`, err.message);
+          }
+        }
+
+        hasMore = contacts.length === 50;
+        offset += 50;
+      }
+    }
+
+    console.log(`Sync: complete. ${synced} change(s) synced.`);
+  } catch (err) {
+    console.error("Sync: fatal error:", err.message);
+  }
+}
+
 async function processScheduledEmails(env) {
   console.log("Cron: checking for scheduled emails...");
   const now = new Date().toISOString();
@@ -900,9 +1106,11 @@ async function processScheduledEmails(env) {
               firstDelay === 0 ? now : calculateNextSend(firstDelay), env
             );
             console.log(`Cron: transitioned ${contact.email} from Seq ${seq} to ${seqConfig.nextSequence}`);
+            await updateHubSpotEmailSequence(contact.email, BREVO_TO_HS_SEQ[seqConfig.nextSequence] || "none", env);
           } else {
             await updateContactSequence(contact.email, "DONE", 0, "", env);
             console.log(`Cron: completed ${contact.email} — marked DONE`);
+            await updateHubSpotEmailSequence(contact.email, "none", env);
           }
           continue;
         }
@@ -938,9 +1146,11 @@ async function processScheduledEmails(env) {
                 calculateNextSend(delay), env
               );
               console.log(`Cron: ${contact.email} finished Seq ${seq}, transitioning to ${seqConfig.nextSequence}`);
+              await updateHubSpotEmailSequence(contact.email, BREVO_TO_HS_SEQ[seqConfig.nextSequence] || "none", env);
             } else {
               await updateContactSequence(contact.email, "DONE", 0, "", env);
               console.log(`Cron: ${contact.email} finished Seq ${seq}, marked DONE`);
+              await updateHubSpotEmailSequence(contact.email, "none", env);
             }
           } else {
             const nextDelay = seqConfig.delays[nextStep];
