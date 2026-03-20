@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Email Sequence Manager | Legara Internal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #1a6b4a; --charcoal: #1c2b24; --slate: #4a5e54; --mist: #8fa89e; --border: #dce8e2; --white: #fff; --off-white: #fafcfb; --green-pale: #f4faf7; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--charcoal); background: var(--off-white); min-height: 100vh; }
+  .container { max-width: 560px; margin: 0 auto; padding: 40px 24px; }
+  .logo { height: 28px; margin-bottom: 32px; }
+  h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--mist); margin-bottom: 32px; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 6px; }
+  input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; }
+  .btn { display: inline-block; padding: 10px 20px; border: none; border-radius: 6px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-green { background: var(--green); color: var(--white); }
+  .btn-outline { background: var(--white); color: var(--green); border: 1px solid var(--green); }
+  .btn:hover { opacity: 0.9; }
+  .btn-row { display: flex; gap: 12px; margin-bottom: 24px; }
+  .result { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; font-size: 14px; line-height: 1.6; display: none; }
+  .result h3 { font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
+  .result .row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .result .row:last-child { border-bottom: none; }
+  .result .label { color: var(--mist); font-size: 13px; }
+  .result .value { font-weight: 500; }
+  .success { color: var(--green); font-weight: 500; }
+  .error { color: #c0392b; font-weight: 500; }
+  .footer { font-size: 12px; color: var(--mist); margin-top: 40px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <img src="../img/logo.png" alt="Legara" class="logo">
+  <h1>Email Sequence Manager</h1>
+  <div class="subtitle">Internal Use Only</div>
+
+  <label>Admin Key</label>
+  <input type="password" id="adminKey" placeholder="Enter admin key" autocomplete="off">
+
+  <label>Email Address</label>
+  <input type="email" id="email" placeholder="ceo@example-fqhc.org">
+
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="checkStatus()">Check Status</button>
+  </div>
+
+  <div id="statusResult" class="result"></div>
+
+  <label>Sequence</label>
+  <select id="sequence">
+    <option value="NONE">None (remove from all sequences)</option>
+    <option value="A">Sequence A (Post-Calculator Nurture)</option>
+    <option value="B">Sequence B (Meeting Confirmation)</option>
+    <option value="C">Sequence C (Long-Term Nurture)</option>
+  </select>
+
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="updateSequence()">Update Sequence</button>
+  </div>
+
+  <div id="updateResult" class="result"></div>
+
+  <div class="footer">Changes take effect within 1 hour (next cron run)</div>
+</div>
+
+<script>
+function getKey() {
+  var key = document.getElementById('adminKey').value;
+  if (key) sessionStorage.setItem('adminKey', key);
+  return key || sessionStorage.getItem('adminKey') || '';
+}
+
+async function checkStatus() {
+  var email = document.getElementById('email').value.trim();
+  var key = getKey();
+  if (!email || !key) { alert('Enter email and admin key'); return; }
+
+  var el = document.getElementById('statusResult');
+  el.style.display = 'block';
+  el.innerHTML = 'Loading...';
+
+  try {
+    var res = await fetch('/api/admin/contact-status?email=' + encodeURIComponent(email) + '&adminKey=' + encodeURIComponent(key));
+    var data = await res.json();
+    if (data.error) { el.innerHTML = '<span class="error">' + data.error + '</span>'; return; }
+
+    var b = data.brevo || {};
+    var h = data.hubspot || {};
+    var html = '<h3>Brevo</h3>';
+    if (b.exists) {
+      html += '<div class="row"><span class="label">Sequence</span><span class="value">' + (b.seq || 'none') + '</span></div>';
+      html += '<div class="row"><span class="label">Step</span><span class="value">' + (b.seqStep != null ? b.seqStep : 'n/a') + '</span></div>';
+      html += '<div class="row"><span class="label">Next Send</span><span class="value">' + (b.nextSend || 'none') + '</span></div>';
+      html += '<div class="row"><span class="label">Lists</span><span class="value">' + (b.lists.join(', ') || 'none') + '</span></div>';
+      if (b.firstName) html += '<div class="row"><span class="label">Name</span><span class="value">' + b.firstName + ' ' + (b.lastName || '') + '</span></div>';
+      if (b.company) html += '<div class="row"><span class="label">Company</span><span class="value">' + b.company + '</span></div>';
+    } else {
+      html += '<div class="row"><span class="value">Not found in Brevo</span></div>';
+    }
+    html += '<h3 style="margin-top:16px;">HubSpot</h3>';
+    if (h.exists) {
+      html += '<div class="row"><span class="label">Email Sequence</span><span class="value">' + (h.emailSequence || 'none') + '</span></div>';
+      html += '<div class="row"><span class="label">Lifecycle Stage</span><span class="value">' + (h.lifecycleStage || 'n/a') + '</span></div>';
+      if (h.firstName) html += '<div class="row"><span class="label">Name</span><span class="value">' + h.firstName + '</span></div>';
+      if (h.company) html += '<div class="row"><span class="label">Company</span><span class="value">' + h.company + '</span></div>';
+    } else {
+      html += '<div class="row"><span class="value">Not found in HubSpot</span></div>';
+    }
+    el.innerHTML = html;
+  } catch (err) {
+    el.innerHTML = '<span class="error">Error: ' + err.message + '</span>';
+  }
+}
+
+async function updateSequence() {
+  var email = document.getElementById('email').value.trim();
+  var sequence = document.getElementById('sequence').value;
+  var key = getKey();
+  if (!email || !key) { alert('Enter email and admin key'); return; }
+
+  var el = document.getElementById('updateResult');
+  el.style.display = 'block';
+  el.innerHTML = 'Updating...';
+
+  try {
+    var res = await fetch('/api/admin/enroll', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, sequence: sequence, adminKey: key })
+    });
+    var data = await res.json();
+    if (data.error) { el.innerHTML = '<span class="error">' + data.error + '</span>'; return; }
+
+    el.innerHTML = '<span class="success">Updated ' + data.email + '</span>' +
+      '<div class="row"><span class="label">Brevo</span><span class="value">' + data.brevo + '</span></div>' +
+      '<div class="row"><span class="label">HubSpot</span><span class="value">' + data.hubspot + '</span></div>';
+  } catch (err) {
+    el.innerHTML = '<span class="error">Error: ' + err.message + '</span>';
+  }
+}
+
+// Restore admin key from session
+window.addEventListener('DOMContentLoaded', function() {
+  var saved = sessionStorage.getItem('adminKey');
+  if (saved) document.getElementById('adminKey').value = saved;
+});
+</script>
+</body>
+</html>

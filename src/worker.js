@@ -11,6 +11,8 @@ const WEBHOOK_CORS_HEADERS = {
 };
 
 const GA4_MEASUREMENT_ID = "G-GC0KH378ZK";
+const DISCOVERY_MEETING_STAGE_ID = "3351448300"; // "Discovery Meeting" in Legara Sales Pipeline
+const LEGARA_PIPELINE_ID = "2119437028";
 
 const SEQUENCES = {
   A: {
@@ -95,6 +97,26 @@ export default {
         return handleBrevoEvents(request, env);
       }
       return new Response("Method Not Allowed", { status: 405, headers: WEBHOOK_CORS_HEADERS });
+    }
+
+    if (url.pathname === "/api/admin/enroll") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      if (request.method === "POST") {
+        return handleAdminEnroll(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
+    }
+
+    if (url.pathname === "/api/admin/contact-status") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      if (request.method === "GET") {
+        return handleAdminContactStatus(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
     }
 
     return env.ASSETS.fetch(request);
@@ -652,7 +674,7 @@ async function getLegaraPipelineStage(hsHeaders) {
     const pipeline = (data.results || []).find(p => p.label.includes("Legara"));
     if (pipeline) {
       _cachedPipelineId = pipeline.id;
-      const stage = pipeline.stages.find(s => s.label.includes("ROI Review Scheduled"));
+      const stage = pipeline.stages.find(s => s.label.includes("Discovery Meeting"));
       _cachedStageId = stage ? stage.id : pipeline.stages[0]?.id;
       console.log(`Cached pipeline: ${_cachedPipelineId}, stage: ${_cachedStageId}`);
     }
@@ -776,7 +798,7 @@ async function updateHubSpot(email, firstName, lastName, organization, payload, 
     );
     console.log("HubSpot create note:", noteRes.status);
 
-    // 4. Auto-create Deal in Legara Sales Pipeline (stage: ROI Review Scheduled)
+    // 4. Auto-create Deal in Legara Sales Pipeline (stage: Discovery Meeting)
     const { pipelineId, stageId } = await getLegaraPipelineStage(hsHeaders);
     if (pipelineId && contactId) {
       const dealName = `${organization || ((firstName || "") + " " + (lastName || "")).trim()} — ROI Review`;
@@ -1122,6 +1144,185 @@ async function handleBetaFeedback(request, env) {
 
 function row(label, value) {
   return `<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;color:#1c2b24;vertical-align:top;width:180px;">${label}</td><td style="padding:10px 12px;border-bottom:1px solid #eee;color:#4a5e54;">${value || "—"}</td></tr>`;
+}
+
+// --- Admin: sequence enrollment ---
+
+const SEQ_TO_LIST = { A: 5, B: 6, C: 7 };
+const SEQ_TO_HS = { A: "sequence_a", B: "sequence_b", C: "sequence_c", NONE: "none" };
+
+async function handleAdminEnroll(request, env) {
+  try {
+    const data = await request.json();
+    const { email, sequence, adminKey } = data;
+
+    if (!adminKey || adminKey !== env.ADMIN_KEY) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    if (!email || !sequence || !["A", "B", "C", "NONE"].includes(sequence)) {
+      return json({ error: "email and sequence (A/B/C/NONE) required" }, 400);
+    }
+
+    const results = { email, sequence, brevo: null, hubspot: null };
+
+    // Brevo: ensure contact exists, update attributes + lists
+    try {
+      // Check if contact exists
+      const checkRes = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+        headers: { "api-key": env.BREVO_API_KEY },
+      });
+      if (checkRes.status === 404) {
+        // Create contact
+        await fetch("https://api.brevo.com/v3/contacts", {
+          method: "POST",
+          headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ email, updateEnabled: true }),
+        });
+      }
+
+      if (sequence === "NONE") {
+        // Clear sequence, remove from all lists
+        await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+          method: "PUT",
+          headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ attributes: { SEQ: "DONE", SEQ_STEP: 0, NEXT_SEND: "" } }),
+        });
+        for (const lid of [5, 6, 7]) {
+          await fetch(`https://api.brevo.com/v3/contacts/lists/${lid}/contacts/remove`, {
+            method: "POST",
+            headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({ emails: [email] }),
+          });
+        }
+        results.brevo = "cleared";
+      } else {
+        const targetList = SEQ_TO_LIST[sequence];
+        const otherLists = Object.values(SEQ_TO_LIST).filter(l => l !== targetList);
+
+        await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+          method: "PUT",
+          headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            attributes: { SEQ: sequence, SEQ_STEP: 0, NEXT_SEND: new Date().toISOString() },
+          }),
+        });
+
+        await fetch(`https://api.brevo.com/v3/contacts/lists/${targetList}/contacts/add`, {
+          method: "POST",
+          headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ emails: [email] }),
+        });
+
+        for (const lid of otherLists) {
+          await fetch(`https://api.brevo.com/v3/contacts/lists/${lid}/contacts/remove`, {
+            method: "POST",
+            headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({ emails: [email] }),
+          });
+        }
+        results.brevo = `enrolled in Seq ${sequence} (List ${targetList})`;
+      }
+    } catch (err) {
+      results.brevo = `error: ${err.message}`;
+    }
+
+    // HubSpot: update email_sequence property
+    try {
+      const hsHeaders = { Authorization: `Bearer ${env.HUBSPOT_TOKEN}`, "Content-Type": "application/json" };
+      const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+        method: "POST", headers: hsHeaders,
+        body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: email }] }] }),
+      });
+      const searchData = await searchRes.json();
+      if (searchData.total > 0) {
+        const contactId = searchData.results[0].id;
+        await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
+          method: "PATCH", headers: hsHeaders,
+          body: JSON.stringify({ properties: { email_sequence: SEQ_TO_HS[sequence] } }),
+        });
+        results.hubspot = `updated (ID: ${contactId})`;
+      } else {
+        results.hubspot = "contact not found in HubSpot";
+      }
+    } catch (err) {
+      results.hubspot = `error: ${err.message}`;
+    }
+
+    console.log(`Admin enroll: ${email} → Seq ${sequence}`, JSON.stringify(results));
+    return json(results, 200);
+  } catch (err) {
+    return json({ error: err.message }, 500);
+  }
+}
+
+async function handleAdminContactStatus(request, env) {
+  try {
+    const url = new URL(request.url);
+    const email = url.searchParams.get("email");
+    const adminKey = url.searchParams.get("adminKey");
+
+    if (!adminKey || adminKey !== env.ADMIN_KEY) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    if (!email) {
+      return json({ error: "email parameter required" }, 400);
+    }
+
+    const result = { email, brevo: { exists: false }, hubspot: { exists: false } };
+
+    // Brevo lookup
+    try {
+      const res = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+        headers: { "api-key": env.BREVO_API_KEY },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const attrs = data.attributes || {};
+        result.brevo = {
+          exists: true,
+          seq: attrs.SEQ || null,
+          seqStep: attrs.SEQ_STEP != null ? attrs.SEQ_STEP : null,
+          nextSend: attrs.NEXT_SEND || null,
+          lists: data.listIds || [],
+          firstName: attrs.FIRSTNAME || "",
+          lastName: attrs.LASTNAME || "",
+          company: attrs.COMPANY || "",
+        };
+      }
+    } catch (err) {
+      result.brevo = { exists: false, error: err.message };
+    }
+
+    // HubSpot lookup
+    try {
+      const hsHeaders = { Authorization: `Bearer ${env.HUBSPOT_TOKEN}`, "Content-Type": "application/json" };
+      const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+        method: "POST", headers: hsHeaders,
+        body: JSON.stringify({
+          filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: email }] }],
+          properties: ["email_sequence", "lifecyclestage", "firstname", "lastname", "company"],
+        }),
+      });
+      const searchData = await searchRes.json();
+      if (searchData.total > 0) {
+        const c = searchData.results[0];
+        result.hubspot = {
+          exists: true,
+          contactId: c.id,
+          emailSequence: c.properties.email_sequence || "none",
+          lifecycleStage: c.properties.lifecyclestage || "",
+          firstName: c.properties.firstname || "",
+          company: c.properties.company || "",
+        };
+      }
+    } catch (err) {
+      result.hubspot = { exists: false, error: err.message };
+    }
+
+    return json(result, 200);
+  } catch (err) {
+    return json({ error: err.message }, 500);
+  }
 }
 
 // --- Response helpers ---
