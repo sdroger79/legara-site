@@ -35,6 +35,13 @@ const SEQUENCES = {
   },
 };
 
+const DEAL_RATE_CARD = {
+  lcsw_lmft:    { monthly_gross: 9880, monthly_net: 6587 },   // 260 enc/mo × $38 gross, × $25.33 net
+  psychologist:  { monthly_gross: 9880, monthly_net: 6587 },   // 260 enc/mo × $38 gross, × $25.33 net
+  pmhnp:         { monthly_gross: 16454, monthly_net: 10969 }, // 433 enc/mo × $38 gross, × $25.33 net
+  psychiatrist:  { monthly_gross: 16454, monthly_net: 10969 }, // 433 enc/mo × $38 gross, × $25.33 net
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -126,6 +133,7 @@ export default {
     ctx.waitUntil((async () => {
       await syncHubSpotSequenceChanges(env);
       await processScheduledEmails(env);
+      await recalculateDealRevenue(env);
     })());
   },
 };
@@ -1057,6 +1065,62 @@ async function syncHubSpotSequenceChanges(env) {
     console.log(`Sync: complete. ${synced} change(s) synced.`);
   } catch (err) {
     console.error("Sync: fatal error:", err.message);
+  }
+}
+
+// --- Deal revenue auto-calculator (runs in cron) ---
+
+async function recalculateDealRevenue(env) {
+  const hubspot = (method, path, body) => fetch(`https://api.hubapi.com${path}`, {
+    method,
+    headers: { 'Authorization': `Bearer ${env.HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' },
+    ...(body ? { body: JSON.stringify(body) } : {})
+  }).then(r => r.json());
+
+  let allDeals = [];
+  let after = undefined;
+
+  while (true) {
+    const url = `/crm/v3/objects/deals?limit=100&properties=dealname,provider_type,fte_count,amount,monthly_gross_revenue,monthly_net_revenue,pipeline${after ? '&after=' + after : ''}`;
+    const page = await hubspot('GET', url);
+    if (!page.results) break;
+    allDeals = allDeals.concat(page.results);
+    if (page.paging?.next?.after) {
+      after = page.paging.next.after;
+    } else {
+      break;
+    }
+  }
+
+  let updated = 0;
+  for (const deal of allDeals) {
+    const props = deal.properties || {};
+    const providerType = props.provider_type;
+    const fteCount = parseFloat(props.fte_count) || 1;
+    const currentAmount = parseFloat(props.amount) || 0;
+    const currentGross = parseFloat(props.monthly_gross_revenue) || 0;
+
+    if (!providerType || !DEAL_RATE_CARD[providerType]) continue;
+
+    const rate = DEAL_RATE_CARD[providerType];
+    const expectedGross = Math.round(rate.monthly_gross * fteCount);
+    const expectedNet = Math.round(rate.monthly_net * fteCount);
+
+    if (currentAmount === expectedGross && currentGross === expectedGross) continue;
+
+    await hubspot('PATCH', `/crm/v3/objects/deals/${deal.id}`, {
+      properties: {
+        amount: String(expectedGross),
+        monthly_gross_revenue: String(expectedGross),
+        monthly_net_revenue: String(expectedNet),
+      }
+    });
+    console.log(`Deal calc: updated "${props.dealname}" — ${providerType} × ${fteCount} FTE = $${expectedGross}/mo`);
+    updated++;
+  }
+
+  if (updated > 0) {
+    console.log(`Deal calc: ${updated} deals updated`);
   }
 }
 
