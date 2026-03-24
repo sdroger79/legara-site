@@ -1069,6 +1069,19 @@ async function syncHubSpotSequenceChanges(env) {
 }
 
 // --- Deal revenue auto-calculator (runs in cron) ---
+// Amount field logic: deals owned by commissioned reps (Andy, Aaron) show net revenue.
+// Deals owned by non-commissioned team (Roger, Jonathon) show gross revenue.
+// monthly_gross_revenue and monthly_net_revenue are always set regardless of owner.
+
+// Commissioned reps: these owners get net revenue in the Amount field.
+// Everyone else (Roger, Jonathon, unassigned) gets gross.
+// Emails are lowercase for matching against HubSpot owner userId/email.
+const COMMISSIONED_REP_EMAILS = [
+  'andy@legarainc.com',
+  'andy@golegara.com',
+  'ajedynak@gmail.com',
+  'aaron@galvanizedstrategies.com',
+];
 
 async function recalculateDealRevenue(env) {
   const hubspot = (method, path, body) => fetch(`https://api.hubapi.com${path}`, {
@@ -1077,11 +1090,27 @@ async function recalculateDealRevenue(env) {
     ...(body ? { body: JSON.stringify(body) } : {})
   }).then(r => r.json());
 
+  // Fetch all owners once to build a commissioned rep lookup by owner ID
+  const commissionedOwnerIds = new Set();
+  try {
+    const owners = await hubspot('GET', '/crm/v3/owners?limit=100');
+    if (owners?.results) {
+      for (const owner of owners.results) {
+        const ownerEmail = (owner.email || '').toLowerCase();
+        if (COMMISSIONED_REP_EMAILS.includes(ownerEmail)) {
+          commissionedOwnerIds.add(owner.id);
+        }
+      }
+    }
+  } catch (e) {
+    console.log('Deal calc: could not fetch owners, defaulting all deals to gross');
+  }
+
   let allDeals = [];
   let after = undefined;
 
   while (true) {
-    const url = `/crm/v3/objects/deals?limit=100&properties=dealname,provider_type,fte_count,amount,monthly_gross_revenue,monthly_net_revenue,pipeline${after ? '&after=' + after : ''}`;
+    const url = `/crm/v3/objects/deals?limit=100&properties=dealname,provider_type,fte_count,amount,monthly_gross_revenue,monthly_net_revenue,hubspot_owner_id,pipeline${after ? '&after=' + after : ''}`;
     const page = await hubspot('GET', url);
     if (!page.results) break;
     allDeals = allDeals.concat(page.results);
@@ -1097,8 +1126,10 @@ async function recalculateDealRevenue(env) {
     const props = deal.properties || {};
     const providerType = props.provider_type;
     const fteCount = parseFloat(props.fte_count) || 1;
+    const ownerId = props.hubspot_owner_id || '';
     const currentAmount = parseFloat(props.amount) || 0;
     const currentGross = parseFloat(props.monthly_gross_revenue) || 0;
+    const currentNet = parseFloat(props.monthly_net_revenue) || 0;
 
     if (!providerType || !DEAL_RATE_CARD[providerType]) continue;
 
@@ -1106,16 +1137,22 @@ async function recalculateDealRevenue(env) {
     const expectedGross = Math.round(rate.monthly_gross * fteCount);
     const expectedNet = Math.round(rate.monthly_net * fteCount);
 
-    if (currentAmount === expectedGross && currentGross === expectedGross) continue;
+    // Commissioned reps see net in Amount, everyone else sees gross
+    const isCommissioned = commissionedOwnerIds.has(ownerId);
+    const expectedAmount = isCommissioned ? expectedNet : expectedGross;
+
+    // Skip if nothing changed
+    if (currentAmount === expectedAmount && currentGross === expectedGross && currentNet === expectedNet) continue;
 
     await hubspot('PATCH', `/crm/v3/objects/deals/${deal.id}`, {
       properties: {
-        amount: String(expectedGross),
+        amount: String(expectedAmount),
         monthly_gross_revenue: String(expectedGross),
         monthly_net_revenue: String(expectedNet),
       }
     });
-    console.log(`Deal calc: updated "${props.dealname}" — ${providerType} × ${fteCount} FTE = $${expectedGross}/mo`);
+    const revenueType = isCommissioned ? 'net' : 'gross';
+    console.log(`Deal calc: updated "${props.dealname}" — ${providerType} × ${fteCount} FTE = $${expectedAmount}/mo (${revenueType})`);
     updated++;
   }
 
