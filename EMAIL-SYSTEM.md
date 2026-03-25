@@ -148,7 +148,7 @@ All templates use `{{params.VARNAME}}` syntax (populated at send time by the Wor
 |------|-------------|---------|-------|
 | A1 | 1 | The numbers you just ran — and the one variable we didn't show you | Immediate |
 | A2 | 2 | 82% utilization — and why your team can't (and shouldn't) match it | +3 days |
-| A3 | 3 | 9 FQHCs. 950 encounters a week. Here's what we've learned. | +4 days (day 7) |
+| A3 | 3 | 9 FQHCs. 50,000 encounters a year. Here's what we've learned. | +4 days (day 7) |
 | A4 | 4 | No rush — just wanted you to know | +3 days (day 10) |
 
 ### Sequence B — Meeting Confirmation
