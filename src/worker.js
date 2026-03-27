@@ -126,6 +126,14 @@ export default {
       return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
     }
 
+    // Short URL redirects for outreach emails
+    if (url.pathname.toLowerCase() === "/next") {
+      return Response.redirect(
+        "https://golegara.com/how-it-works.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=next_link",
+        302
+      );
+    }
+
     return env.ASSETS.fetch(request);
   },
 
