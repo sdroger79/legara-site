@@ -26,9 +26,6 @@
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 40px;
-  position: sticky;
-  top: 88px;
-  align-self: start;
 }
 
 /* Override global section padding for calculator — less vertical whitespace */
@@ -40,6 +37,9 @@ section.content-section {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: sticky;
+  top: 88px;
+  align-self: start;
 }
 
 .calc-section-title {
@@ -881,6 +881,9 @@ section.content-section {
     grid-template-columns: 1fr;
   }
   .calc-inputs {
+    position: static;
+  }
+  .calc-results {
     position: static;
   }
   .page-header { padding: 80px 40px 32px; }

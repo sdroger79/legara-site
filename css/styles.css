@@ -240,6 +240,7 @@ section {
 /* ─── HERO (homepage) ─── */
 .hero {
   min-height: 100vh;
+  max-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding-top: 68px;
@@ -251,7 +252,7 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px 64px 80px 80px;
+  padding: 48px 56px 48px 80px;
   position: relative;
   z-index: 2;
 }
@@ -268,7 +269,7 @@ section {
   text-transform: uppercase;
   padding: 6px 14px;
   border-radius: 100px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   width: fit-content;
 }
 
@@ -281,12 +282,12 @@ section {
 
 .hero h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(48px, 5.5vw, 76px);
+  font-size: clamp(36px, 4vw, 56px);
   font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -2px;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
   color: var(--charcoal);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .hero h1 em {
@@ -295,11 +296,11 @@ section {
 }
 
 .hero-sub {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--slate);
-  line-height: 1.7;
+  line-height: 1.65;
   max-width: 480px;
-  margin-bottom: 44px;
+  margin-bottom: 32px;
   font-weight: 300;
 }
 
@@ -335,7 +336,7 @@ section {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 16px;
-  padding: 36px 32px 28px;
+  padding: 28px 28px 20px;
   width: 420px;
   max-width: 90%;
   color: white;
@@ -345,12 +346,12 @@ section {
 
 /* ── Transform card layout ── */
 .hero-transform-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.5;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .hero-transform-label-after {
@@ -361,7 +362,7 @@ section {
 .hero-transform-items {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .hero-transform-item {
@@ -380,10 +381,10 @@ section {
 
 .transform-num {
   font-family: 'Playfair Display', serif;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
   line-height: 1.2;
-  min-width: 90px;
+  min-width: 85px;
   flex-shrink: 0;
 }
 
@@ -411,16 +412,16 @@ section {
 
 .hero-transform-arrow {
   text-align: center;
-  font-size: 24px;
-  margin: 16px 0 12px;
+  font-size: 20px;
+  margin: 10px 0 8px;
   opacity: 0.4;
 }
 
 .hero-card-cta {
   display: block;
   text-align: center;
-  margin-top: 20px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.15);
   font-size: 13px;
   font-weight: 500;
@@ -520,39 +521,24 @@ section {
 }
 
 .problem-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  margin-top: 60px;
+  margin-top: 48px;
 }
 
 .problem-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .problem-stat-card {
   background: var(--white);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
   border-radius: 12px;
-  padding: 28px 32px;
+  padding: 24px 32px;
   display: flex;
   align-items: center;
   gap: 24px;
-}
-
-.problem-stat-icon {
-  width: 48px;
-  height: 48px;
-  background: var(--green-light);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
 }
 
 .problem-stat-num {
@@ -1451,15 +1437,42 @@ footer {
 .hero-sub { animation-delay: 0.3s; }
 .hero-actions { animation-delay: 0.4s; }
 
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children when parent has .reveal-stagger */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 0.1s; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 0.12s; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 0.18s; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 1024px) {
   section { padding: 80px 40px; }
   .page-header { padding: 120px 40px 60px; }
-  .hero { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; max-height: none; }
   .hero-left { padding: 80px 40px; }
   .hero-right { min-height: 400px; padding: 40px 24px; }
   .hero-card.hero-card-wide { width: 100%; max-width: 420px; }
-  .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+  .problem-stats { grid-template-columns: 1fr; gap: 16px; }
   .pillars { grid-template-columns: 1fr; }
   .outcomes-grid { grid-template-columns: repeat(2, 1fr); }
   .why-grid { grid-template-columns: 1fr; gap: 40px; }
