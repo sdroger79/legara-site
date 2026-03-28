@@ -46,6 +46,24 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Redirect www to non-www (SEO: canonical domain)
+    if (url.hostname === "www.golegara.com") {
+      const newUrl = new URL(url);
+      newUrl.hostname = "golegara.com";
+      return Response.redirect(newUrl.toString(), 301);
+    }
+
+    // 301 redirects for old Wix site URLs still indexed by Google
+    const wixRedirects = {
+      "/new-page": "/how-it-works.html",
+      "/new-page-3": "/for-health-centers.html",
+      "/new-page-47": "/become-a-provider.html",
+    };
+    const wixTarget = wixRedirects[url.pathname];
+    if (wixTarget) {
+      return Response.redirect(`https://golegara.com${wixTarget}`, 301);
+    }
+
     // MTA-STS policy file (served from mta-sts.golegara.com)
     if (url.hostname === "mta-sts.golegara.com" && url.pathname === "/.well-known/mta-sts.txt") {
       return new Response(
