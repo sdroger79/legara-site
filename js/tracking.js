@@ -51,7 +51,7 @@ document.addEventListener('click', function(e) {
 
 // Scroll depth tracking
 (function() {
-  var milestones = [25, 50, 75, 90];
+  var milestones = [50, 75, 90];
   var fired = {};
   window.addEventListener('scroll', function() {
     var scrollable = document.body.scrollHeight - window.innerHeight;
