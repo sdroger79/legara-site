@@ -674,6 +674,10 @@ function submitDownloadForm(e) {
   var phone = (document.getElementById('dlPhone').value || '').trim();
 
   var utm = typeof getUtmParams === 'function' ? getUtmParams() : {};
+  if (!utm.utm_source && typeof getFirstTouchUtm === 'function') {
+    var ft = getFirstTouchUtm();
+    if (ft.utm_source) { utm = ft; }
+  }
 
   // GA events
   trackEvent('roi_report_download', 'ROI Calculator', org, 1);

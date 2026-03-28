@@ -160,6 +160,13 @@ export default {
       );
     }
 
+    if (url.pathname.toLowerCase() === "/roi" || url.pathname.toLowerCase() === "/calculator") {
+      return Response.redirect(
+        "https://golegara.com/roi-calculator.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=calculator_link",
+        302
+      );
+    }
+
     return env.ASSETS.fetch(request);
   },
 
