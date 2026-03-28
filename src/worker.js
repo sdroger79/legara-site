@@ -46,6 +46,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // MTA-STS policy file (served from mta-sts.golegara.com)
+    if (url.hostname === "mta-sts.golegara.com" && url.pathname === "/.well-known/mta-sts.txt") {
+      return new Response(
+        `version: STSv1\nmode: testing\nmx: golegara-com.mail.protection.outlook.com\nmax_age: 86400\n`,
+        { headers: { "Content-Type": "text/plain" } }
+      );
+    }
+
     if (url.pathname === "/api/brevo-webhook") {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: CORS_HEADERS });
