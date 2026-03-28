@@ -59,7 +59,7 @@ export default {
       "/new-page-3": "/for-health-centers.html",
       "/new-page-47": "/become-a-provider.html",
     };
-    const wixTarget = wixRedirects[url.pathname];
+    const wixTarget = wixRedirects[url.pathname.toLowerCase()];
     if (wixTarget) {
       return Response.redirect(`https://golegara.com${wixTarget}`, 301);
     }
