@@ -1134,6 +1134,13 @@ section {
   margin-bottom: 12px;
 }
 
+/* ─── TURNSTILE CAPTCHA ─── */
+.cf-turnstile {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 4px;
+}
+
 /* ─── CTA BAND ─── */
 .cta-band {
   background: var(--green);
