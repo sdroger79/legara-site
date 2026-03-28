@@ -223,15 +223,21 @@ function calculateNextSend(delayDays) {
 
 // --- GA4 Measurement Protocol ---
 
-async function sendGA4Event(eventName, params, email, env) {
+async function sendGA4Event(eventName, params, email, env, browserClientId) {
   try {
     if (!env.GA4_MP_SECRET) return;
-    // Deterministic client_id from email hash
-    const encoder = new TextEncoder();
-    const data = encoder.encode(email);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const clientId = hashArray.slice(0, 16).map(b => b.toString(16).padStart(2, "0")).join("");
+    let clientId;
+    if (browserClientId) {
+      // Use real browser GA4 client_id for accurate attribution
+      clientId = browserClientId;
+    } else {
+      // Fallback: deterministic client_id from email hash
+      const encoder = new TextEncoder();
+      const data = encoder.encode(email);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      clientId = hashArray.slice(0, 16).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
     await fetch(
       `https://www.google-analytics.com/mp/collect?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${env.GA4_MP_SECRET}`,
@@ -310,7 +316,7 @@ async function handleBrevoWebhook(request, env) {
       roi_provider_type, roi_number_of_providers, roi_annual_salary,
       roi_year_1_savings, roi_3year_savings, roi_internal_cpe_y1,
       roi_legara_rate, roi_mission_advantage, roi_mission_cash_legara,
-      roi_calculator_version
+      roi_calculator_version, ga_client_id
     } = data;
 
     if (!email) {
@@ -368,6 +374,7 @@ async function handleBrevoWebhook(request, env) {
         roi_mission_advantage: roi_mission_advantage || "0",
         roi_mission_cash_legara: roi_mission_cash_legara || "0",
         roi_calculator_version: roi_calculator_version || "public",
+        ga_client_id: ga_client_id || "",
         utm_campaign: utm_campaign || "",
         utm_medium: utm_medium || "",
         utm_content: utm_content || "",

@@ -744,6 +744,13 @@ function submitDownloadForm(e) {
   var honeypot = document.querySelector('[name="website"]');
   var hpValue = honeypot ? honeypot.value : '';
 
+  // Read GA4 client ID from browser cookie for accurate server-side attribution
+  var gaClientId = '';
+  try {
+    var gaCookie = document.cookie.split('; ').find(function(c) { return c.startsWith('_ga='); });
+    if (gaCookie) gaClientId = gaCookie.split('.').slice(2).join('.');
+  } catch(e) {}
+
   // Fire-and-forget: Brevo + HubSpot CRM (server-side, reliable)
   fetch('/api/brevo-webhook', {
     method: 'POST',
@@ -771,7 +778,8 @@ function submitDownloadForm(e) {
       roi_legara_rate: String(lastCalc.legaraRate || 155),
       roi_mission_advantage: String(lastCalc.missionAdvantage || 0),
       roi_mission_cash_legara: String(lastCalc.legaraCashYear1 || 0),
-      roi_calculator_version: 'public'
+      roi_calculator_version: 'public',
+      ga_client_id: gaClientId
     })
   }).catch(function(err) { console.error('Brevo webhook error:', err); });
 
