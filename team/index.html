@@ -120,6 +120,7 @@ a:hover { text-decoration: underline; }
 }
 .info-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
 .info-card p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+.info-card[onclick]:hover { border-color: var(--accent); background: var(--surface-2); }
 
 .badge {
   display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px;
@@ -310,20 +311,20 @@ a:hover { text-decoration: underline; }
 
   <h2>Quick Start</h2>
   <p>If you're new here, read these sections in order:</p>
-  <div class="info-card">
-    <h4>1. How Legara Works</h4>
+  <div class="info-card" style="cursor:pointer" onclick="document.querySelector('[data-page=model]').click()">
+    <h4>1. How Legara Works <span style="float:right;color:var(--text-muted)">→</span></h4>
     <p>Understand the three-pillar model so you can explain it confidently in any conversation. This is the foundation everything else builds on.</p>
   </div>
-  <div class="info-card">
-    <h4>2. Competitive Positioning</h4>
+  <div class="info-card" style="cursor:pointer" onclick="document.querySelector('[data-page=positioning]').click()">
+    <h4>2. Competitive Positioning <span style="float:right;color:var(--text-muted)">→</span></h4>
     <p>How we're different from internal hiring, staffing companies, and telehealth vendors. You'll face all three comparisons.</p>
   </div>
-  <div class="info-card">
-    <h4>3. Sales Process</h4>
+  <div class="info-card" style="cursor:pointer" onclick="document.querySelector('[data-page=sales-process]').click()">
+    <h4>3. Sales Process <span style="float:right;color:var(--text-muted)">→</span></h4>
     <p>The five ways a prospect becomes a client. Understand the narrative arc so you know where every conversation should go.</p>
   </div>
-  <div class="info-card">
-    <h4>4. What NOT to Say</h4>
+  <div class="info-card" style="cursor:pointer" onclick="document.querySelector('[data-page=do-not-say]').click()">
+    <h4>4. What NOT to Say <span style="float:right;color:var(--text-muted)">→</span></h4>
     <p>Specific phrases and framings that hurt us. Read this before your first prospect conversation.</p>
   </div>
 </div>
@@ -360,8 +361,8 @@ a:hover { text-decoration: underline; }
     </div>
     <div class="pillar-card p2">
       <h4>2. Incentive Alignment</h4>
-      <p>Legara providers are compensated per encounter, not salaried. Every empty time block impacts their earnings directly. The provider pays the MSO (Legara Servicing) for operational support. This creates self-reinforcing utilization: every actor in the system is aligned toward keeping providers productive.</p>
-      <p><strong>Note:</strong> The per-encounter structure is effective but can raise questions. In BD conversations, reference it briefly ("incentive-aligned providers") but don't go deep on the mechanics. Roger handles this in meetings.</p>
+      <p>Legara providers are compensated per encounter, not salaried. Every empty time block impacts their earnings directly. Every actor in the system is aligned toward keeping providers productive. This is why utilization numbers are so much higher than what FQHCs see with salaried staff.</p>
+      <p>In prospect conversations, you can reference "incentive-aligned providers" but don't go deep on the compensation mechanics. If they ask how providers are paid, let Roger handle that in the meeting. The short version is enough: "Our providers are incentivized to stay productive, which is why the utilization numbers are what they are."</p>
     </div>
     <div class="pillar-card p3">
       <h4>3. Quality & Compliance</h4>
@@ -386,10 +387,8 @@ a:hover { text-decoration: underline; }
     <li>Net "mission cash generated" after paying Legara: real dollars the FQHC keeps for its mission</li>
   </ul>
 
-  <h2>What Legara Servicing Does (Invisible to Client)</h2>
-  <p>Legara Servicing is the Management Services Organization (MSO). It handles all provider operations: scheduling, credentialing management, compensation, quality monitoring, platform support, and compliance infrastructure. The FQHC never interacts with the MSO directly. To them, Legara providers simply integrate into their care team.</p>
-  <div class="callout danger">
-    <p><strong>Never mention Legara Servicing or the MSO to clients.</strong> This is internal infrastructure. The client sees "Legara" as one entity that provides the full solution.</p>
+  <div class="callout warn">
+    <p><strong>One thing to know:</strong> There is a separate internal entity called Legara Servicing that handles the operational backend. Clients never see or interact with it. If a prospect asks about corporate structure, just say "Legara handles everything on the operational side." Don't mention Legara Servicing, MSO, or any internal entity names.</p>
   </div>
 </div>
 
@@ -442,7 +441,7 @@ a:hover { text-decoration: underline; }
     </table>
   </div>
 
-  <p>Staffing companies can always undercut on rate. That's not the comparison. The comparison is total cost of the outcome: encounters completed, documented, billed, and collected. Structural incomparability is the play.</p>
+  <p>Staffing companies can always undercut on rate. That's not the right comparison. The comparison is total cost of the outcome: encounters completed, documented, billed, and collected. A staffing company's rate looks cheaper until you account for everything they don't do.</p>
 
   <h2>vs. Telehealth Vendors</h2>
   <p>Telehealth is a delivery mechanism, not an operating model. Legara providers may deliver care via telehealth or in-person, but the operational infrastructure around them is what produces the outcomes.</p>
@@ -472,47 +471,42 @@ a:hover { text-decoration: underline; }
       <div class="note">per encounter, flat rate, all-in</div>
     </div>
   </div>
-  <p>The rate includes provider compensation, platform fee, and MSO servicing. There is no separate fee for any of those. The FQHC pays one flat rate per completed encounter.</p>
+  <p>The rate is all-in. There is no separate fee for platform, compliance, scheduling, or anything else. The FQHC pays one flat rate per completed encounter.</p>
 
   <h2>Provider Efficiency</h2>
   <table class="comparison-table">
     <thead><tr><th>Provider Type</th><th>Legara</th><th>Typical FQHC</th></tr></thead>
     <tbody>
-      <tr><td>PMHNP</td><td>2.5 enc/hr</td><td>1.5 enc/hr</td></tr>
+      <tr><td>PMHNP (prescriber)</td><td>2.5 enc/hr</td><td>1.5 enc/hr</td></tr>
       <tr><td>Therapist (LCSW/LMFT)</td><td>1.5 enc/hr</td><td>1.0 enc/hr</td></tr>
     </tbody>
   </table>
-  <p>The efficiency gap is baked into the flat rate. It is not passed through as extra encounter volume the FQHC has to process. When comparing costs, use the same encounter volume for both models.</p>
+  <p>This gap is not about provider quality. It's about infrastructure. The same clinician, with dedicated scheduling support and no organizational overhead, produces different throughput. This is a useful talking point when prospects ask "how is that possible?"</p>
 
   <h2>Revenue & Mission Cash</h2>
-  <p>Total encounter revenue for the FQHC averages approximately <strong>$230 per encounter</strong> (PPS + copays + secondaries). After paying Legara's flat rate, the remaining revenue is "mission cash generated" that the FQHC keeps.</p>
-  <p>Revenue mix across the platform is approximately 60% therapy, 40% PMHNP.</p>
+  <p>The FQHC collects approximately <strong>$230 per encounter</strong> in revenue (PPS reimbursement + copays + secondary insurance). After paying Legara's flat rate, the difference is cash that stays with the FQHC for its mission.</p>
 
   <div class="callout">
-    <p><strong>Language rule:</strong> Externally, always say "mission cash generated." Never say "savings" or "cost savings." The framing is about generating revenue for the mission, not cutting costs.</p>
+    <p><strong>Language note:</strong> Call this "mission cash generated," not "savings" or "cost savings." Savings implies they're overspending. Mission cash implies they're generating new revenue. The distinction matters in how it lands.</p>
   </div>
 
-  <h2>Internal Hire True Cost (What FQHCs Actually Pay)</h2>
-  <p>FQHCs think they pay ~$135K for a therapist. The true loaded cost is ~$229K/yr:</p>
-  <ul>
-    <li>Benefits & tax multiplier: 1.4x base salary</li>
-    <li>Support staff: 0.25 FTE patient service rep per provider (~$11K/yr)</li>
-    <li>Recruiter fee: ~$8K per hire</li>
-    <li>Annual turnover: ~30% (triggers recruiter + ramp costs again)</li>
-    <li>Ramp: 6-9 months from hire to full caseload, full salary running the entire time</li>
-  </ul>
+  <h2>The True Cost of Internal Hiring</h2>
+  <p>FQHCs think a therapist costs ~$135K (the salary number). The actual loaded cost, once you account for benefits, support staff, recruiter fees, turnover replacement, and 6-9 months of salary during ramp to full caseload, is approximately <strong>$229K/yr</strong>. This is the comparison that matters, but you should only bring it up after the prospect already understands the operating model (Stage 4, not Stage 1).</p>
 
-  <h2>Mission Cash Summary (by provider type, annualized)</h2>
+  <h2>Financial Impact by Provider Type</h2>
+  <div class="callout warn">
+    <p><strong>When to use these numbers:</strong> These are Stage 4 (Financial Validation) data points. Use them after the prospect understands the three-pillar model and has seen the proof metrics. Leading with these numbers is the fastest way to trigger the conditioning gap.</p>
+  </div>
   <table class="comparison-table">
     <thead><tr><th>Provider Type</th><th>Year 1</th><th>Year 2+</th><th>3-Year Total</th></tr></thead>
     <tbody>
-      <tr><td>LCSW/LMFT</td><td>+$60K</td><td>+$60K/yr</td><td>+$181K</td></tr>
+      <tr><td>LCSW/LMFT (most common)</td><td>+$60K</td><td>+$60K/yr</td><td>+$181K</td></tr>
       <tr><td>Psychologist</td><td>+$75K</td><td>+$82K/yr</td><td>+$238K</td></tr>
       <tr><td>PMHNP</td><td>+$70K</td><td>+$64K/yr</td><td>+$197K</td></tr>
       <tr><td>Psychiatrist</td><td>+$206K</td><td>+$271K/yr</td><td>+$748K</td></tr>
     </tbody>
   </table>
-  <p>Almost nobody uses psychiatrists. The vast majority of prescribing is PMHNPs with MD supervision. Default to LCSW/LMFT (most common) for examples.</p>
+  <p>Most Legara providers are therapists (LCSW/LMFT) or PMHNPs. Almost nobody uses psychiatrists. The vast majority of prescribing is PMHNPs with MD supervision. Default to LCSW/LMFT when you need an example.</p>
 </div>
 
 <!-- ── SALES PROCESS ─────────────────────────────────────────── -->
@@ -570,50 +564,50 @@ a:hover { text-decoration: underline; }
   <h2>Five Customer Journeys</h2>
 
   <div class="tab-bar">
-    <div class="tab active" data-tab="j1">1. ABM → Assessment</div>
-    <div class="tab" data-tab="j2">2. ABM → Direct Reply</div>
-    <div class="tab" data-tab="j3">3. Website Organic</div>
-    <div class="tab" data-tab="j4">4. Multi-Meeting</div>
-    <div class="tab" data-tab="j5">5. CFO Path</div>
+    <div class="tab active" data-tab="j1">1. Assessment First</div>
+    <div class="tab" data-tab="j2">2. Direct Reply</div>
+    <div class="tab" data-tab="j3">3. Found Us Online</div>
+    <div class="tab" data-tab="j4">4. Larger Orgs</div>
+    <div class="tab" data-tab="j5">5. CFO Track</div>
   </div>
 
   <div class="tab-content active" id="tab-j1">
-    <h3>Journey 1: Cold ABM → Assessment → Nurture → Meeting</h3>
-    <p>The primary acquisition path. A cold email piques interest. The prospect takes the BH Capacity Assessment at GoLegara.com/assessment. Their score triggers a 4-email nurture sequence (Seq A) that progressively educates on the three pillars. A meeting is booked when the prospect is ready.</p>
+    <h3>Journey 1: They Take the Assessment First</h3>
+    <p>The most common path. Your cold email piques interest, and the prospect takes the BH Capacity Assessment at GoLegara.com/assessment. After they complete it, they automatically receive a series of follow-up emails over the next two weeks that walk them through the three-pillar model. You don't need to manage those follow-ups. They're automatic. A meeting gets booked when the prospect is ready.</p>
     <p><strong>Typical timeline:</strong> 1-4 weeks from first touch to meeting.</p>
-    <p><strong>Key conversion points:</strong> Email open → Assessment click → Assessment complete → Seq A engagement → Meeting booked.</p>
+    <p><strong>What you do:</strong> Send the initial outreach. If they take the assessment, the system handles the nurture. Watch for replies and meeting bookings.</p>
   </div>
   <div class="tab-content" id="tab-j2">
-    <h3>Journey 2: Cold ABM → Direct Reply → Meeting</h3>
-    <p>The prospect skips the assessment and replies directly to a cold email (or engages on LinkedIn). These prospects are typically already aware they have a BH capacity problem. The meeting is booked directly. At meeting confirmation, they're nudged to take the assessment so Roger has their data.</p>
+    <h3>Journey 2: They Reply Directly</h3>
+    <p>The prospect skips the assessment and replies directly to your email (or engages on LinkedIn). These prospects usually already know they have a BH capacity problem. The meeting gets booked directly. They'll be nudged to take the assessment before the meeting so Roger has their data going in.</p>
     <p><strong>Typical timeline:</strong> 1-7 days from first touch to meeting.</p>
   </div>
   <div class="tab-content" id="tab-j3">
-    <h3>Journey 3: Website Organic</h3>
-    <p>The prospect finds GoLegara.com through search, a referral link, or content. They explore the site and either take the assessment (enters Journey 1 nurture) or book directly via the Cal.com link.</p>
-    <p><strong>Key pages:</strong> Homepage → How It Works → Assessment (or Cal.com).</p>
+    <h3>Journey 3: They Find Us Organically</h3>
+    <p>The prospect finds GoLegara.com through search, a referral, or blog content. They explore the site and either take the assessment (same follow-up process as Journey 1) or book a conversation directly.</p>
+    <p><strong>Key pages they'll see:</strong> Homepage → How It Works → Assessment (or Cal.com booking).</p>
   </div>
   <div class="tab-content" id="tab-j4">
-    <h3>Journey 4: Multi-Meeting Sales Process</h3>
-    <p>Larger or more cautious organizations. Typically involves: Discovery meeting → Clinical alignment meeting (with their BH Director/CMO) → Leadership/board presentation → Contract. Joanne Cabrera joins clinical alignment calls. Bill or Roy may join leadership meetings for credibility.</p>
-    <p><strong>Typical timeline:</strong> 4-12 weeks. Deal stages: Discovery → Leadership Engagement → Clinical Alignment → Closed Won.</p>
+    <h3>Journey 4: Multi-Meeting (Larger Orgs)</h3>
+    <p>Larger or more cautious organizations need multiple conversations before committing. Typically: a discovery meeting with Roger → a clinical alignment meeting (their BH Director or CMO wants to evaluate clinical fit) → a leadership or board presentation → contract. Joanne Cabrera joins clinical alignment calls. Bill or Roy may join leadership meetings for credibility.</p>
+    <p><strong>Typical timeline:</strong> 4-12 weeks. Your role: get the first meeting booked. Roger and the team handle the multi-meeting process from there.</p>
   </div>
   <div class="tab-content" id="tab-j5">
-    <h3>Journey 5: CFO/Finance Path</h3>
-    <p>The CFO needs a separate conversation track focused on risk elimination and financial validation. Roger offers the ROI calculator walkthrough in live conversation (never linked publicly). The calculator is a tool Roger uses, not something the prospect self-serves.</p>
-    <p><strong>Key framing for CFOs:</strong> $0 during ramp. Variable cost (no fixed headcount risk). True loaded cost comparison ($229K vs flat rate). Revenue from Day 1 of encounters.</p>
+    <h3>Journey 5: CFO/Finance Track</h3>
+    <p>The CFO usually needs a separate conversation focused on risk and financial validation. Roger handles these directly using an internal cost comparison tool (not something we link publicly). If a CFO asks about numbers, the right move is to connect them with Roger for a walkthrough.</p>
+    <p><strong>Key framing for CFOs:</strong> $0 during ramp. Variable cost (no fixed headcount risk). True loaded cost comparison. Revenue from Day 1 of encounters.</p>
   </div>
 
   <h2>Deal Stages</h2>
   <table class="comparison-table">
     <thead><tr><th>Stage</th><th>Description</th><th>Key Action</th></tr></thead>
     <tbody>
-      <tr><td>Prospect Identified</td><td>Org researched, contacts enriched</td><td>Enter into outreach queue</td></tr>
-      <tr><td>Outreach Made</td><td>First touch sent (email, InMail)</td><td>Track opens/clicks, prep Touch 2</td></tr>
-      <tr><td>Discovery Meeting</td><td>First real conversation with Roger</td><td>Understand their specific BH situation</td></tr>
-      <tr><td>Leadership Engagement</td><td>Multiple stakeholders involved</td><td>Tailor pitch by role (CEO, CFO, CMO, BH Dir)</td></tr>
-      <tr><td>Clinical Alignment</td><td>BH Director/CMO evaluating clinical fit</td><td>Joanne joins call. Integration specifics.</td></tr>
-      <tr><td>Closed Won / Closed Lost</td><td>CFA signed or deal dead</td><td>Handoff to activation pipeline (Jonathon)</td></tr>
+      <tr><td>Prospect Identified</td><td>Org researched, contacts identified</td><td>Add to your outreach list</td></tr>
+      <tr><td>Outreach Made</td><td>First touch sent (email, InMail)</td><td>Follow up per the touch sequence above</td></tr>
+      <tr><td>Discovery Meeting</td><td>First real conversation</td><td>Roger joins. Understand their specific BH situation.</td></tr>
+      <tr><td>Leadership Engagement</td><td>Multiple stakeholders involved</td><td>Roger leads, tailored by role. You stay looped in.</td></tr>
+      <tr><td>Clinical Alignment</td><td>BH Director/CMO evaluating clinical fit</td><td>Joanne joins. Integration specifics discussed.</td></tr>
+      <tr><td>Closed Won / Closed Lost</td><td>CFA signed or deal dead</td><td>Jonathon takes over for activation and onboarding.</td></tr>
     </tbody>
   </table>
   <p>Stages can be skipped or revisited. A strong Discovery Meeting with a CEO/ED can jump straight to Clinical Alignment. Contract negotiation runs in parallel from CFA send, managed by Jonathon.</p>
@@ -668,7 +662,7 @@ a:hover { text-decoration: underline; }
   <p>Try a different channel. LinkedIn connection request (pre-warm by engaging with their posts first), InMail, or phone call for high-priority targets.</p>
 
   <h3>Touch 4+: Long Game (Day 14+)</h3>
-  <p>One touch every 2-3 weeks. Share industry data, reference their LinkedIn activity, or mention a new proof point. After Touch 4 with zero engagement (no opens, no clicks, no LinkedIn views), move to Brevo Sequence C (monthly automated nurture).</p>
+  <p>One touch every 2-3 weeks. Share industry data, reference their LinkedIn activity, or mention a new proof point. After Touch 4 with zero engagement (no opens, no clicks, no LinkedIn views), stop manual outreach. They'll enter an automated monthly nurture that keeps Legara visible without requiring your effort.</p>
 
   <h2>Role-Specific Angles</h2>
   <table class="comparison-table">
@@ -692,9 +686,9 @@ a:hover { text-decoration: underline; }
     <p><strong>Bad:</strong> "How 9 California FQHCs run behavioral health without hiring" / "Unlock $60K in mission cash per provider" / "Legara: The Future of FQHC Behavioral Health"</p>
   </div>
 
-  <h2>Post-Engagement: Automated Nurture</h2>
-  <p>Once a prospect takes the assessment, they enter a 4-email automated sequence (Sequence A) that progressively teaches the three-pillar story over 14 days. You don't need to manage this. It runs automatically.</p>
-  <p>If they book a meeting, Sequence A stops and they get a meeting confirmation sequence (Sequence B) instead. If they complete Sequence A without booking, they enter long-term nurture (Sequence C) with monthly touches.</p>
+  <h2>What Happens After Your Outreach</h2>
+  <p>Once a prospect takes the assessment, they automatically receive a series of follow-up emails over the next two weeks that educate them on the three-pillar model. You don't need to send these. They're handled by the system.</p>
+  <p>If the prospect books a meeting at any point, the automated emails stop and they receive a meeting confirmation instead. If they complete the automated series without booking, they enter a long-term monthly nurture that keeps Legara on their radar. Your job is the initial outreach and any personal follow-ups. The system handles everything after the assessment.</p>
 </div>
 
 <!-- ── OBJECTION HANDLING ─────────────────────────────────────── -->
@@ -750,8 +744,7 @@ a:hover { text-decoration: underline; }
 
   <h2>Sales Tools</h2>
   <ul class="resource-list">
-    <li><div><div class="name">ROI Calculator (Internal Only)</div><div class="desc">Roger walks CFOs through this live. Never link publicly.</div></div><div class="link"><a href="https://golegara.com/roi-calculator-internal" target="_blank">Internal Calculator</a></div></li>
-    <li><div><div class="name">Admin Sequence Manager</div><div class="desc">Enroll/remove contacts from email sequences</div></div><div class="link"><a href="https://golegara.com/admin/sequences.html" target="_blank">Admin Tool</a></div></li>
+    <li><div><div class="name">ROI Calculator (Roger Only)</div><div class="desc">Roger uses this in live CFO walkthroughs. Do not send this link to prospects.</div></div><div class="link"><a href="https://golegara.com/roi-calculator-internal" target="_blank">Internal Calculator</a></div></li>
   </ul>
 
   <h2>Key People</h2>
@@ -775,57 +768,33 @@ a:hover { text-decoration: underline; }
 
 <!-- ── WHAT NOT TO SAY ────────────────────────────────────────── -->
 <div class="page" id="page-do-not-say">
-  <h1>What NOT to Say</h1>
-  <p class="subtitle">Specific phrases and framings that hurt positioning. Memorize these.</p>
+  <h1>Guardrails</h1>
+  <p class="subtitle">The handful of positioning rules that actually matter in prospect conversations.</p>
 
-  <h2>Identity</h2>
-  <table class="comparison-table">
-    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
-    <tbody>
-      <tr><td>"Legara is a staffing company"</td><td>"Legara is a regulated workforce platform" or "managed operational infrastructure"</td></tr>
-      <tr><td>"We're a telehealth provider"</td><td>"We build the operating infrastructure for behavioral health"</td></tr>
-      <tr><td>"Our outsourcing model"</td><td>"Our augmentation model" or "adding capacity alongside your team"</td></tr>
-      <tr><td>"CEO & Co-Founder"</td><td>"CEO" (just CEO, always)</td></tr>
-      <tr><td>"Jonathan"</td><td>"Jonathon" (with an O)</td></tr>
-    </tbody>
-  </table>
+  <h2>How We Frame Ourselves</h2>
+  <p>Legara is a regulated workforce platform. Not a staffing company, not a telehealth vendor, not outsourcing. These distinctions matter because prospects will try to put us in a familiar box, and every one of those boxes has a negative association. Staffing means "you send a body." Telehealth means "a platform, not real integration." Outsourcing means "you're replacing our people."</p>
+  <p>The right framing: Legara builds and manages the operational infrastructure for behavioral health alongside the FQHC's existing team. We augment. We never replace.</p>
 
-  <h2>Messaging</h2>
-  <table class="comparison-table">
-    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
-    <tbody>
-      <tr><td>"Save money" / "cost savings" / "lower cost"</td><td>"Mission cash generated" / "cash for the mission"</td></tr>
-      <tr><td>"Switch from FTE" / "instead of hiring"</td><td>"Add capacity" / "augment your team" / "expand access without FTE risk"</td></tr>
-      <tr><td>"Your model is broken" / "you're doing it wrong"</td><td>"The constraint is structural, not effort" / "the operating model has a ceiling"</td></tr>
-      <tr><td>"Your front desk books Legara patients"</td><td>"Legara handles patient-level scheduling" (FQHC approves schedule; Legara books)</td></tr>
-    </tbody>
-  </table>
+  <h2>How We Talk About Their Situation</h2>
+  <p>This is the most important guardrail. FQHCs run behavioral health inside a primary care operating structure because they have to. California employment law, HRSA requirements, union contracts. The ceiling is structural. It is not a management failure, and we never imply that it is.</p>
+  <div class="callout warn">
+    <p><strong>Never tell a prospect their model is broken or that they're doing it wrong.</strong> The framing is always: "the constraint is structural, not effort" or "the operating model has a ceiling that no amount of hiring fixes." Every prospect knows their BH program is stretched. They don't need someone pointing it out. They need someone who understands why and has a structural answer.</p>
+  </div>
 
-  <h2>Timelines</h2>
-  <table class="comparison-table">
-    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
-    <tbody>
-      <tr><td>"5 months from contract" / "five-month ramp"</td><td>"As fast as 6 weeks from signed contract" / "as few as six weeks"</td></tr>
-      <tr><td>"11 months" / "11.2 months" for internal hire</td><td>"6-9 months from hire to full caseload" (concurrent steps, not sequential)</td></tr>
-      <tr><td>"Providers productive in 5 months"</td><td>"Providers seeing patients within weeks of signed contract"</td></tr>
-    </tbody>
-  </table>
+  <h2>How We Talk About Money</h2>
+  <p>Financial validation supports the sale. It never leads. The phrase is "mission cash generated," never "savings" or "cost savings." The difference matters: savings implies the FQHC is overspending. Mission cash implies they're generating new revenue for their mission. One frames them as inefficient. The other frames them as resourceful.</p>
+  <p>On specific rates: keep it directional in early conversations. "A flat per-encounter rate, all-in" is enough. Roger handles detailed pricing walkthroughs. If a prospect presses on numbers before they understand the model, the move is to pull back: "The numbers make a lot more sense once you see what the operating structure produces. Let me walk you through that first."</p>
 
-  <h2>Rates</h2>
+  <h2>Terminology to Get Right</h2>
   <table class="comparison-table">
-    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <thead><tr><th>Topic</th><th>Correct</th><th>Why It Matters</th></tr></thead>
     <tbody>
-      <tr><td>"The Legara rate is $155"</td><td>"A flat per-encounter rate, all-in" (use ranges or be directional)</td></tr>
-      <tr><td>Specific dollar amounts in first conversation</td><td>Defer to Roger or to a walkthrough: "Roger can map the specific numbers to your situation"</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Fidare</h2>
-  <table class="comparison-table">
-    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
-    <tbody>
-      <tr><td>"Fidare" (to any external audience, ever)</td><td>"Built on a decade of behavioral health operations with FQHC partners"</td></tr>
-      <tr><td>"We used to be called..." / "Our previous entity..."</td><td>Don't address the lineage at all externally</td></tr>
+      <tr><td>Legara placement speed</td><td>As fast as 6 weeks from signed contract</td><td>Verified and defensible. Older materials said "5 months" which included pre-contract time.</td></tr>
+      <tr><td>Internal hire ramp</td><td>6-9 months from hire to full caseload</td><td>Steps run concurrently. Older materials overstated this at 11 months using sequential math.</td></tr>
+      <tr><td>Scheduling</td><td>Legara handles patient-level scheduling</td><td>The FQHC approves schedule parameters. Legara books patients. Important distinction for ops-minded prospects.</td></tr>
+      <tr><td>Roger's title</td><td>CEO</td><td>Not "CEO & Co-Founder." Keep it clean.</td></tr>
+      <tr><td>Jonathon Wheaton</td><td>Spelled with an O</td><td>Not Jonathan. He notices.</td></tr>
+      <tr><td>Fidare</td><td>Never mentioned externally</td><td>Predecessor entity that still exists. If asked about company history: "Built on a decade of behavioral health operations with FQHC partners."</td></tr>
     </tbody>
   </table>
 </div>
