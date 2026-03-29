@@ -709,7 +709,7 @@ footer {
     <img src="../img/logo.png" alt="Legara">
   </a>
   <div class="nav-spacer"></div>
-  <a href="../roi-calculator.html" class="nav-cta" data-calc-link>See What's Possible</a>
+  <a href="../assessment.html" class="nav-cta" data-calc-link>Assess Your Capacity</a>
 </nav>
 
 <!-- HERO SECTION -->
@@ -718,7 +718,7 @@ footer {
   <h1>Your patients are waiting 20 weeks. Your providers are burning out. It doesn't have to work this way.</h1>
   <p class="subhead">Add behavioral health capacity in weeks — not months — without hiring a single FTE. No recruitment risk. No turnover cycle. Just more access for the patients who need it.</p>
   <div class="hero-ctas">
-    <a href="../roi-calculator.html" class="btn-primary" data-calc-link>See What's Possible →</a>
+    <a href="../assessment.html" class="btn-primary" data-calc-link>Assess Your Capacity →</a>
     <a href="https://cal.com/roger-golegara.com/legara-roi-review?utm_source=website&utm_medium=cta&utm_campaign=lp-clinical" class="btn-secondary-white">Talk to someone who gets it →</a>
   </div>
 </section>
@@ -864,7 +864,7 @@ footer {
   <h2>See what adding capacity looks like for your health center.</h2>
   <p>See how much more cash each provider can generate for your mission. Plug in one number. Takes 30 seconds.</p>
   <div class="cta-band-actions">
-    <a href="../roi-calculator.html" class="btn-primary-white" data-calc-link>See What's Possible →</a>
+    <a href="../assessment.html" class="btn-primary-white" data-calc-link>Take the Assessment →</a>
     <span class="cta-secondary-text">Or <a href="https://cal.com/roger-golegara.com/legara-roi-review?utm_source=website&utm_medium=cta&utm_campaign=lp-clinical" style="color: var(--white); text-decoration: underline;">talk to Roger</a>, he's worked with 9 FQHCs on exactly this</span>
   </div>
   <div style="margin-top: 16px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
@@ -893,7 +893,7 @@ footer {
 <!-- UTM PASSTHROUGH & GA4 TRACKING -->
 <script>
 function buildCalcUrl() {
-  var base = '../roi-calculator.html';
+  var base = '../assessment.html';
   var utm = typeof getUtmParams === 'function' ? getUtmParams() : {};
   var params = [];
   if (utm.utm_source) params.push('utm_source=' + encodeURIComponent(utm.utm_source));
@@ -915,7 +915,7 @@ document.addEventListener('DOMContentLoaded', function() {
     a.addEventListener('click', function() {
       gtag('event', 'cta_click', {
         'event_category': 'landing_page',
-        'event_label': 'clinical_see_whats_possible',
+        'event_label': 'clinical_assess_your_capacity',
         'landing_page': 'clinical'
       });
     });
