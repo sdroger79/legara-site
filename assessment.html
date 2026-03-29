@@ -1567,7 +1567,7 @@
           <!-- Questions will be rendered here -->
         </div>
 
-        <div class="quiz-submit-row" id="submitRow">
+        <div class="quiz-submit-row" id="submitRow" style="display:none;">
           <button class="btn-primary" id="seeResultsBtn" disabled onclick="nextQuestion()" style="width:100%;">See My Results</button>
         </div>
 
@@ -1918,13 +1918,7 @@
 
       backBtn.classList.toggle('hidden', index === 0);
 
-      // Show "See My Results" button only on last question
-      if (isLastQuestion) {
-        submitRow.classList.add('visible');
-        seeResultsBtn.disabled = !answers[index];
-      } else {
-        submitRow.classList.remove('visible');
-      }
+      // submitRow hidden — last question auto-advances
 
       if (answers[index]) {
         const selectedCard = questionArea.querySelector(`[data-index="${answers[index].optionIndex}"]`);
@@ -1959,8 +1953,10 @@
       });
 
       if (isLastQuestion) {
-        // Enable the "See My Results" button but don't auto-advance
-        document.getElementById('seeResultsBtn').disabled = false;
+        // Auto-advance to results after slightly longer delay
+        setTimeout(() => {
+          nextQuestion();
+        }, 1000);
       } else {
         // Auto-advance after brief delay
         setTimeout(() => {
@@ -2307,13 +2303,7 @@
           }
         }
 
-        if (event.key === 'Enter') {
-          const isLastQuestion = currentQuestion === questions.length - 1;
-          if (isLastQuestion) {
-            const seeResultsBtn = document.getElementById('seeResultsBtn');
-            if (!seeResultsBtn.disabled) nextQuestion();
-          }
-        }
+        // Enter key — no longer needed, last question auto-advances
 
         if (event.key === 'ArrowLeft') {
           previousQuestion();
