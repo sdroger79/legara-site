@@ -1480,6 +1480,135 @@
 
       /* focus card responsive already handled above */
     }
+
+    /* ─── NEXT STEPS SECTION ─── */
+    .next-steps-section {
+      margin-top: 48px;
+    }
+
+    .next-steps-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+
+    .next-steps-tier-context {
+      font-size: 15px;
+      color: var(--slate);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .next-steps-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .next-step-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--green-pale);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    .next-step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .next-step-text {
+      font-size: 15px;
+      color: var(--charcoal);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .results-cta-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .results-cta-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    .results-cta-card-secondary {
+      background: var(--green-pale);
+    }
+
+    .results-cta-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .results-cta-card h4 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .results-cta-card p {
+      font-size: 14px;
+      color: var(--slate);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .results-email-confirm {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .results-explore {
+      text-align: center;
+      padding: 32px 0 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .results-explore-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .results-explore-links a {
+      font-size: 14px;
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .results-explore-links a:hover {
+      color: var(--charcoal);
+    }
+
+    @media (max-width: 768px) {
+      .results-cta-section {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1650,12 +1779,37 @@
           </div>
         </div>
 
-        <div class="cta-section">
-          <h3>Walk through these results with someone who's seen the pattern before</h3>
-          <p>30 minutes with Roger to map your dimension scores to what other FQHCs with similar profiles have done. No pitch, no proposal. Just an honest read on where the structural gaps are and which ones move the needle.</p>
-          <div class="cta-buttons">
-            <a href="https://cal.com/roger-golegara.com/legara-roi-review" class="btn-primary">Book a Results Walkthrough</a>
-            <button type="button" class="btn-outline" onclick="downloadResults()">Save My Results</button>
+        <div class="next-steps-section">
+          <div class="next-steps-header">
+            <h3>What Organizations at Your Level Typically Do Next</h3>
+            <p class="next-steps-tier-context" id="nextStepsTierContext"></p>
+          </div>
+
+          <div class="next-steps-cards" id="nextStepsCards">
+          </div>
+
+          <div class="results-cta-section">
+            <div class="results-cta-card">
+              <div class="results-cta-icon">&#128200;</div>
+              <h4>Walk through these results with someone who has seen the pattern before</h4>
+              <p>30 minutes with Roger to map your dimension scores to what other FQHCs with similar profiles have done. No pitch, no proposal. Just an honest read on where the structural gaps are and which ones move the needle.</p>
+              <a href="https://cal.com/roger-golegara.com/legara-roi-review" class="btn-primary" style="margin-top: 16px;">Book a Results Walkthrough</a>
+            </div>
+            <div class="results-cta-card results-cta-card-secondary">
+              <div class="results-cta-icon">&#128231;</div>
+              <h4>We will send you a copy</h4>
+              <p>A summary of your scores and findings is on its way to your inbox. Share it with your leadership team or bring it to your next board meeting.</p>
+              <div class="results-email-confirm" id="resultsEmailConfirm"></div>
+            </div>
+          </div>
+
+          <div class="results-explore">
+            <p style="font-size: 14px; color: var(--mist); margin-bottom: 16px;">Explore how the model works</p>
+            <div class="results-explore-links">
+              <a href="how-it-works.html">How Legara Works</a>
+              <a href="for-health-centers.html">For Health Centers</a>
+              <a href="partners.html">Results Across 9 FQHCs</a>
+            </div>
           </div>
         </div>
       </div>
@@ -2208,6 +2362,13 @@
       document.getElementById('progressPercentage').textContent = '100%';
 
       renderResults();
+      renderNextSteps();
+
+      // Show email confirmation
+      var emailUsed = document.getElementById('assessEmail').value.trim();
+      document.getElementById('resultsEmailConfirm').innerHTML =
+        'Sending to <strong>' + emailUsed + '</strong>';
+
       resultsContainer.classList.add('active');
 
       // Scroll focus card to top
@@ -2328,9 +2489,54 @@
       }, 100);
     }
 
-    function downloadResults() {
-      console.log('Download results:', { compositeScore, tierLabel, dimensionScores });
-      alert('Results download feature coming soon. Your score: ' + compositeScore);
+    function renderNextSteps() {
+      var tierContext = document.getElementById('nextStepsTierContext');
+      var cardsContainer = document.getElementById('nextStepsCards');
+
+      var steps = {
+        Critical: {
+          context: 'Organizations scoring in the Critical range typically have structural constraints that hiring alone cannot resolve. The gaps are systemic, not situational. Most start with an honest capacity audit before committing budget to more headcount.',
+          items: [
+            'Map where your current providers spend non-clinical time. The gap between scheduled hours and completed encounters reveals the structural overhead.',
+            'Quantify your true cost per completed encounter, not per provider. Factor in no-shows, ramp time, benefits, and support staff. Most FQHCs find it is 2x what the salary line suggests.',
+            'Talk to someone who has seen the pattern across multiple health centers. A 30-minute walkthrough of your scores can clarify which gaps are fixable internally and which need a different operating structure.'
+          ]
+        },
+        Strained: {
+          context: 'Organizations scoring in the Strained range are typically doing the right things but hitting structural limits. The demand is there. The intent is there. The operating model is the bottleneck.',
+          items: [
+            'Identify which of your lowest-scoring dimensions are within your control to fix internally, and which are structural constraints of the employment model.',
+            'Calculate what your behavioral health program would look like with 30 more points of effective utilization. That is the gap between shared scheduling infrastructure and dedicated scheduling infrastructure.',
+            'Explore what a purpose-built operating layer looks like running alongside your existing team. Not instead of. Alongside.'
+          ]
+        },
+        Moderate: {
+          context: 'Organizations scoring in the Moderate range have a functional program but are likely leaving capacity on the table. The question is not whether you can serve more patients. It is whether your current infrastructure lets you.',
+          items: [
+            'Look at your two lowest-scoring dimensions. Those are where incremental investment yields the highest return in patient access.',
+            'Benchmark your provider utilization against the 82% standard that purpose-built behavioral health infrastructure achieves. The gap is your opportunity.',
+            'Consider whether your next capacity expansion should follow the same model as your current one, or whether a different structure could get you there faster with less risk.'
+          ]
+        },
+        Strong: {
+          context: 'Organizations scoring in the Strong range are outperforming most FQHCs on behavioral health capacity. Your infrastructure is working. The question now is scale and sustainability.',
+          items: [
+            'Pressure-test your weakest 1-2 dimensions. Even strong programs have structural vulnerabilities that show up under growth or turnover.',
+            'Model what happens to your capacity metrics if you lose one provider. Strong programs with thin margins become strained programs fast.',
+            'Explore whether a blended model (internal staff plus purpose-built external capacity) could protect your metrics while expanding access further.'
+          ]
+        }
+      };
+
+      var tier = steps[tierLabel] || steps['Moderate'];
+      tierContext.textContent = tier.context;
+
+      cardsContainer.innerHTML = tier.items.map(function(item, i) {
+        return '<div class="next-step-card">' +
+          '<div class="next-step-num">' + (i + 1) + '</div>' +
+          '<div class="next-step-text">' + item + '</div>' +
+        '</div>';
+      }).join('');
     }
 
     // Keyboard Support

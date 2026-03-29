@@ -745,6 +745,62 @@ async function handleAssessment(request, env) {
       }),
     });
 
+    // Send results summary email to the user
+    try {
+      const userTierColor = {
+        Critical: "#dc2626",
+        Strained: "#f59e0b",
+        Moderate: "#3b82f6",
+        Strong: "#16a34a"
+      }[quiz_capacity_tier] || "#666";
+
+      const dimLabels = ["Wait Time", "No-Show Rate", "Service Scope", "Provider Productivity", "Time to Productive", "Provider Turnover", "Scheduling Model"];
+      const dimValues = [quiz_wait_time, quiz_noshow_rate, quiz_service_scope, quiz_productivity, quiz_time_to_productive, quiz_turnover, quiz_scheduling];
+
+      const dimRows = dimLabels.map(function(label, i) {
+        return "<tr><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;font-weight:500;color:#4a5e54;'>" + label + "</td><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;color:#1c2b24;'>" + (dimValues[i] || "\u2014") + "</td></tr>";
+      }).join("");
+
+      await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "api-key": env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: [{ email: email, name: ((firstName || "") + " " + (lastName || "")).trim() }],
+          sender: { email: "roger@golegara.com", name: "Roger Stellers" },
+          replyTo: { email: "roger@golegara.com", name: "Roger Stellers" },
+          subject: "Your BH Capacity Assessment Results \u2014 " + (quiz_capacity_score || "?") + "/100",
+          htmlContent:
+            "<div style='max-width:600px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;'>" +
+            "<div style='padding:32px 0 24px;border-bottom:2px solid #1a6b4a;margin-bottom:24px;'>" +
+            "<img src='https://golegara.com/img/logo.png' alt='Legara' style='height:24px;' />" +
+            "</div>" +
+            "<p style='font-size:16px;color:#1c2b24;line-height:1.6;margin-bottom:20px;'>" + (firstName || "Hi") + ",</p>" +
+            "<p style='font-size:16px;color:#4a5e54;line-height:1.7;margin-bottom:24px;'>Here are your BH Capacity Assessment results. You can share this with your leadership team or reference it in planning conversations.</p>" +
+            "<div style='text-align:center;padding:28px;background:#f4faf7;border-radius:12px;margin-bottom:24px;'>" +
+            "<div style='font-family:Georgia,serif;font-size:48px;font-weight:700;color:" + userTierColor + ";'>" + (quiz_capacity_score || "?") + "</div>" +
+            "<div style='font-size:13px;color:#8fa89e;margin-top:4px;'>out of 100</div>" +
+            "<div style='display:inline-block;background:" + userTierColor + ";color:#fff;padding:4px 14px;border-radius:4px;font-size:13px;font-weight:600;margin-top:8px;'>" + (quiz_capacity_tier || "") + "</div>" +
+            "</div>" +
+            "<h3 style='font-family:Georgia,serif;font-size:18px;color:#1c2b24;margin-bottom:12px;'>Your Dimension Scores</h3>" +
+            "<table style='width:100%;border-collapse:collapse;margin-bottom:32px;'>" +
+            dimRows +
+            "</table>" +
+            "<div style='background:#f4faf7;border-radius:12px;padding:24px;margin-bottom:32px;'>" +
+            "<h3 style='font-family:Georgia,serif;font-size:16px;color:#1c2b24;margin-bottom:8px;'>Want to walk through these results?</h3>" +
+            "<p style='font-size:14px;color:#4a5e54;line-height:1.6;margin-bottom:16px;'>30 minutes with me to map your scores to what other FQHCs with similar profiles have done. No pitch, no proposal.</p>" +
+            "<a href='https://cal.com/roger-golegara.com/legara-roi-review' style='display:inline-block;background:#1a6b4a;color:#fff;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;'>Book a Results Walkthrough</a>" +
+            "</div>" +
+            "<p style='font-size:13px;color:#8fa89e;line-height:1.6;'>Roger Stellers<br>CEO, Legara<br>760-479-7860<br>GoLegara.com</p>" +
+            "</div>",
+        }),
+      });
+    } catch (emailErr) {
+      console.error("User results email failed:", emailErr);
+    }
+
     return json({ ok: true }, 200);
   } catch (err) {
     console.error("Assessment handler error:", err);
