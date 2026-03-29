@@ -1223,6 +1223,201 @@ section {
   margin-top: 4px;
 }
 
+/* ─── ENHANCED ANIMATIONS ─── */
+
+/* Nav scroll state */
+nav {
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+.nav-scrolled {
+  background: rgba(250,252,251,0.98) !important;
+  box-shadow: 0 1px 12px rgba(28,43,36,0.06);
+}
+
+/* Slide from left */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-slide-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide from right */
+.reveal-slide-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-slide-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale entrance (for stat cards, proof metrics) */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Comparison row entrance */
+.comparison-row {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s ease;
+}
+.comparison-row.row-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Enhanced pillar card hover — add a subtle top-border accent */
+.pillar {
+  border-top: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+.pillar:hover {
+  border-top-color: var(--green);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(26,107,74,0.1);
+}
+
+/* Enhanced outcome item hover */
+.outcome-item {
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.outcome-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Feature item hover (for-health-centers, how-it-works) */
+.feature-item {
+  padding: 16px;
+  border-radius: 12px;
+  transition: background 0.3s ease;
+}
+.feature-item:hover {
+  background: rgba(26,107,74,0.03);
+}
+
+/* Problem stat card — enhanced left border animation on hover */
+.problem-stat-card {
+  transition: all 0.3s ease;
+}
+.problem-stat-card:hover {
+  border-left-color: var(--green-mid);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(26,107,74,0.06);
+}
+
+/* Blog card hover enhancement */
+.content-section a[href*="blog-"] {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+.content-section a[href*="blog-"]:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* CTA band — subtle gradient animation */
+.cta-band {
+  background: linear-gradient(135deg, var(--charcoal) 0%, #243d30 50%, var(--charcoal) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Page header — subtle text entrance */
+.page-header .section-label {
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+.page-header .section-headline {
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+.page-header .section-body {
+  animation: fadeUp 0.6s ease 0.35s both;
+}
+
+/* Section dividers — add a subtle top accent line on alt sections */
+.content-section-alt {
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+
+/* Proof bar metrics — gentle pulse on the numbers */
+.proof-num, [style*="font-family: 'Playfair Display'"][style*="font-size: 24px"] {
+  transition: color 0.3s ease;
+}
+
+/* Why-aside comparison cards — subtle entrance */
+.why-aside {
+  transition: box-shadow 0.3s ease;
+}
+.why-aside:hover {
+  box-shadow: 0 8px 32px rgba(26,107,74,0.06);
+}
+
+/* Button micro-interaction enhancement */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+.btn-primary:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Respect reduced motion for ALL new animations */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-slide-left,
+  .reveal-slide-right,
+  .reveal-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .comparison-row {
+    opacity: 1;
+    transform: none;
+    transition: background 0.2s ease;
+  }
+  .cta-band {
+    animation: none;
+  }
+  .page-header .section-label,
+  .page-header .section-headline,
+  .page-header .section-body {
+    animation: none;
+    opacity: 1;
+  }
+  .btn-primary::after {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .cta-personal {
     flex-direction: column;

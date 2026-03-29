@@ -193,12 +193,12 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   </div>
   <div style="width: 1px; height: 32px; background: var(--border);"></div>
   <div style="text-align: center;">
-    <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">50,000+</div>
+    <div class="count-up" data-target="50000" data-suffix="+" style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">0</div>
     <div style="font-size: 11px; font-weight: 500; color: var(--mist); text-transform: uppercase; letter-spacing: 0.08em;">Encounters/Year</div>
   </div>
   <div style="width: 1px; height: 32px; background: var(--border);"></div>
   <div style="text-align: center;">
-    <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">40+</div>
+    <div class="count-up" data-target="40" data-suffix="+" style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">0</div>
     <div style="font-size: 11px; font-weight: 500; color: var(--mist); text-transform: uppercase; letter-spacing: 0.08em;">Active Providers</div>
   </div>
   <div style="width: 1px; height: 32px; background: var(--border);"></div>
@@ -208,12 +208,12 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   </div>
   <div style="width: 1px; height: 32px; background: var(--border);"></div>
   <div style="text-align: center;">
-    <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">82%</div>
+    <div class="count-up" data-target="82" data-suffix="%" style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">0</div>
     <div style="font-size: 11px; font-weight: 500; color: var(--mist); text-transform: uppercase; letter-spacing: 0.08em;">Utilization</div>
   </div>
   <div style="width: 1px; height: 32px; background: var(--border);"></div>
   <div style="text-align: center;">
-    <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">4.76</div>
+    <div class="count-up" data-target="4.76" style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--green);">0</div>
     <div style="font-size: 11px; font-weight: 500; color: var(--mist); text-transform: uppercase; letter-spacing: 0.08em;">Patient Satisfaction</div>
   </div>
 </div>
@@ -567,25 +567,7 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   </div>
 </footer>
 
+<script src="js/animations.js"></script>
 <script src="js/tracking.js"></script>
-<script>
-/* Scroll reveal — IntersectionObserver */
-(function() {
-  var els = document.querySelectorAll('.reveal');
-  if (!els.length || !('IntersectionObserver' in window)) {
-    els.forEach(function(el) { el.classList.add('visible'); });
-    return;
-  }
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-  els.forEach(function(el) { observer.observe(el); });
-})();
-</script>
 </body>
 </html>
