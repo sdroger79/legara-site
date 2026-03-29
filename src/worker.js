@@ -577,6 +577,18 @@ async function handleBrevoWebhook(request, env) {
 
 const ASSESSMENT_BREVO_LIST_ID = 8; // Brevo list for quiz leads (create in Brevo if not exists)
 
+const ABM_TARGET_DOMAINS = [
+  "trucare.org", "truecare.org", "clinicasierravista.org", "omnifamilyhealth.org",
+  "communicarehealthcenters.org", "olehealth.org", "ravenswood.org", "opendoor.com",
+  "santacruzhealth.org", "schealthcenters.org", "mchcinc.org", "snahc.org",
+  "goldcoasthealthcenter.org", "eisner.org", "apla.org", "aplahealth.org",
+  "hopics.org", "thechildrensclinic.org", "stmaryscenter.org",
+  "pomona.org", "pomonacommunityhealthcenter.org", "wfrhn.org", "axishealth.org",
+  "cnhp.org", "livhc.org", "petalumahealthcenter.org",
+  "marinhealth.org", "west-county-health.org", "rfrhn.org",
+  "coastal.org", "cchealth.org", "rivcommhealth.org"
+];
+
 async function handleAssessment(request, env) {
   try {
     const data = await request.json();
@@ -624,6 +636,9 @@ async function handleAssessment(request, env) {
     if (!lastName || lastName.trim().length < 2) return json({ ok: true }, 200);
     if (!organization || organization.trim().length < 3) return json({ ok: true }, 200);
     if (onlyNumbers.test(firstName.trim()) || onlyNumbers.test(lastName.trim())) return json({ ok: true }, 200);
+
+    const emailDomain = email.split("@")[1]?.toLowerCase() || "";
+    const isABMTarget = ABM_TARGET_DOMAINS.some(d => emailDomain === d || emailDomain.endsWith("." + d));
 
     // Run Brevo + HubSpot in parallel
     const [brevoRes, hsResult] = await Promise.all([
@@ -701,6 +716,32 @@ async function handleAssessment(request, env) {
       hsStatus = "\u2717 FAILED \u2014 " + (hsResult && hsResult.error ? hsResult.error.substring(0, 120) : "unknown error");
     }
 
+    // Create HubSpot note for ABM target accounts
+    if (isABMTarget && hsResult && hsResult.contactId) {
+      try {
+        const noteBody = "ABM TARGET completed BH Capacity Assessment.\n\nScore: " + (quiz_capacity_score || "?") + "/100 (" + (quiz_capacity_tier || "?") + ")\n\nKey responses:\n- Wait time: " + (quiz_wait_time || "?") + "\n- No-show rate: " + (quiz_noshow_rate || "?") + "\n- Turnover: " + (quiz_turnover || "?") + "\n- Scheduling: " + (quiz_scheduling || "?") + "\n\nThis data can be used for personalized follow-up. Check quiz_ properties on the contact record for all 7 dimensions.";
+        await fetch("https://api.hubapi.com/crm/v3/objects/notes", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + env.HUBSPOT_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            properties: {
+              hs_note_body: noteBody,
+              hs_timestamp: new Date().toISOString()
+            },
+            associations: [{
+              to: { id: hsResult.contactId },
+              types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 202 }]
+            }]
+          })
+        });
+      } catch (noteErr) {
+        console.error("Failed to create ABM assessment note:", noteErr);
+      }
+    }
+
     const tierColor = {
       Critical: "#dc2626",
       Strained: "#f59e0b",
@@ -717,7 +758,7 @@ async function handleAssessment(request, env) {
       body: JSON.stringify({
         to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
         sender: { email: "roger@golegara.com", name: "Legara Assessment Alert" },
-        subject: "New Assessment Lead: " + (firstName || "") + " " + (lastName || "") + " \u2014 " + (organization || "Unknown org") + " [" + (quiz_capacity_tier || "?") + " " + (quiz_capacity_score || "?") + "/100]",
+        subject: (isABMTarget ? "\uD83C\uDFAF ABM TARGET: " : "") + "New Assessment Lead: " + (firstName || "") + " " + (lastName || "") + " \u2014 " + (organization || "Unknown org") + " [" + (quiz_capacity_tier || "?") + " " + (quiz_capacity_score || "?") + "/100]",
         htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New BH Capacity Assessment</h2>" +
           "<div style='font-family:sans-serif;font-size:18px;margin:12px 0 20px;'>" +
           "<span style='font-weight:700;font-size:28px;color:" + tierColor + ";'>" + (quiz_capacity_score || "?") + "/100</span>" +
@@ -729,6 +770,7 @@ async function handleAssessment(request, env) {
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Title</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (title || "\u2014") + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Sites</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (sites || "\u2014") + "</td></tr>" +
           "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Source</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (utm_source || "direct") + " / " + (utm_medium || "\u2014") + " / " + (utm_campaign || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>ABM Match</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (isABMTarget ? "<span style='background:#16a34a;color:#fff;padding:2px 10px;border-radius:4px;font-size:13px;font-weight:600;'>YES \u2014 " + emailDomain + "</span>" : "No match") + "</td></tr>" +
           "</table>" +
           "<h3 style='color:#1a6b4a;font-family:sans-serif;margin-top:24px;'>Quiz Responses</h3>" +
           "<table style='width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;'>" +
