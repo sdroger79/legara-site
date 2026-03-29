@@ -30,7 +30,7 @@
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
     revealEls.forEach(function(el) { revealObserver.observe(el); });
   } else {
     revealEls.forEach(function(el) { el.classList.add('visible'); });
@@ -81,7 +81,7 @@
         if (entry.isIntersecting) {
           var children = entry.target.querySelectorAll('.reveal, .reveal-slide-left, .reveal-slide-right, .reveal-scale');
           children.forEach(function(child, i) {
-            child.style.transitionDelay = (i * 120) + 'ms';
+            child.style.transitionDelay = Math.min(i * 100, 300) + 'ms';
             // Small timeout to ensure the delay is applied before triggering
             setTimeout(function() { child.classList.add('visible'); }, 10);
           });
