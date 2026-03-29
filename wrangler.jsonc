@@ -14,5 +14,11 @@
   ],
   "triggers": {
     "crons": ["0 * * * *"]
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "TEAM_DATA",
+      "id": "71197c42d7c54d7f8eebd7f4f8fdf5c9"
+    }
+  ]
 }

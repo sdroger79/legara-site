@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Legara Team Portal</title>
+<style>
+/* ── Reset & Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface-2: #232733;
+  --surface-3: #2c3040;
+  --border: #2e3345;
+  --border-light: #3a3f52;
+  --text: #e1e4ed;
+  --text-secondary: #9398ab;
+  --text-muted: #6b7084;
+  --accent: #4f8fea;
+  --accent-dim: #3a6bb5;
+  --green: #3dd68c;
+  --green-dim: rgba(61,214,140,0.12);
+  --orange: #f0a050;
+  --orange-dim: rgba(240,160,80,0.12);
+  --red: #ef6b6b;
+  --red-dim: rgba(239,107,107,0.12);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.12);
+  --radius: 6px;
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+html { font-size: 14px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Auth Gate ─────────────────────────────────────────────────── */
+#auth-gate {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem;
+}
+.auth-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 2.5rem; width: 100%; max-width: 380px;
+  text-align: center;
+}
+.auth-box .logo { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.5rem; }
+.auth-box h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 1.5rem; }
+.auth-box input {
+  width: 100%; padding: 0.65rem 0.9rem; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text); font-family: var(--mono); font-size: 0.95rem;
+  margin-bottom: 1rem; outline: none; transition: border 0.15s;
+}
+.auth-box input:focus { border-color: var(--accent); }
+.auth-box button {
+  width: 100%; padding: 0.65rem; background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius); font-weight: 600; font-size: 0.95rem;
+  cursor: pointer; transition: background 0.15s;
+}
+.auth-box button:hover { background: var(--accent-dim); }
+.auth-error { color: var(--red); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+
+/* ── Layout ────────────────────────────────────────────────────── */
+#app { display: none; height: 100vh; }
+#app.active { display: flex; }
+.sidebar {
+  width: 240px; min-width: 240px; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-header {
+  padding: 1.2rem 1rem 0.8rem; border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: 0.85rem; color: var(--text-muted);
+  letter-spacing: 0.8px; text-transform: uppercase;
+}
+.sidebar-header span { color: var(--text); font-size: 1rem; text-transform: none; letter-spacing: 0; display: block; margin-top: 0.25rem; }
+.nav-section { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.nav-section:last-child { border-bottom: none; }
+.nav-label { padding: 0.3rem 1rem; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem;
+  cursor: pointer; color: var(--text-secondary); font-size: 0.9rem;
+  transition: all 0.1s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: var(--surface-2); }
+.nav-item.active { color: var(--text); background: var(--surface-2); border-left-color: var(--accent); }
+.nav-item .icon { width: 16px; text-align: center; font-size: 0.85rem; }
+.sidebar-footer { margin-top: auto; padding: 1rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); }
+
+.main { flex: 1; overflow-y: auto; padding: 2rem 3rem; max-width: 900px; }
+.main h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.3rem; }
+.main .subtitle { color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+.main h2 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+.main h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+.main p { margin-bottom: 0.8rem; color: var(--text-secondary); }
+.main p strong { color: var(--text); }
+.main ul { margin: 0.5rem 0 1rem 1.2rem; color: var(--text-secondary); }
+.main li { margin-bottom: 0.35rem; }
+
+/* Page sections hidden by default */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Components ────────────────────────────────────────────────── */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+}
+.stat-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.3rem; }
+.stat-card .value { font-size: 1.5rem; font-weight: 700; font-family: var(--mono); }
+.stat-card .note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+.info-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+}
+.info-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+.info-card p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px;
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.badge-major { background: var(--orange-dim); color: var(--orange); }
+.badge-update { background: var(--green-dim); color: var(--green); }
+.badge-fix { background: var(--purple-dim); color: var(--purple); }
+
+.changelog-item {
+  padding: 1rem 0; border-bottom: 1px solid var(--border);
+}
+.changelog-item:last-child { border-bottom: none; }
+.changelog-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.changelog-date { font-family: var(--mono); font-size: 0.8rem; color: var(--text-muted); }
+.changelog-title { font-weight: 600; font-size: 0.95rem; }
+.changelog-body { color: var(--text-secondary); font-size: 0.88rem; }
+
+.callout {
+  border-left: 3px solid var(--accent); background: var(--surface);
+  padding: 1rem 1.2rem; margin: 1rem 0; border-radius: 0 var(--radius) var(--radius) 0;
+}
+.callout.warn { border-left-color: var(--orange); }
+.callout.danger { border-left-color: var(--red); }
+.callout.success { border-left-color: var(--green); }
+.callout p { margin-bottom: 0.3rem; }
+.callout p:last-child { margin-bottom: 0; }
+
+.comparison-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+.comparison-table th {
+  text-align: left; padding: 0.6rem 0.8rem; background: var(--surface-2);
+  border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);
+}
+.comparison-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.comparison-table tr:hover td { background: var(--surface); }
+
+.pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
+.pillar-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.2rem; border-top: 3px solid var(--accent);
+}
+.pillar-card.p2 { border-top-color: var(--green); }
+.pillar-card.p3 { border-top-color: var(--purple); }
+.pillar-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+.pillar-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem; }
+
+.resource-list { list-style: none; margin: 0; padding: 0; }
+.resource-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.7rem 0; border-bottom: 1px solid var(--border);
+}
+.resource-list .name { font-weight: 500; }
+.resource-list .desc { font-size: 0.8rem; color: var(--text-muted); }
+.resource-list .link { font-size: 0.8rem; }
+
+.tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.tab {
+  padding: 0.6rem 1.2rem; cursor: pointer; font-size: 0.85rem; font-weight: 500;
+  color: var(--text-muted); border-bottom: 2px solid transparent; transition: all 0.15s;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.arc-steps { display: flex; gap: 0; margin: 1rem 0 1.5rem; }
+.arc-step {
+  flex: 1; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border);
+  text-align: center; position: relative;
+}
+.arc-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.arc-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.arc-step .step-num { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); }
+.arc-step .step-label { font-size: 0.8rem; font-weight: 600; margin-top: 0.15rem; }
+.arc-step.highlight { background: var(--surface-3); border-color: var(--accent); }
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { width: 200px; min-width: 200px; }
+  .main { padding: 1.5rem; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .arc-steps { flex-direction: column; }
+  .arc-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+  .arc-step:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- AUTH GATE                                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="auth-gate">
+  <div class="auth-box">
+    <div class="logo">LEGARA</div>
+    <h1>Team Portal</h1>
+    <form id="auth-form">
+      <input type="password" id="auth-pw" placeholder="Enter team password" autocomplete="off" autofocus>
+      <button type="submit">Continue</button>
+    </form>
+    <div class="auth-error" id="auth-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- MAIN APP                                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    LEGARA <span>Team Portal</span>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-item active" data-page="dashboard"><span class="icon">◉</span> Dashboard</div>
+    <div class="nav-item" data-page="changelog"><span class="icon">△</span> What Changed</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">The Model</div>
+    <div class="nav-item" data-page="model"><span class="icon">◆</span> How Legara Works</div>
+    <div class="nav-item" data-page="positioning"><span class="icon">⊞</span> Competitive Positioning</div>
+    <div class="nav-item" data-page="numbers"><span class="icon">#</span> Key Numbers</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Sales</div>
+    <div class="nav-item" data-page="sales-process"><span class="icon">→</span> Sales Process</div>
+    <div class="nav-item" data-page="abm"><span class="icon">✉</span> ABM Playbook</div>
+    <div class="nav-item" data-page="objections"><span class="icon">✕</span> Objection Handling</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Resources</div>
+    <div class="nav-item" data-page="resources"><span class="icon">□</span> Collateral & Links</div>
+    <div class="nav-item" data-page="do-not-say"><span class="icon">!</span> What NOT to Say</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Deep Dive</div>
+    <div class="nav-item" data-page="history"><span class="icon">↺</span> How We Got Here</div>
+  </div>
+
+  <div class="sidebar-footer">
+    Last updated: <span id="last-updated">2026-03-29</span><br>
+    Questions? Slack Roger.
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+<div id="announcements-banner"></div>
+
+<!-- ── DASHBOARD ──────────────────────────────────────────────── -->
+<div class="page active" id="page-dashboard">
+  <h1>Welcome to the Team Portal</h1>
+  <p class="subtitle">The single source of truth for how Legara sells. If it's not here, ask Roger.</p>
+
+  <div id="recent-changes"></div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">FQHC Partners</div>
+      <div class="value">9</div>
+      <div class="note">All in California</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Weekly Encounters</div>
+      <div class="value">950+</div>
+      <div class="note">Across all partners</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Provider Turnover</div>
+      <div class="value" style="color:var(--green)">&lt; 3%</div>
+      <div class="note">Industry avg: 30%+</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Time to First Patients</div>
+      <div class="value">~6 wk</div>
+      <div class="note">From signed contract</div>
+    </div>
+  </div>
+
+  <h2>Quick Start</h2>
+  <p>If you're new here, read these sections in order:</p>
+  <div class="info-card">
+    <h4>1. How Legara Works</h4>
+    <p>Understand the three-pillar model so you can explain it confidently in any conversation. This is the foundation everything else builds on.</p>
+  </div>
+  <div class="info-card">
+    <h4>2. Competitive Positioning</h4>
+    <p>How we're different from internal hiring, staffing companies, and telehealth vendors. You'll face all three comparisons.</p>
+  </div>
+  <div class="info-card">
+    <h4>3. Sales Process</h4>
+    <p>The five ways a prospect becomes a client. Understand the narrative arc so you know where every conversation should go.</p>
+  </div>
+  <div class="info-card">
+    <h4>4. What NOT to Say</h4>
+    <p>Specific phrases and framings that hurt us. Read this before your first prospect conversation.</p>
+  </div>
+</div>
+
+<!-- ── CHANGELOG ──────────────────────────────────────────────── -->
+<div class="page" id="page-changelog">
+  <h1>What Changed</h1>
+  <p class="subtitle">Major updates to messaging, positioning, and process. Most recent first.</p>
+  <div id="changelog-full"></div>
+</div>
+
+<!-- ── HOW LEGARA WORKS ──────────────────────────────────────── -->
+<div class="page" id="page-model">
+  <h1>How Legara Works</h1>
+  <p class="subtitle">The operating model in plain language. Memorize the three pillars.</p>
+
+  <h2>What We Are (and Are Not)</h2>
+  <p><strong>Legara is a regulated workforce platform.</strong> We build and manage a behavioral health operating infrastructure that runs alongside an FQHC's existing team. We handle the operational layer (scheduling, credentialing, compliance, provider support) so their providers can focus on patients.</p>
+
+  <div class="callout warn">
+    <p><strong>Never call us:</strong> a staffing company, a telehealth company, or an outsourcing firm. These are fundamentally different models. Legara is a managed operational infrastructure.</p>
+  </div>
+
+  <p>FQHCs need behavioral health capacity, but they're structurally constrained. California employment law, HRSA requirements, union contracts, and primary care operating structures create a ceiling on what's possible. Providers share scheduling with primary care, dental, and everything else. There's no dedicated behavioral health infrastructure. That ceiling is real and it's not anyone's fault. Legara exists to add capacity through a different structure that sits alongside the FQHC's own team.</p>
+
+  <h2>The Three Pillars</h2>
+  <p>Everything we do is built on three structural advantages. These are the answer to "why is Legara different?"</p>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <h4>1. Dedicated Infrastructure</h4>
+      <p>Every Legara provider has a dedicated Patient Service Rep (PSR) who handles only behavioral health patients at strict ratios. No shared front desk. No splitting time with primary care. These ratios are empirically validated: loosen the ratio and productivity drops immediately; restore it and it returns.</p>
+      <p>PSRs handle scheduling, same-day backfill for cancellations, follow-up cadence, and crisis slot management. The FQHC approves the schedule and availability; Legara handles patient-level booking.</p>
+    </div>
+    <div class="pillar-card p2">
+      <h4>2. Incentive Alignment</h4>
+      <p>Legara providers are compensated per encounter, not salaried. Every empty time block impacts their earnings directly. The provider pays the MSO (Legara Servicing) for operational support. This creates self-reinforcing utilization: every actor in the system is aligned toward keeping providers productive.</p>
+      <p><strong>Note:</strong> The per-encounter structure is effective but can raise questions. In BD conversations, reference it briefly ("incentive-aligned providers") but don't go deep on the mechanics. Roger handles this in meetings.</p>
+    </div>
+    <div class="pillar-card p3">
+      <h4>3. Quality & Compliance</h4>
+      <p>Documentation must be completed and the encounter locked in the EHR before billing is sent. Every claim is scrubbed daily for accuracy before it reaches the FQHC billing office, catching coding errors, diagnosis mismatches, and place-of-service issues.</p>
+      <p>Monthly quality check: random 3% sampling of every provider's notes, verified for uniqueness and appropriate length. Largely automated with manual safety checks where they matter.</p>
+      <p>The Legara Platform includes a secure portal with ambient AI notetaking. Patient-consented, private encryption keys, not running on a public LLM. This eliminates the productivity-vs-documentation tradeoff.</p>
+    </div>
+  </div>
+
+  <h2>The Core Insight</h2>
+  <p><strong>The same clinician, with a dedicated operations layer around them, produces fundamentally different throughput.</strong> Not by working harder. By having the right support. A Legara PMHNP completes 2.5 encounters per hour. A typical FQHC PMHNP completes 1.5. That's not a quality difference. That's an infrastructure difference.</p>
+
+  <h2>What the FQHC Gets</h2>
+  <ul>
+    <li>Behavioral health capacity without FTE risk or salary burn</li>
+    <li>Providers seeing patients in as few as 6 weeks from signed contract</li>
+    <li>Zero cost during the credentialing and panel-build period</li>
+    <li>Under 3% annual provider turnover (vs 30%+ industry average)</li>
+    <li>Providers document in the FQHC's own EHR, same day</li>
+    <li>Daily claims scrubbing before it hits the FQHC billing office</li>
+    <li>Revenue from completed encounters (PPS + copays + secondaries) averages ~$230/encounter</li>
+    <li>Net "mission cash generated" after paying Legara: real dollars the FQHC keeps for its mission</li>
+  </ul>
+
+  <h2>What Legara Servicing Does (Invisible to Client)</h2>
+  <p>Legara Servicing is the Management Services Organization (MSO). It handles all provider operations: scheduling, credentialing management, compensation, quality monitoring, platform support, and compliance infrastructure. The FQHC never interacts with the MSO directly. To them, Legara providers simply integrate into their care team.</p>
+  <div class="callout danger">
+    <p><strong>Never mention Legara Servicing or the MSO to clients.</strong> This is internal infrastructure. The client sees "Legara" as one entity that provides the full solution.</p>
+  </div>
+</div>
+
+<!-- ── COMPETITIVE POSITIONING ────────────────────────────────── -->
+<div class="page" id="page-positioning">
+  <h1>Competitive Positioning</h1>
+  <p class="subtitle">How to frame Legara against the three alternatives every FQHC considers.</p>
+
+  <h2>vs. Internal Hiring</h2>
+  <p>This is the most common comparison. Every FQHC's default answer to "we need more BH capacity" is "let's hire another provider." The comparison isn't about whether hiring is bad. It's about the structural limitations of the employment model.</p>
+
+  <div class="comparison-table">
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Dimension</th><th>Internal Hire</th><th>Legara</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Time to first patient</td><td>6-9 months from hire</td><td>As fast as 6 weeks from contract</td></tr>
+        <tr><td>Cost during ramp</td><td>Full salary running the entire time</td><td>$0 until encounters begin</td></tr>
+        <tr><td>Annual turnover</td><td>30%+ industry average</td><td>Under 3%</td></tr>
+        <tr><td>Scheduling</td><td>Shared front desk (primary care, dental, BH)</td><td>Dedicated BH-only PSR at strict ratios</td></tr>
+        <tr><td>Provider utilization</td><td>1.0-1.5 enc/hr (meetings, admin, org obligations)</td><td>1.5-2.5 enc/hr (infrastructure-supported)</td></tr>
+        <tr><td>Documentation</td><td>Competes with patient volume</td><td>Structurally integrated, daily claims scrub</td></tr>
+        <tr><td>Recruiter fees</td><td>~$8K per hire</td><td>$0</td></tr>
+        <tr><td>True loaded cost (therapist)</td><td>~$229K/yr (salary + benefits + support + ramp)</td><td>Flat per-encounter rate, all-in</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><strong>Frame it this way:</strong> "The constraint isn't effort or talent. The FQHC employment model was designed for primary care. Behavioral health has different scheduling patterns, different documentation requirements, different follow-up cadences. Legara adds capacity through a structure built specifically for BH."</p>
+  </div>
+
+  <h2>vs. Staffing Companies</h2>
+  <p>Staffing companies send a body. Legara sends a managed program. The structural difference is total.</p>
+
+  <div class="comparison-table">
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Dimension</th><th>Staffing</th><th>Legara</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>What they provide</td><td>A clinician (locum or contract)</td><td>Clinician + PSR + QC + platform + compliance layer</td></tr>
+        <tr><td>Scheduling</td><td>FQHC's responsibility</td><td>Legara handles patient-level booking</td></tr>
+        <tr><td>Quality monitoring</td><td>None</td><td>Daily claims scrub, monthly 3% QC sampling</td></tr>
+        <tr><td>Documentation support</td><td>None</td><td>Ambient AI platform, same-day note completion</td></tr>
+        <tr><td>Turnover management</td><td>Your problem</td><td>Under 3%, Legara handles replacement</td></tr>
+        <tr><td>Utilization</td><td>Whatever the FQHC operating model produces</td><td>2.5 enc/hr prescribers, 1.5 enc/hr therapy</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Staffing companies can always undercut on rate. That's not the comparison. The comparison is total cost of the outcome: encounters completed, documented, billed, and collected. Structural incomparability is the play.</p>
+
+  <h2>vs. Telehealth Vendors</h2>
+  <p>Telehealth is a delivery mechanism, not an operating model. Legara providers may deliver care via telehealth or in-person, but the operational infrastructure around them is what produces the outcomes.</p>
+  <ul>
+    <li>Legara providers credential at the FQHC's sites and document in their EHR</li>
+    <li>They're "your providers" on paper and in practice, not a separate platform</li>
+    <li>Care coordination with the FQHC's primary care team is built in, not bolted on</li>
+    <li>The financial model is completely different (encounter-based revenue for the FQHC vs subscription/platform fees)</li>
+  </ul>
+</div>
+
+<!-- ── KEY NUMBERS ────────────────────────────────────────────── -->
+<div class="page" id="page-numbers">
+  <h1>Key Numbers</h1>
+  <p class="subtitle">Reference data for conversations. All numbers verified and current.</p>
+
+  <h2>Rate Structure</h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">Therapy (LCSW/LMFT)</div>
+      <div class="value">$155</div>
+      <div class="note">per encounter, flat rate, all-in</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">All Others (Psych, PMHNP, MD)</div>
+      <div class="value">$165</div>
+      <div class="note">per encounter, flat rate, all-in</div>
+    </div>
+  </div>
+  <p>The rate includes provider compensation, platform fee, and MSO servicing. There is no separate fee for any of those. The FQHC pays one flat rate per completed encounter.</p>
+
+  <h2>Provider Efficiency</h2>
+  <table class="comparison-table">
+    <thead><tr><th>Provider Type</th><th>Legara</th><th>Typical FQHC</th></tr></thead>
+    <tbody>
+      <tr><td>PMHNP</td><td>2.5 enc/hr</td><td>1.5 enc/hr</td></tr>
+      <tr><td>Therapist (LCSW/LMFT)</td><td>1.5 enc/hr</td><td>1.0 enc/hr</td></tr>
+    </tbody>
+  </table>
+  <p>The efficiency gap is baked into the flat rate. It is not passed through as extra encounter volume the FQHC has to process. When comparing costs, use the same encounter volume for both models.</p>
+
+  <h2>Revenue & Mission Cash</h2>
+  <p>Total encounter revenue for the FQHC averages approximately <strong>$230 per encounter</strong> (PPS + copays + secondaries). After paying Legara's flat rate, the remaining revenue is "mission cash generated" that the FQHC keeps.</p>
+  <p>Revenue mix across the platform is approximately 60% therapy, 40% PMHNP.</p>
+
+  <div class="callout">
+    <p><strong>Language rule:</strong> Externally, always say "mission cash generated." Never say "savings" or "cost savings." The framing is about generating revenue for the mission, not cutting costs.</p>
+  </div>
+
+  <h2>Internal Hire True Cost (What FQHCs Actually Pay)</h2>
+  <p>FQHCs think they pay ~$135K for a therapist. The true loaded cost is ~$229K/yr:</p>
+  <ul>
+    <li>Benefits & tax multiplier: 1.4x base salary</li>
+    <li>Support staff: 0.25 FTE patient service rep per provider (~$11K/yr)</li>
+    <li>Recruiter fee: ~$8K per hire</li>
+    <li>Annual turnover: ~30% (triggers recruiter + ramp costs again)</li>
+    <li>Ramp: 6-9 months from hire to full caseload, full salary running the entire time</li>
+  </ul>
+
+  <h2>Mission Cash Summary (by provider type, annualized)</h2>
+  <table class="comparison-table">
+    <thead><tr><th>Provider Type</th><th>Year 1</th><th>Year 2+</th><th>3-Year Total</th></tr></thead>
+    <tbody>
+      <tr><td>LCSW/LMFT</td><td>+$60K</td><td>+$60K/yr</td><td>+$181K</td></tr>
+      <tr><td>Psychologist</td><td>+$75K</td><td>+$82K/yr</td><td>+$238K</td></tr>
+      <tr><td>PMHNP</td><td>+$70K</td><td>+$64K/yr</td><td>+$197K</td></tr>
+      <tr><td>Psychiatrist</td><td>+$206K</td><td>+$271K/yr</td><td>+$748K</td></tr>
+    </tbody>
+  </table>
+  <p>Almost nobody uses psychiatrists. The vast majority of prescribing is PMHNPs with MD supervision. Default to LCSW/LMFT (most common) for examples.</p>
+</div>
+
+<!-- ── SALES PROCESS ─────────────────────────────────────────── -->
+<div class="page" id="page-sales-process">
+  <h1>Sales Process</h1>
+  <p class="subtitle">How a prospect becomes a client. Five journeys, one narrative arc.</p>
+
+  <h2>The Narrative Arc</h2>
+  <p>Every prospect interaction, regardless of the journey, follows this four-stage arc. The order matters enormously.</p>
+
+  <div class="arc-steps">
+    <div class="arc-step">
+      <div class="step-num">STAGE 1</div>
+      <div class="step-label">Recognition</div>
+    </div>
+    <div class="arc-step">
+      <div class="step-num">STAGE 2</div>
+      <div class="step-label">Understanding</div>
+    </div>
+    <div class="arc-step">
+      <div class="step-num">STAGE 3</div>
+      <div class="step-label">Proof</div>
+    </div>
+    <div class="arc-step">
+      <div class="step-num">STAGE 4</div>
+      <div class="step-label">Financial</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h4>Stage 1: Recognition</h4>
+    <p>"Behavioral health demand outgrew the operating model it runs inside. That's structural, not effort."</p>
+    <p>The prospect needs to recognize that their BH capacity constraint is structural, not a staffing or management failure. This is the empathy frame. We never shame.</p>
+  </div>
+  <div class="info-card">
+    <h4>Stage 2: Understanding</h4>
+    <p>"Same providers, different structure, different outcomes. Here's what that structure looks like."</p>
+    <p>The three pillars. Dedicated infrastructure. Incentive alignment. Quality safeguards. This is where the prospect learns what makes Legara fundamentally different from hiring more staff.</p>
+  </div>
+  <div class="info-card">
+    <h4>Stage 3: Proof</h4>
+    <p>"50,000+ encounters per year. 9 FQHC partners. Specific, verifiable outcomes."</p>
+    <p>Concrete metrics: encounter volume, turnover rates, wait time reduction, utilization numbers. This stage makes the structural story credible.</p>
+  </div>
+  <div class="info-card">
+    <h4>Stage 4: Financial Validation</h4>
+    <p>"Here's what it costs and why. The infrastructure is built into the rate."</p>
+    <p>Rates, mission cash, true cost comparison. This stage validates the decision after the prospect already understands and believes in the model.</p>
+  </div>
+
+  <div class="callout danger">
+    <p><strong>Critical rule: Stage 4 must NEVER arrive before Stage 2.</strong> If a prospect hits price before they understand the operating model, the flat rate will always feel expensive compared to what they think they pay for FTEs. This is the "conditioning gap" and it's the #1 reason deals stall.</p>
+  </div>
+
+  <h2>Five Customer Journeys</h2>
+
+  <div class="tab-bar">
+    <div class="tab active" data-tab="j1">1. ABM → Assessment</div>
+    <div class="tab" data-tab="j2">2. ABM → Direct Reply</div>
+    <div class="tab" data-tab="j3">3. Website Organic</div>
+    <div class="tab" data-tab="j4">4. Multi-Meeting</div>
+    <div class="tab" data-tab="j5">5. CFO Path</div>
+  </div>
+
+  <div class="tab-content active" id="tab-j1">
+    <h3>Journey 1: Cold ABM → Assessment → Nurture → Meeting</h3>
+    <p>The primary acquisition path. A cold email piques interest. The prospect takes the BH Capacity Assessment at GoLegara.com/assessment. Their score triggers a 4-email nurture sequence (Seq A) that progressively educates on the three pillars. A meeting is booked when the prospect is ready.</p>
+    <p><strong>Typical timeline:</strong> 1-4 weeks from first touch to meeting.</p>
+    <p><strong>Key conversion points:</strong> Email open → Assessment click → Assessment complete → Seq A engagement → Meeting booked.</p>
+  </div>
+  <div class="tab-content" id="tab-j2">
+    <h3>Journey 2: Cold ABM → Direct Reply → Meeting</h3>
+    <p>The prospect skips the assessment and replies directly to a cold email (or engages on LinkedIn). These prospects are typically already aware they have a BH capacity problem. The meeting is booked directly. At meeting confirmation, they're nudged to take the assessment so Roger has their data.</p>
+    <p><strong>Typical timeline:</strong> 1-7 days from first touch to meeting.</p>
+  </div>
+  <div class="tab-content" id="tab-j3">
+    <h3>Journey 3: Website Organic</h3>
+    <p>The prospect finds GoLegara.com through search, a referral link, or content. They explore the site and either take the assessment (enters Journey 1 nurture) or book directly via the Cal.com link.</p>
+    <p><strong>Key pages:</strong> Homepage → How It Works → Assessment (or Cal.com).</p>
+  </div>
+  <div class="tab-content" id="tab-j4">
+    <h3>Journey 4: Multi-Meeting Sales Process</h3>
+    <p>Larger or more cautious organizations. Typically involves: Discovery meeting → Clinical alignment meeting (with their BH Director/CMO) → Leadership/board presentation → Contract. Joanne Cabrera joins clinical alignment calls. Bill or Roy may join leadership meetings for credibility.</p>
+    <p><strong>Typical timeline:</strong> 4-12 weeks. Deal stages: Discovery → Leadership Engagement → Clinical Alignment → Closed Won.</p>
+  </div>
+  <div class="tab-content" id="tab-j5">
+    <h3>Journey 5: CFO/Finance Path</h3>
+    <p>The CFO needs a separate conversation track focused on risk elimination and financial validation. Roger offers the ROI calculator walkthrough in live conversation (never linked publicly). The calculator is a tool Roger uses, not something the prospect self-serves.</p>
+    <p><strong>Key framing for CFOs:</strong> $0 during ramp. Variable cost (no fixed headcount risk). True loaded cost comparison ($229K vs flat rate). Revenue from Day 1 of encounters.</p>
+  </div>
+
+  <h2>Deal Stages</h2>
+  <table class="comparison-table">
+    <thead><tr><th>Stage</th><th>Description</th><th>Key Action</th></tr></thead>
+    <tbody>
+      <tr><td>Prospect Identified</td><td>Org researched, contacts enriched</td><td>Enter into outreach queue</td></tr>
+      <tr><td>Outreach Made</td><td>First touch sent (email, InMail)</td><td>Track opens/clicks, prep Touch 2</td></tr>
+      <tr><td>Discovery Meeting</td><td>First real conversation with Roger</td><td>Understand their specific BH situation</td></tr>
+      <tr><td>Leadership Engagement</td><td>Multiple stakeholders involved</td><td>Tailor pitch by role (CEO, CFO, CMO, BH Dir)</td></tr>
+      <tr><td>Clinical Alignment</td><td>BH Director/CMO evaluating clinical fit</td><td>Joanne joins call. Integration specifics.</td></tr>
+      <tr><td>Closed Won / Closed Lost</td><td>CFA signed or deal dead</td><td>Handoff to activation pipeline (Jonathon)</td></tr>
+    </tbody>
+  </table>
+  <p>Stages can be skipped or revisited. A strong Discovery Meeting with a CEO/ED can jump straight to Clinical Alignment. Contract negotiation runs in parallel from CFA send, managed by Jonathon.</p>
+</div>
+
+<!-- ── ABM PLAYBOOK ──────────────────────────────────────────── -->
+<div class="page" id="page-abm">
+  <h1>ABM Playbook</h1>
+  <p class="subtitle">How Roger runs daily outreach, and how you can adapt it for your prospects.</p>
+
+  <h2>The Philosophy</h2>
+  <p>Legara's outreach is CEO-to-CEO. It is not a marketing campaign. It is one operator reaching out to another because he believes what he built solves a real problem they're dealing with right now.</p>
+  <p><strong>The Friday Night Test:</strong> Would a health center CEO believe another CEO actually wrote this at 6 PM on a Friday? If it reads like a template, a sales team, or a marketing automation, it fails.</p>
+
+  <h2>Why This Approach Works</h2>
+  <p>FQHCs are inundated with staffing pitches, telehealth vendor emails, and healthcare marketing. Most of it is obviously templated and comes from sales reps. Legara's outreach works because:</p>
+  <ul>
+    <li><strong>Peer-to-peer positioning.</strong> Roger is a CEO writing to a CEO. Not a sales rep. Not a marketing team. The subject lines, tone, and content reflect this.</li>
+    <li><strong>Structural differentiation leads.</strong> We don't open with cost savings or a product pitch. We open with an observation about their structural BH capacity constraint, specific to their organization.</li>
+    <li><strong>Personalization is real.</strong> Every email opens with something specific that shows someone actually looked. An active job posting, a recent expansion, rural geography challenges.</li>
+    <li><strong>Multi-stakeholder coverage.</strong> Same org, same day, different angles for different roles. CEO gets the structural capacity angle. CFO gets risk elimination. COO gets zero operational burden. CMO gets clinical integration.</li>
+    <li><strong>The follow-up earns attention.</strong> Touch 2 adds value (different angle, different resource). Touch 3 shifts channel (LinkedIn, phone). Touch 4+ stays visible without annoying. We stop after consistent zero engagement.</li>
+  </ul>
+
+  <h2>Daily Structure</h2>
+  <div class="info-card">
+    <h4>Volume</h4>
+    <p>8-12 orgs per day. 2-4 contacts per org. Total: 20-40 emails daily.</p>
+  </div>
+  <div class="info-card">
+    <h4>Batch Composition</h4>
+    <p>3-4 orgs getting Touch 1 (first contact). 2-3 orgs getting Touch 2 (follow-up, 3-5 days later). 1-2 orgs getting Touch 3 (channel shift). 1-2 re-engagements (OOO returns, bounced contacts).</p>
+  </div>
+
+  <h2>Touch Sequence</h2>
+
+  <h3>Touch 1: The Introduction</h3>
+  <p>120-180 words. Never over 200. Structure:</p>
+  <ul>
+    <li>Personalization line (1 sentence, specific to them)</li>
+    <li>Who Roger is (1 sentence)</li>
+    <li>Why he's reaching out to them specifically (2-3 sentences connecting their situation to Legara)</li>
+    <li>One proof point (9 partners, 950+ encounters/week, or a relevant metric)</li>
+    <li>One link (GoLegara.com/assessment for CEO/BH Director/HR, GoLegara.com/next for COO/CMO)</li>
+    <li>Soft close (invitation, not ask)</li>
+  </ul>
+
+  <h3>Touch 2: The Follow-Up (Day 3-5)</h3>
+  <p>Under 100 words. Reply to same thread. Different angle or resource than Touch 1. No re-explanation of what Legara is. Rotate the link: if Touch 1 linked to assessment, Touch 2 links to How It Works, and vice versa.</p>
+
+  <h3>Touch 3: Channel Shift (Day 8-10)</h3>
+  <p>Try a different channel. LinkedIn connection request (pre-warm by engaging with their posts first), InMail, or phone call for high-priority targets.</p>
+
+  <h3>Touch 4+: Long Game (Day 14+)</h3>
+  <p>One touch every 2-3 weeks. Share industry data, reference their LinkedIn activity, or mention a new proof point. After Touch 4 with zero engagement (no opens, no clicks, no LinkedIn views), move to Brevo Sequence C (monthly automated nurture).</p>
+
+  <h2>Role-Specific Angles</h2>
+  <table class="comparison-table">
+    <thead><tr><th>Role</th><th>Lead With</th><th>Link To</th></tr></thead>
+    <tbody>
+      <tr><td>CEO / Executive Director</td><td>Structural capacity constraint. BH demand outpaced the model.</td><td>Assessment or /next</td></tr>
+      <tr><td>CFO / Finance</td><td>Risk elimination. $0 during ramp. Variable vs fixed cost.</td><td>Assessment or /next</td></tr>
+      <tr><td>COO / Operations</td><td>Zero operational burden. Legara handles scheduling, credentialing, compliance.</td><td>/next (How It Works)</td></tr>
+      <tr><td>CMO / Medical Director</td><td>Referral gap. Warm handoff. EHR integration. Clinical oversight stays local.</td><td>/next</td></tr>
+      <tr><td>BH Director</td><td>Augmentation alongside existing team. Shared protocols. Care coordination.</td><td>/next</td></tr>
+      <tr><td>HR Director</td><td>Hiring treadmill relief. Doesn't compete with internal recruiting.</td><td>Assessment or /next</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Subject Line Rules</h2>
+  <p>The test: <strong>would a CEO send this subject line from their own inbox?</strong></p>
+  <div class="callout success">
+    <p><strong>Good:</strong> "Behavioral health capacity at [Org Name]" / "Behavioral health staffing for [County]" / "Quick question about [Org]'s behavioral health model"</p>
+  </div>
+  <div class="callout danger">
+    <p><strong>Bad:</strong> "How 9 California FQHCs run behavioral health without hiring" / "Unlock $60K in mission cash per provider" / "Legara: The Future of FQHC Behavioral Health"</p>
+  </div>
+
+  <h2>Post-Engagement: Automated Nurture</h2>
+  <p>Once a prospect takes the assessment, they enter a 4-email automated sequence (Sequence A) that progressively teaches the three-pillar story over 14 days. You don't need to manage this. It runs automatically.</p>
+  <p>If they book a meeting, Sequence A stops and they get a meeting confirmation sequence (Sequence B) instead. If they complete Sequence A without booking, they enter long-term nurture (Sequence C) with monthly touches.</p>
+</div>
+
+<!-- ── OBJECTION HANDLING ─────────────────────────────────────── -->
+<div class="page" id="page-objections">
+  <h1>Objection Handling</h1>
+  <p class="subtitle">The objections you'll hear and how to address them. These are drawn from real conversations.</p>
+
+  <div class="info-card">
+    <h4>"That rate seems expensive. We can hire a therapist for $135K."</h4>
+    <p>This is the conditioning gap. They're comparing Legara's all-in encounter rate to a salary number that excludes benefits (1.4x), support staff ($11K/yr), recruiter fees ($8K), ramp cost (6-9 months of salary before full caseload), and turnover replacement (30%/yr). The true loaded cost of that $135K therapist is approximately $229K/yr. But the real answer isn't the math. It's: "Let's back up. The rate comparison makes more sense once you see what the operating structure produces. Can I walk you through how the model works?"</p>
+    <p><strong>If they persist on price before understanding the model:</strong> Offer to walk through the numbers together (the calculator, live, with Roger). Never send the calculator link. The conversation around the numbers is what makes the comparison land.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>"We already have a telehealth vendor."</h4>
+    <p>Legara isn't telehealth. Telehealth is a delivery mechanism. Legara is an operating infrastructure. Our providers may deliver care via telehealth, but they credential at the FQHC's sites, document in their EHR, coordinate with their primary care team, and operate within a managed quality system. The question isn't "do you have telehealth?" It's "does your current model give you dedicated BH scheduling, incentive-aligned utilization, and daily claims quality monitoring?"</p>
+  </div>
+
+  <div class="info-card">
+    <h4>"We tried something like this before and it didn't work."</h4>
+    <p>Ask what they tried. Almost always it was a staffing company (no operational layer) or a telehealth platform (no integration). The difference is structural: Legara provides the full infrastructure around the provider, not just the provider. Dedicated scheduling, quality monitoring, documentation support, turnover management. The question is what was missing from the previous attempt, and we can show how Legara's three-pillar structure addresses those specific gaps.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>"Our board won't approve an external vendor for clinical services."</h4>
+    <p>Legara providers credential at the FQHC's sites. Clinical oversight stays with the FQHC's medical director. The FQHC approves the schedule, the provider types, and the clinical protocols. Legara handles the operational layer. This is augmentation of their existing program, not outsourcing clinical control. Frame it as: "Your team maintains all clinical governance. We handle the operations that make providers productive."</p>
+  </div>
+
+  <div class="info-card">
+    <h4>"We're in the middle of a hiring cycle already."</h4>
+    <p>That's fine. Legara doesn't compete with their internal recruiting. We augment alongside it. If they're hiring one therapist, Legara can add two more while that hire ramps up. When the internal hire is fully productive (6-9 months out), they have more total capacity, not a conflict. The FQHC can always adjust Legara's provider count up or down based on their internal staffing trajectory.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>"What happens if a Legara provider leaves?"</h4>
+    <p>Legara manages replacement. Under 3% annual turnover vs 30%+ industry average. If a provider does leave, Legara handles recruiting, credentialing, and placement of the replacement. The FQHC doesn't restart their own hiring cycle. That's one of the core structural advantages: turnover risk is Legara's to manage, not the FQHC's.</p>
+  </div>
+</div>
+
+<!-- ── RESOURCES ──────────────────────────────────────────────── -->
+<div class="page" id="page-resources">
+  <h1>Collateral & Links</h1>
+  <p class="subtitle">Everything you need for prospect conversations.</p>
+
+  <h2>Website Pages</h2>
+  <ul class="resource-list">
+    <li><div><div class="name">Homepage</div><div class="desc">Primary landing, structural positioning</div></div><div class="link"><a href="https://golegara.com" target="_blank">GoLegara.com</a></div></li>
+    <li><div><div class="name">How It Works</div><div class="desc">Detailed model walkthrough, responsibility matrix</div></div><div class="link"><a href="https://golegara.com/next" target="_blank">GoLegara.com/next</a></div></li>
+    <li><div><div class="name">BH Capacity Assessment</div><div class="desc">7-dimension quiz, primary conversion tool</div></div><div class="link"><a href="https://golegara.com/assessment" target="_blank">GoLegara.com/assessment</a></div></li>
+    <li><div><div class="name">For Health Centers</div><div class="desc">FQHC-specific positioning</div></div><div class="link"><a href="https://golegara.com/for-health-centers" target="_blank">GoLegara.com/for-health-centers</a></div></li>
+    <li><div><div class="name">Book a Conversation</div><div class="desc">Roger's Cal.com calendar</div></div><div class="link"><a href="https://cal.com/roger-golegara.com/legara-roi-review" target="_blank">Cal.com link</a></div></li>
+  </ul>
+
+  <h2>Sales Tools</h2>
+  <ul class="resource-list">
+    <li><div><div class="name">ROI Calculator (Internal Only)</div><div class="desc">Roger walks CFOs through this live. Never link publicly.</div></div><div class="link"><a href="https://golegara.com/roi-calculator-internal" target="_blank">Internal Calculator</a></div></li>
+    <li><div><div class="name">Admin Sequence Manager</div><div class="desc">Enroll/remove contacts from email sequences</div></div><div class="link"><a href="https://golegara.com/admin/sequences.html" target="_blank">Admin Tool</a></div></li>
+  </ul>
+
+  <h2>Key People</h2>
+  <table class="comparison-table">
+    <thead><tr><th>Person</th><th>Role</th><th>When to Involve</th></tr></thead>
+    <tbody>
+      <tr><td>Roger Stellers</td><td>CEO</td><td>All discovery meetings, CEO/CFO conversations, deal strategy</td></tr>
+      <tr><td>Jonathon Wheaton</td><td>VP Finance & Operations</td><td>Contract negotiation, CFA process, operational stakeholders, activation pipeline. Owns all pipeline execution post-discovery.</td></tr>
+      <tr><td>Joanne Cabrera, LCSW</td><td>Lead Consulting Clinician</td><td>Clinical alignment calls. Bridges "we don't provide clinical services but we support the clinical workflow." Essential when BH Director or CMO is in the room.</td></tr>
+      <tr><td>Bill Wells, RN, PhD</td><td>Board Member / Co-Founder</td><td>High-value leadership meetings where institutional credibility matters. Mayor of El Cajon, 30+ yrs behavioral health. Strategic deployment, not routine BD.</td></tr>
+      <tr><td>Roy Rodriguez, MBA</td><td>Board Member / Co-Founder</td><td>Similar to Bill. Mental Health Person of the Year 2003. Hospital CEO experience. Use for specific credibility moments.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Do Not Outreach</h2>
+  <div class="callout danger">
+    <p><strong>These organizations are existing clients or in active conversion. Do not outreach under any circumstances:</strong></p>
+    <p>San Ysidro Health, Vista Community Clinic (VCC), La Maestra, Shasta Community Health Center, Neighborhood Healthcare, Inland Behavioral Health Services (IBHS), Native Health (nativehealth.org), Western Sierra Medical Clinic (WSMC)</p>
+  </div>
+</div>
+
+<!-- ── WHAT NOT TO SAY ────────────────────────────────────────── -->
+<div class="page" id="page-do-not-say">
+  <h1>What NOT to Say</h1>
+  <p class="subtitle">Specific phrases and framings that hurt positioning. Memorize these.</p>
+
+  <h2>Identity</h2>
+  <table class="comparison-table">
+    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <tbody>
+      <tr><td>"Legara is a staffing company"</td><td>"Legara is a regulated workforce platform" or "managed operational infrastructure"</td></tr>
+      <tr><td>"We're a telehealth provider"</td><td>"We build the operating infrastructure for behavioral health"</td></tr>
+      <tr><td>"Our outsourcing model"</td><td>"Our augmentation model" or "adding capacity alongside your team"</td></tr>
+      <tr><td>"CEO & Co-Founder"</td><td>"CEO" (just CEO, always)</td></tr>
+      <tr><td>"Jonathan"</td><td>"Jonathon" (with an O)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Messaging</h2>
+  <table class="comparison-table">
+    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <tbody>
+      <tr><td>"Save money" / "cost savings" / "lower cost"</td><td>"Mission cash generated" / "cash for the mission"</td></tr>
+      <tr><td>"Switch from FTE" / "instead of hiring"</td><td>"Add capacity" / "augment your team" / "expand access without FTE risk"</td></tr>
+      <tr><td>"Your model is broken" / "you're doing it wrong"</td><td>"The constraint is structural, not effort" / "the operating model has a ceiling"</td></tr>
+      <tr><td>"Your front desk books Legara patients"</td><td>"Legara handles patient-level scheduling" (FQHC approves schedule; Legara books)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Timelines</h2>
+  <table class="comparison-table">
+    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <tbody>
+      <tr><td>"5 months from contract" / "five-month ramp"</td><td>"As fast as 6 weeks from signed contract" / "as few as six weeks"</td></tr>
+      <tr><td>"11 months" / "11.2 months" for internal hire</td><td>"6-9 months from hire to full caseload" (concurrent steps, not sequential)</td></tr>
+      <tr><td>"Providers productive in 5 months"</td><td>"Providers seeing patients within weeks of signed contract"</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Rates</h2>
+  <table class="comparison-table">
+    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <tbody>
+      <tr><td>"The Legara rate is $155"</td><td>"A flat per-encounter rate, all-in" (use ranges or be directional)</td></tr>
+      <tr><td>Specific dollar amounts in first conversation</td><td>Defer to Roger or to a walkthrough: "Roger can map the specific numbers to your situation"</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Fidare</h2>
+  <table class="comparison-table">
+    <thead><tr><th style="color:var(--red)">Never Say</th><th style="color:var(--green)">Say Instead</th></tr></thead>
+    <tbody>
+      <tr><td>"Fidare" (to any external audience, ever)</td><td>"Built on a decade of behavioral health operations with FQHC partners"</td></tr>
+      <tr><td>"We used to be called..." / "Our previous entity..."</td><td>Don't address the lineage at all externally</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── HOW WE GOT HERE ────────────────────────────────────────── -->
+<div class="page" id="page-history">
+  <h1>How We Got Here</h1>
+  <p class="subtitle">The evolution of Legara's positioning and why it matters. Read this if you want the full context behind today's messaging.</p>
+
+  <h2>The Origin</h2>
+  <p>Legara is not a startup. It's built on a decade of behavioral health operations with FQHC partners in California. The founding team (Roger Stellers, Bill Wells, Roy Rodriguez) spent 10 years together building this specific model as the outcome of working directly with FQHC partners. The model itself is what a decade of FQHC partnership produced.</p>
+  <p>Today, Legara serves 9 FQHC partners across California, delivering over 50,000 patient encounters per year. The company is profitable and debt-free.</p>
+
+  <h2>The Messaging Evolution (Why It Matters to You)</h2>
+  <p>If you've been getting updates from Roger over the past few months, you may have heard different versions of the story. That's because the positioning has evolved based on real market feedback. Here's the arc:</p>
+
+  <h3>Phase 1: Financial-First (January-Early March 2026)</h3>
+  <p>Early positioning led with cost comparison. "Your therapist costs $229K. Legara costs $155/encounter." The ROI calculator was the primary conversion tool. This was logical but produced a problem: prospects who reached the price conversation before understanding the operating model experienced sticker shock. They compared Legara's rate to what they thought they paid ($135K salary), not what they actually paid ($229K loaded). The calculator generated zero conversions.</p>
+
+  <h3>Phase 2: The Conditioning Gap Discovery (March 2026)</h3>
+  <p>Roger identified the core problem: the "conditioning gap." Prospects reaching the financial conversation without first understanding what Legara's operating structure produces, and why it's fundamentally different from hiring, would always perceive the rate as expensive. The worst outcome was real: deploying successfully but the client still viewing Legara as "an expensive crisis vendor" because the operational story never landed.</p>
+
+  <h3>Phase 3: Structural Differentiation-First (Current)</h3>
+  <p>The pivot: lead with structural differentiation, not financial comparison. The narrative arc (Recognition → Understanding → Proof → Financial Validation) ensures that prospects understand the operating model before they encounter the rate. The BH Capacity Assessment replaced the ROI calculator as the primary conversion tool. The calculator still exists as a selective tool Roger uses in live CFO walkthroughs.</p>
+  <p>Financial messaging is deemphasized, not eliminated. "Mission cash generated" remains the vocabulary. The order changed (4th not 1st), not the content.</p>
+
+  <h3>Phase 4: Timeline Corrections (Late March 2026)</h3>
+  <p>Two claims that had been in use were corrected after independent verification:</p>
+  <ul>
+    <li><strong>Legara provider placement:</strong> "5 months from contract" was corrected to "as fast as 6 weeks from signed contract." The old number included pre-contract negotiation time.</li>
+    <li><strong>Internal hire ramp:</strong> "11 months" was corrected to "6-9 months from hire to full caseload." The old number used sequential math that ignored concurrent steps (credentialing and payer enrollment run in parallel) and included recruiting time. The corrected range is defensible and verified against published AAPPR benchmarking data.</li>
+  </ul>
+
+  <h2>The Empathy Frame</h2>
+  <p>One of the most important developments: how we talk about the FQHC's current situation. FQHCs run behavioral health inside a primary care operating structure not by choice, but by structural necessity. California employment law, HRSA requirements, union contracts all constrain how they can structure BH operations. The ceiling is real and it's not a management failure.</p>
+  <p><strong>We never shame.</strong> We never imply the prospect's model is broken or that they're doing it wrong. The constraint is structural. Legara exists to add capacity through a different structure that sits alongside what they already have. This frame is non-negotiable across every touchpoint.</p>
+
+  <h2>Why This Matters for BD</h2>
+  <p>Understanding this evolution protects you from two mistakes: (1) using outdated messaging that's been deliberately retired, and (2) leading with financial arguments before the structural story has landed. Both have cost real deals.</p>
+  <p>When this portal updates, you'll see the changes in the "What Changed" section at the top. Everything on this portal is the current approved messaging. If it's not here, it's not approved.</p>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<script>
+// ── Auth (server-side via worker.js) ──────────────────────────────
+function showApp() {
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  loadChangelog();
+}
+
+// On page load, check if already authed by hitting announcements endpoint
+(async function checkAuth() {
+  try {
+    const resp = await fetch('/team/api/announcements');
+    if (resp.ok) { showApp(); loadAnnouncements(); }
+  } catch(e) {}
+})();
+
+document.getElementById('auth-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const pw = document.getElementById('auth-pw').value;
+  try {
+    const resp = await fetch('/team/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    if (resp.ok) {
+      showApp();
+      loadAnnouncements();
+    } else {
+      document.getElementById('auth-error').style.display = 'block';
+      document.getElementById('auth-pw').value = '';
+      document.getElementById('auth-pw').focus();
+    }
+  } catch(err) {
+    document.getElementById('auth-error').textContent = 'Connection error. Try again.';
+    document.getElementById('auth-error').style.display = 'block';
+  }
+});
+
+// ── Navigation ────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    const page = this.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelector('.main').scrollTop = 0;
+  });
+});
+
+// ── Tabs ──────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const tabId = this.dataset.tab;
+    const bar = this.closest('.tab-bar');
+    const parent = bar.parentElement;
+    bar.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    parent.querySelector('#tab-' + tabId).classList.add('active');
+  });
+});
+
+// ── Changelog ─────────────────────────────────────────────────────
+async function loadChangelog() {
+  try {
+    const resp = await fetch('/team/changelog.json?v=' + Date.now());
+    const data = await resp.json();
+    renderChangelog(data);
+    renderRecentChanges(data.slice(0, 3));
+  } catch(e) {
+    console.warn('Could not load changelog:', e);
+  }
+}
+
+function renderChangelog(items) {
+  const el = document.getElementById('changelog-full');
+  el.innerHTML = items.map(item => `
+    <div class="changelog-item">
+      <div class="changelog-meta">
+        <span class="changelog-date">${item.date}</span>
+        <span class="badge badge-${item.type}">${item.type}</span>
+      </div>
+      <div class="changelog-title">${item.title}</div>
+      <div class="changelog-body">${item.body}</div>
+    </div>
+  `).join('');
+}
+
+function renderRecentChanges(items) {
+  const el = document.getElementById('recent-changes');
+  if (!items.length) return;
+  el.innerHTML = '<h2>Recent Updates</h2>' + items.map(item => `
+    <div class="changelog-item">
+      <div class="changelog-meta">
+        <span class="changelog-date">${item.date}</span>
+        <span class="badge badge-${item.type}">${item.type}</span>
+      </div>
+      <div class="changelog-title">${item.title}</div>
+      <div class="changelog-body">${item.body}</div>
+    </div>
+  `).join('') + '<p style="margin-top:1rem"><a href="#" onclick="document.querySelector(\'[data-page=changelog]\').click();return false;">View all updates →</a></p>';
+}
+
+// ── Announcements ─────────────────────────────────────────────────
+async function loadAnnouncements() {
+  try {
+    const resp = await fetch('/team/api/announcements');
+    if (resp.ok) {
+      const items = await resp.json();
+      renderAnnouncementsBanner(items);
+    }
+  } catch(e) { console.warn('Could not load announcements'); }
+}
+
+function renderAnnouncementsBanner(items) {
+  const banner = document.getElementById('announcements-banner');
+  if (!banner) return;
+  const important = items.filter(a => a.type === 'warning' || a.type === 'action');
+  if (!important.length) { banner.innerHTML = ''; return; }
+  banner.innerHTML = important.map(a => `
+    <div class="callout ${a.type === 'warning' ? 'warn' : 'success'}" style="margin-bottom:0.5rem">
+      <p><strong>${a.title}</strong></p>
+      <p>${a.body}</p>
+      <p style="font-size:0.75rem;color:var(--text-muted)">${a.date}</p>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>

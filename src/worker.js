@@ -179,6 +179,39 @@ export default {
       );
     }
 
+    // ── Team Portal Auth + API ──
+    if (url.pathname.startsWith("/team/")) {
+      // Auth endpoint (no auth required)
+      if (url.pathname === "/team/api/auth" && request.method === "POST") {
+        return handleTeamAuth(request, env);
+      }
+
+      // All other /team/api/* routes require auth
+      if (url.pathname.startsWith("/team/api/")) {
+        const cookies = request.headers.get("Cookie") || "";
+        const authMatch = cookies.match(/legara_team_auth=([^;]+)/);
+        if (!authMatch || authMatch[1] !== env.TEAM_KEY) {
+          return json({ error: "Unauthorized" }, 401);
+        }
+
+        if (url.pathname === "/team/api/announcements" && request.method === "GET") {
+          return handleGetAnnouncements(env);
+        }
+        if (url.pathname === "/team/api/announcements" && request.method === "POST") {
+          const adminKey = request.headers.get("X-Admin-Key");
+          if (adminKey !== env.ADMIN_KEY) {
+            return json({ error: "Admin access required" }, 403);
+          }
+          return handlePostAnnouncement(request, env);
+        }
+        if (url.pathname.match(/^\/team\/api\/announcements\/\d+\/dismiss$/) && request.method === "POST") {
+          return handleDismissAnnouncement(request, url, env);
+        }
+      }
+
+      // Static /team/* files fall through to ASSETS.fetch below
+    }
+
     return env.ASSETS.fetch(request);
   },
 
@@ -290,6 +323,79 @@ function validateFormData({ firstName, lastName, organization, title, roi_annual
   }
 
   return { valid: true, reason: "" };
+}
+
+// ── Team Portal Handlers ──
+
+async function handleTeamAuth(request, env) {
+  try {
+    const { password } = await request.json();
+    if (password === env.TEAM_KEY) {
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: {
+          "Content-Type": "application/json",
+          "Set-Cookie": `legara_team_auth=${env.TEAM_KEY}; Path=/team/; HttpOnly; Secure; SameSite=Strict; Max-Age=${90 * 86400}`,
+        },
+      });
+    }
+    return json({ error: "Incorrect password" }, 401);
+  } catch (err) {
+    return json({ error: "Invalid request" }, 400);
+  }
+}
+
+async function handleGetAnnouncements(env) {
+  try {
+    if (!env.TEAM_DATA) return json([], 200);
+    const data = await env.TEAM_DATA.get("announcements", "json");
+    return json(data || [], 200);
+  } catch (err) {
+    return json([], 200);
+  }
+}
+
+async function handlePostAnnouncement(request, env) {
+  try {
+    if (!env.TEAM_DATA) return json({ error: "KV not configured" }, 500);
+    const { title, body, type } = await request.json();
+    if (!title || !body) return json({ error: "title and body required" }, 400);
+
+    const existing = (await env.TEAM_DATA.get("announcements", "json")) || [];
+    const announcement = {
+      id: Date.now(),
+      title,
+      body,
+      type: type || "info",
+      date: new Date().toISOString().split("T")[0],
+      read_by: [],
+    };
+    existing.unshift(announcement);
+    const trimmed = existing.slice(0, 20);
+    await env.TEAM_DATA.put("announcements", JSON.stringify(trimmed));
+    return json({ ok: true, announcement }, 200);
+  } catch (err) {
+    return json({ error: err.message }, 500);
+  }
+}
+
+async function handleDismissAnnouncement(request, url, env) {
+  try {
+    if (!env.TEAM_DATA) return json({ error: "KV not configured" }, 500);
+    const idMatch = url.pathname.match(/\/announcements\/(\d+)\/dismiss/);
+    if (!idMatch) return json({ error: "Invalid ID" }, 400);
+    const id = parseInt(idMatch[1]);
+
+    const { name } = await request.json().catch(() => ({}));
+    const existing = (await env.TEAM_DATA.get("announcements", "json")) || [];
+    const item = existing.find((a) => a.id === id);
+    if (item && name && !item.read_by.includes(name)) {
+      item.read_by.push(name);
+      await env.TEAM_DATA.put("announcements", JSON.stringify(existing));
+    }
+    return json({ ok: true }, 200);
+  } catch (err) {
+    return json({ error: err.message }, 500);
+  }
 }
 
 // --- Webhook handlers ---
