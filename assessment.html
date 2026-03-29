@@ -104,9 +104,9 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* Assessment Quiz Styles */
+    /* Assessment Hero */
     .assessment-hero {
-      padding: 120px 80px 60px;
+      padding: 120px 80px 80px;
       text-align: center;
       transition: all 0.3s ease;
     }
@@ -128,58 +128,151 @@
 
     .assessment-hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 56px;
+      font-size: 52px;
       font-weight: 700;
       color: var(--charcoal);
-      margin-bottom: 24px;
-      line-height: 1.2;
+      margin-bottom: 16px;
+      line-height: 1.15;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .assessment-hero .subtext {
+    .assessment-hero .hero-tagline {
       font-family: 'DM Sans', sans-serif;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 300;
-      color: var(--charcoal);
-      max-width: 700px;
-      margin: 0 auto 32px;
-      line-height: 1.6;
+      color: var(--slate);
+      margin-bottom: 48px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
     }
 
-    .assessment-hero .trust-text {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: var(--mist);
-      margin-top: 20px;
-    }
-
-    .intro-details {
-      max-width: 560px;
-      margin: 0 auto 36px;
+    /* Problem / Solution split cards */
+    .intro-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 860px;
+      margin: 0 auto 48px;
       text-align: left;
     }
 
-    .intro-detail-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 8px 0;
+    .intro-card {
+      padding: 32px;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .intro-card--problem {
+      background: #faf5f0;
+      border: 1px solid #ede4d9;
+    }
+
+    .intro-card--solution {
+      background: #f0f7f4;
+      border: 1px solid #d4e8dd;
+    }
+
+    .intro-card-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .intro-card--problem .intro-card-label {
+      color: #b8860b;
+    }
+
+    .intro-card--solution .intro-card-label {
+      color: var(--green);
+    }
+
+    .intro-card p {
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       font-weight: 400;
       color: var(--charcoal);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .intro-card .stat-callout {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(0,0,0,0.08);
       line-height: 1.5;
     }
 
-    .intro-icon {
+    .stat-callout span {
       color: var(--green);
-      font-size: 8px;
-      margin-top: 6px;
+    }
+
+    /* What you get section */
+    .intro-what-you-get {
+      max-width: 860px;
+      margin: 0 auto 40px;
+    }
+
+    .intro-what-you-get-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mist);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .intro-pills {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .intro-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+
+    .intro-pill-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(26, 107, 74, 0.1);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
     .btn-hero-start {
       display: inline-block;
-      padding: 16px 40px;
+      padding: 18px 48px;
       background: var(--green);
       color: var(--white);
       border: none;
@@ -189,13 +282,20 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .btn-hero-start:hover {
       background: #155a40;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(26, 107, 74, 0.2);
+      box-shadow: 0 4px 16px rgba(26, 107, 74, 0.25);
+    }
+
+    .assessment-hero .trust-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--mist);
+      margin-top: 0;
     }
 
     /* Focus Mode Overlay */
@@ -957,12 +1057,20 @@
         padding: 80px 40px 60px;
       }
 
+      .intro-split {
+        gap: 16px;
+      }
+
+      .intro-card {
+        padding: 24px;
+      }
+
       .quiz-container {
         padding: 40px;
       }
 
       .assessment-hero h1 {
-        font-size: 44px;
+        font-size: 42px;
       }
 
       .score-number {
@@ -987,6 +1095,28 @@
         padding: 60px 24px 40px;
       }
 
+      .intro-split {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .intro-card {
+        padding: 24px;
+      }
+
+      .intro-pills {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .assessment-hero h1 {
+        font-size: 34px;
+      }
+
+      .hero-tagline {
+        font-size: 16px;
+      }
+
       .quiz-container {
         padding: 32px 24px;
       }
@@ -1005,14 +1135,6 @@
 
       .focus-card-header {
         padding: 16px 24px 0;
-      }
-
-      .assessment-hero h1 {
-        font-size: 36px;
-      }
-
-      .assessment-hero .subtext {
-        font-size: 15px;
       }
 
       .question-card h2 {
@@ -1105,15 +1227,28 @@
       }
 
       .assessment-hero h1 {
-        font-size: 28px;
+        font-size: 26px;
       }
 
-      .assessment-hero .subtext {
+      .hero-tagline {
         font-size: 14px;
       }
 
-      .intro-detail-row {
+      .intro-card {
+        padding: 20px;
+      }
+
+      .intro-card p {
+        font-size: 14px;
+      }
+
+      .stat-callout {
         font-size: 13px;
+      }
+
+      .intro-pill {
+        font-size: 13px;
+        padding: 8px 14px;
       }
 
       .btn-hero-start {
@@ -1204,27 +1339,32 @@
     <section class="assessment-hero reveal" id="assessmentHero">
       <div class="section-label">Behavioral Health Capacity Assessment</div>
       <h1>How Strong Is Your Behavioral Health Infrastructure?</h1>
-      <p class="subtext">Behavioral health is the fastest-growing service line at FQHCs. Visits have increased over 50% since 2018, and 77% of health centers report mental health provider shortages. But the real gap isn't just headcount. Most BH programs are still running on operational infrastructure built for primary care.</p>
+      <p class="hero-tagline">Most FQHCs have invested heavily in behavioral health. Fewer have built the operational layer that makes those investments productive.</p>
 
-      <p class="subtext" style="margin-top: 0;">Scheduling shared with the front desk. No backfill process for no-shows. Providers stuck in 9-month ramp cycles. These are the structural gaps that silently erode capacity, even when you've invested heavily in hiring.</p>
+      <div class="intro-split">
+        <div class="intro-card intro-card--problem">
+          <span class="intro-card-label">The reality</span>
+          <p>Behavioral health visits at FQHCs have grown over 50% since 2018, but the infrastructure hasn't kept pace. Scheduling is shared with primary care. No-shows consume 20-30% of capacity with no backfill process. New providers take 9+ months to reach a full panel.</p>
+          <div class="stat-callout"><span>77%</span> of health centers report mental health provider shortages, with wait times stretching to 20 weeks.</div>
+        </div>
+        <div class="intro-card intro-card--solution">
+          <span class="intro-card-label">What this measures</span>
+          <p>This assessment scores the 7 operational dimensions that determine whether your BH program can scale. Not just headcount, but the structural factors underneath: access, utilization, retention, and scheduling infrastructure.</p>
+          <div class="stat-callout">Benchmarked against <span>50,000+</span> annual encounters across active FQHC partnerships.</div>
+        </div>
+      </div>
 
-      <div class="intro-details">
-        <div class="intro-detail-row">
-          <span class="intro-icon">&#9679;</span>
-          <span>7 targeted questions measuring the operational dimensions that actually drive BH capacity</span>
-        </div>
-        <div class="intro-detail-row">
-          <span class="intro-icon">&#9679;</span>
-          <span>Scored against benchmarks from active FQHC partnerships, not national averages</span>
-        </div>
-        <div class="intro-detail-row">
-          <span class="intro-icon">&#9679;</span>
-          <span>You'll receive a BH Capacity Index (0-100) with a dimension-by-dimension breakdown and personalized findings</span>
+      <div class="intro-what-you-get">
+        <div class="intro-what-you-get-label">What you'll receive</div>
+        <div class="intro-pills">
+          <div class="intro-pill"><span class="intro-pill-icon">&#10003;</span> BH Capacity Index (0-100)</div>
+          <div class="intro-pill"><span class="intro-pill-icon">&#10003;</span> 7-dimension breakdown</div>
+          <div class="intro-pill"><span class="intro-pill-icon">&#10003;</span> Personalized findings</div>
         </div>
       </div>
 
       <button class="btn-hero-start" onclick="startAssessment()">Score My BH Capacity</button>
-      <p class="trust-text">90 seconds. Benchmarked against 50,000+ annual encounters across 9 FQHC partnerships.</p>
+      <p class="trust-text">90 seconds. No email required to start.</p>
     </section>
 
     <div class="quiz-container" id="quizContainerMain">
