@@ -152,6 +152,31 @@
       margin-top: 20px;
     }
 
+    .intro-details {
+      max-width: 560px;
+      margin: 0 auto 36px;
+      text-align: left;
+    }
+
+    .intro-detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--charcoal);
+      line-height: 1.5;
+    }
+
+    .intro-icon {
+      color: var(--green);
+      font-size: 8px;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
     .btn-hero-start {
       display: inline-block;
       padding: 16px 40px;
@@ -173,21 +198,25 @@
       box-shadow: 0 4px 12px rgba(26, 107, 74, 0.2);
     }
 
-    /* Focus Mode Container */
+    /* Focus Mode Overlay */
     .focus-mode {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: var(--white);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 1000;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.4s ease;
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 40px 20px;
     }
 
     .focus-mode.active {
@@ -195,29 +224,33 @@
       pointer-events: auto;
     }
 
-    .focus-mode-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
+    .focus-card {
       background: var(--white);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 40px;
-      z-index: 1001;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      border-radius: 20px;
+      max-width: 640px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      animation: focusCardIn 0.4s ease-out;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
     }
 
-    .focus-mode.active .focus-mode-header {
-      opacity: 1;
+    @keyframes focusCardIn {
+      0% { transform: scale(0.95) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .focus-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px 0;
     }
 
     .focus-logo {
-      width: 80px;
-      opacity: 0.5;
+      width: 70px;
+      opacity: 0.4;
     }
 
     .focus-logo img {
@@ -226,14 +259,29 @@
       display: block;
     }
 
-    .focus-content {
-      flex: 1;
-      overflow-y: auto;
+    .focus-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--mist);
+      font-size: 20px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-top: 80px;
-      padding-bottom: 40px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .focus-close:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--charcoal);
+    }
+
+    .focus-content {
+      padding: 24px 32px 32px;
     }
 
     /* Quiz Container */
@@ -253,7 +301,7 @@
       border-radius: 0;
       box-shadow: none;
       max-width: 100%;
-      padding: 48px 40px;
+      padding: 0;
     }
 
     /* Progress Bar */
@@ -286,20 +334,37 @@
 
     .progress-bar {
       width: 100%;
-      height: 6px;
+      height: 8px;
       background: var(--border);
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: hidden;
+      position: relative;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--green);
-      border-radius: 3px;
-      transition: width 0.4s ease;
+      background: linear-gradient(90deg, #1a6b4a, #2d9d6e);
+      border-radius: 4px;
+      transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       width: 0%;
-      box-shadow: 0 0 0 0 rgba(26, 107, 74, 0.2);
-      animation: pulseGlow 2s ease-in-out infinite;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 24px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+      border-radius: 4px;
+      animation: progressPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes progressPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
 
     /* Question Area */
@@ -415,39 +480,46 @@
       margin-top: 12px;
     }
 
-    /* Navigation */
-    .quiz-nav {
+    /* Back Arrow (inline with question) */
+    .quiz-back-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 48px;
-      gap: 20px;
+      margin-bottom: 8px;
+      min-height: 32px;
     }
 
-    .nav-back {
+    .quiz-back-btn {
       background: none;
       border: none;
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
-      color: var(--green);
+      color: var(--mist);
       cursor: pointer;
-      padding: 8px 12px;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
+      padding: 4px 8px 4px 0;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .nav-back:hover {
-      opacity: 0.8;
+    .quiz-back-btn:hover {
+      color: var(--green);
     }
 
-    .nav-back.hidden {
+    .quiz-back-btn.hidden {
       visibility: hidden;
       pointer-events: none;
     }
 
-    .nav-next {
-      margin-left: auto;
+    /* Last question "See My Results" button */
+    .quiz-submit-row {
+      margin-top: 24px;
+      display: none;
+    }
+
+    .quiz-submit-row.visible {
+      display: block;
     }
 
     .btn-primary:disabled {
@@ -920,7 +992,19 @@
       }
 
       .quiz-container.focus-mode-quiz {
-        padding: 32px 24px;
+        padding: 0;
+      }
+
+      .focus-card {
+        border-radius: 16px;
+      }
+
+      .focus-content {
+        padding: 20px 24px 24px;
+      }
+
+      .focus-card-header {
+        padding: 16px 24px 0;
       }
 
       .assessment-hero h1 {
@@ -1000,7 +1084,24 @@
       }
 
       .quiz-container.focus-mode-quiz {
-        padding: 24px 20px;
+        padding: 0;
+      }
+
+      .focus-mode {
+        padding: 20px 12px;
+      }
+
+      .focus-card {
+        border-radius: 14px;
+        max-height: calc(100vh - 40px);
+      }
+
+      .focus-content {
+        padding: 16px 20px 24px;
+      }
+
+      .focus-card-header {
+        padding: 14px 20px 0;
       }
 
       .assessment-hero h1 {
@@ -1009,6 +1110,10 @@
 
       .assessment-hero .subtext {
         font-size: 14px;
+      }
+
+      .intro-detail-row {
+        font-size: 13px;
       }
 
       .btn-hero-start {
@@ -1033,20 +1138,7 @@
         font-size: 12px;
       }
 
-      .quiz-nav {
-        flex-direction: column-reverse;
-        gap: 12px;
-      }
-
-      .nav-back {
-        width: 100%;
-        text-align: center;
-      }
-
-      .nav-next {
-        width: 100%;
-        margin-left: 0;
-      }
+      /* quiz nav removed - using inline back arrow */
 
       .contact-form h2 {
         font-size: 24px;
@@ -1073,15 +1165,7 @@
         font-size: 13px;
       }
 
-      .focus-mode-header {
-        padding: 0 20px;
-        height: 70px;
-      }
-
-      .focus-content {
-        padding-top: 70px;
-        padding-bottom: 30px;
-      }
+      /* focus card responsive already handled above */
     }
   </style>
 </head>
@@ -1103,23 +1187,44 @@
 
   <!-- Focus Mode Overlay -->
   <div class="focus-mode" id="focusMode">
-    <div class="focus-mode-header">
-      <div class="focus-logo">
-        <img src="img/logo.png" alt="Legara">
+    <div class="focus-card" id="focusCard">
+      <div class="focus-card-header">
+        <div class="focus-logo">
+          <img src="img/logo.png" alt="Legara">
+        </div>
+        <button class="focus-close" onclick="exitFocusMode()" title="Exit assessment" aria-label="Close assessment">&times;</button>
       </div>
-    </div>
-    <div class="focus-content" id="focusContent">
-      <!-- Quiz will be moved here when focus mode is activated -->
+      <div class="focus-content" id="focusContent">
+        <!-- Quiz will be moved here when focus mode is activated -->
+      </div>
     </div>
   </div>
 
   <main>
     <section class="assessment-hero reveal" id="assessmentHero">
       <div class="section-label">Behavioral Health Capacity Assessment</div>
-      <h1>Get Your BH Capacity Score</h1>
-      <p class="subtext">7 questions. 2 minutes. See how your behavioral health operations compare to high-performing FQHCs in our network. Your results include a personalized capacity score and actionable insights.</p>
-      <button class="btn-hero-start" onclick="startAssessment()">Start Assessment</button>
-      <p class="trust-text">Based on benchmarks from 9 FQHC partnerships and 50,000+ annual encounters.</p>
+      <h1>How Strong Is Your Behavioral Health Infrastructure?</h1>
+      <p class="subtext">Behavioral health is the fastest-growing service line at FQHCs. Visits have increased over 50% since 2018, and 77% of health centers report mental health provider shortages. But the real gap isn't just headcount. Most BH programs are still running on operational infrastructure built for primary care.</p>
+
+      <p class="subtext" style="margin-top: 0;">Scheduling shared with the front desk. No backfill process for no-shows. Providers stuck in 9-month ramp cycles. These are the structural gaps that silently erode capacity, even when you've invested heavily in hiring.</p>
+
+      <div class="intro-details">
+        <div class="intro-detail-row">
+          <span class="intro-icon">&#9679;</span>
+          <span>7 targeted questions measuring the operational dimensions that actually drive BH capacity</span>
+        </div>
+        <div class="intro-detail-row">
+          <span class="intro-icon">&#9679;</span>
+          <span>Scored against benchmarks from active FQHC partnerships, not national averages</span>
+        </div>
+        <div class="intro-detail-row">
+          <span class="intro-icon">&#9679;</span>
+          <span>You'll receive a BH Capacity Index (0-100) with a dimension-by-dimension breakdown and personalized findings</span>
+        </div>
+      </div>
+
+      <button class="btn-hero-start" onclick="startAssessment()">Score My BH Capacity</button>
+      <p class="trust-text">90 seconds. Benchmarked against 50,000+ annual encounters across 9 FQHC partnerships.</p>
     </section>
 
     <div class="quiz-container" id="quizContainerMain">
@@ -1135,18 +1240,21 @@
           </div>
         </div>
 
+        <div class="quiz-back-row">
+          <button class="quiz-back-btn hidden" id="backBtn" onclick="previousQuestion()">&#8592; Back</button>
+        </div>
+
         <div class="question-area" id="questionArea">
           <!-- Questions will be rendered here -->
+        </div>
+
+        <div class="quiz-submit-row" id="submitRow">
+          <button class="btn-primary" id="seeResultsBtn" disabled onclick="nextQuestion()" style="width:100%;">See My Results</button>
         </div>
 
         <div class="loading-state" id="loadingState">
           <div class="spinner-ring"></div>
           <div class="loading-text" id="loadingText">Calculating your score...</div>
-        </div>
-
-        <div class="quiz-nav">
-          <button class="nav-back hidden" id="backBtn" onclick="previousQuestion()">← Back</button>
-          <button class="btn-primary nav-next" id="nextBtn" disabled onclick="nextQuestion()">Continue</button>
         </div>
       </div>
 
@@ -1435,22 +1543,28 @@
 
     function startAssessment() {
       inFocusMode = true;
-      const hero = document.getElementById('assessmentHero');
       const focusMode = document.getElementById('focusMode');
       const quizContainer = document.getElementById('quizContainerMain');
       const focusContent = document.getElementById('focusContent');
-      const nav = document.querySelector('nav');
-      const footer = document.querySelector('footer');
 
-      hero.classList.add('hidden');
-      nav.style.display = 'none';
-      footer.style.display = 'none';
+      focusMode.classList.add('active');
+      quizContainer.classList.add('focus-mode-quiz');
+      focusContent.appendChild(quizContainer);
+      document.body.style.overflow = 'hidden';
+    }
 
-      setTimeout(() => {
-        focusMode.classList.add('active');
-        quizContainer.classList.add('focus-mode-quiz');
-        focusContent.appendChild(quizContainer);
-      }, 300);
+    function exitFocusMode() {
+      const focusMode = document.getElementById('focusMode');
+      const quizContainer = document.getElementById('quizContainerMain');
+      const mainEl = document.querySelector('main');
+
+      focusMode.classList.remove('active');
+      quizContainer.classList.remove('focus-mode-quiz');
+      mainEl.appendChild(quizContainer);
+      document.body.style.overflow = '';
+      inFocusMode = false;
+
+      document.getElementById('assessmentHero').scrollIntoView({ behavior: 'smooth' });
     }
 
     function renderQuestion(index) {
@@ -1459,8 +1573,10 @@
       const progressFill = document.getElementById('progressFill');
       const progressLabel = document.getElementById('progressLabel');
       const progressPercentage = document.getElementById('progressPercentage');
-      const nextBtn = document.getElementById('nextBtn');
       const backBtn = document.getElementById('backBtn');
+      const submitRow = document.getElementById('submitRow');
+      const seeResultsBtn = document.getElementById('seeResultsBtn');
+      const isLastQuestion = index === questions.length - 1;
 
       questionArea.innerHTML = '';
 
@@ -1475,7 +1591,7 @@
             </div>
           `).join('')}
         </div>
-        ${question.helper ? `<div class="helper-text">ℹ ${question.helper}</div>` : ''}
+        ${question.helper ? `<div class="helper-text">\u2139 ${question.helper}</div>` : ''}
       `;
 
       questionArea.appendChild(card);
@@ -1486,8 +1602,14 @@
       progressPercentage.textContent = Math.round(progress) + '%';
 
       backBtn.classList.toggle('hidden', index === 0);
-      nextBtn.textContent = index === questions.length - 1 ? 'See My Results →' : 'Continue';
-      nextBtn.disabled = !answers[index];
+
+      // Show "See My Results" button only on last question
+      if (isLastQuestion) {
+        submitRow.classList.add('visible');
+        seeResultsBtn.disabled = !answers[index];
+      } else {
+        submitRow.classList.remove('visible');
+      }
 
       if (answers[index]) {
         const selectedCard = questionArea.querySelector(`[data-index="${answers[index].optionIndex}"]`);
@@ -1521,9 +1643,11 @@
         }
       });
 
-      document.getElementById('nextBtn').disabled = false;
-
-      if (!isLastQuestion) {
+      if (isLastQuestion) {
+        // Enable the "See My Results" button but don't auto-advance
+        document.getElementById('seeResultsBtn').disabled = false;
+      } else {
+        // Auto-advance after brief delay
         setTimeout(() => {
           nextQuestion();
         }, 600);
@@ -1805,7 +1929,6 @@
     // Keyboard Support
     document.addEventListener('keydown', function(event) {
       const quizState = document.getElementById('quizState');
-      const contactForm = document.getElementById('contactForm');
 
       if (!quizState.style.display || quizState.style.display !== 'none') {
         const question = questions[currentQuestion];
@@ -1818,14 +1941,19 @@
         }
 
         if (event.key === 'Enter') {
-          const nextBtn = document.getElementById('nextBtn');
-          if (!nextBtn.disabled) {
-            nextQuestion();
+          const isLastQuestion = currentQuestion === questions.length - 1;
+          if (isLastQuestion) {
+            const seeResultsBtn = document.getElementById('seeResultsBtn');
+            if (!seeResultsBtn.disabled) nextQuestion();
           }
         }
 
         if (event.key === 'ArrowLeft') {
           previousQuestion();
+        }
+
+        if (event.key === 'Escape' && inFocusMode) {
+          exitFocusMode();
         }
       }
     });
