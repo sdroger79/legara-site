@@ -679,21 +679,6 @@ function submitDownloadForm(e) {
     if (ft.utm_source) { utm = ft; }
   }
 
-  // GA events
-  trackEvent('roi_report_download', 'ROI Calculator', org, 1);
-  if (typeof gtag === 'function') {
-    gtag('event', 'generate_lead', {
-      event_category: 'ROI Calculator',
-      event_label: org + ' | ' + email,
-      value: 1
-    });
-    gtag('event', 'roi_report_download', {
-      provider_type: currentType,
-      form_name: 'roi_download_form',
-      calculator_version: 'public'
-    });
-  }
-
   // LinkedIn: Calculator Lead conversion
   if (typeof lintrk === 'function') {
     lintrk('track', { conversion_id: 24768068 });
@@ -810,15 +795,7 @@ function submitDownloadForm(e) {
     if (pdfUrl) {
       document.getElementById('pdfViewLink').href = pdfUrl;
       document.getElementById('pdfViewLink').setAttribute('download', window._legaraPdfFilename || 'Legara ROI Analysis.pdf');
-      document.getElementById('pdfViewLink').onclick = function() {
-        if (typeof gtag === 'function') {
-          gtag('event', 'roi_report_view', {
-            event_category: 'ROI Calculator',
-            event_label: org,
-            provider_type: currentType
-          });
-        }
-      };
+      document.getElementById('pdfViewLink').onclick = function() {};
     } else {
       document.getElementById('pdfActionArea').style.display = 'none';
       document.getElementById('pdfFallback').style.display = 'block';
@@ -827,37 +804,6 @@ function submitDownloadForm(e) {
 }
 
 // Part D: Download form visibility tracking (IntersectionObserver)
-if ('IntersectionObserver' in window) {
-  var formSection = document.getElementById('downloadFormSection');
-  if (formSection) {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          gtag('event', 'download_form_view', {
-            event_category: 'ROI Calculator',
-            event_label: 'CTA visible in viewport'
-          });
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    observer.observe(formSection);
-  }
-}
-
-// Part D: Download form engagement tracking (first field focus)
-var dlFormStarted = false;
-document.querySelectorAll('#downloadLeadForm input, #downloadLeadForm select').forEach(function(el) {
-  el.addEventListener('focus', function() {
-    if (!dlFormStarted) {
-      dlFormStarted = true;
-      gtag('event', 'download_form_start', {
-        event_category: 'ROI Calculator',
-        event_label: 'First field focused'
-      });
-    }
-  });
-});
 </script>
 <script src="js/calculator.js"></script>
 <script src="js/pdf-generator.js"></script>

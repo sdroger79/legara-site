@@ -35,49 +35,6 @@ const BAKED = {
 
 let currentType = 'lcsw_lmft';
 
-// ─── GA EVENT HELPER (waits for GA4 page_view before firing) ───
-var _gaReady = false;
-var _gaQueue = [];
-
-// Listen for gtag.js load — GA4 fires page_view from the config call once the library loads
-(function() {
-  var gtagScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
-  if (gtagScript) {
-    if (gtagScript.complete || gtagScript.readyState === 'complete') {
-      // Already loaded (cached)
-      setTimeout(function() { _gaReady = true; _flushGaQueue(); }, 0);
-    } else {
-      gtagScript.addEventListener('load', function() {
-        _gaReady = true;
-        _flushGaQueue();
-      });
-    }
-  } else {
-    // No gtag script found — mark ready so events don't queue forever
-    _gaReady = true;
-  }
-})();
-
-function _flushGaQueue() {
-  while (_gaQueue.length) {
-    var e = _gaQueue.shift();
-    gtag('event', e.action, e.params);
-  }
-}
-
-function trackEvent(action, category, label, value) {
-  var params = {
-    event_category: category || 'ROI Calculator',
-    event_label: label || '',
-    value: value || 0
-  };
-  if (_gaReady && typeof gtag === 'function') {
-    gtag('event', action, params);
-  } else {
-    _gaQueue.push({ action: action, params: params });
-  }
-}
-
 // ─── FORMATTERS ───
 function fmt(n) {
   if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
