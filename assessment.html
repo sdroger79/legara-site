@@ -2212,7 +2212,7 @@
         .sort((a, b) => a.score - b.score)
         .slice(0, 3);
 
-      insightCards.innerHTML = lowestScores.map(({ score, index }) => {
+      insightCards.innerHTML = lowestScores.map(({ score, index }, rank) => {
         const questionId = questions[index].id;
         const answerText = answers[index].text;
         const insightTemplate = insights[questionId];
@@ -2220,11 +2220,10 @@
         if (!insightTemplate) return '';
 
         const body = insightTemplate.body.replace('{answer}', answerText);
-        const firstLetter = dimensionNames[index].charAt(0);
 
         return `
           <div class="insight-card">
-            <div class="insight-icon">${firstLetter}</div>
+            <div class="insight-icon">${rank + 1}</div>
             <div class="insight-title">${insightTemplate.title}</div>
             <div class="insight-body">${body}</div>
             <div class="insight-benchmark">${insightTemplate.benchmark}</div>
