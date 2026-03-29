@@ -872,41 +872,40 @@ a:hover { text-decoration: underline; }
 </div><!-- end app -->
 
 <script>
-// ── Auth (server-side via worker.js) ──────────────────────────────
+// ── Auth (client-side for now, server-side upgrade in worker.js later) ──
+const TEAM_KEY = 'legara-team-2026';
+const COOKIE_NAME = 'legara_team_auth';
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + days * 86400000);
+  document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=/team/;SameSite=Strict';
+}
+
 function showApp() {
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('app').classList.add('active');
   loadChangelog();
 }
 
-// On page load, check if already authed by hitting announcements endpoint
-(async function checkAuth() {
-  try {
-    const resp = await fetch('/team/api/announcements');
-    if (resp.ok) { showApp(); loadAnnouncements(); }
-  } catch(e) {}
-})();
+// Check existing auth cookie on load
+if (getCookie(COOKIE_NAME) === TEAM_KEY) { showApp(); }
 
-document.getElementById('auth-form').addEventListener('submit', async function(e) {
+document.getElementById('auth-form').addEventListener('submit', function(e) {
   e.preventDefault();
   const pw = document.getElementById('auth-pw').value;
-  try {
-    const resp = await fetch('/team/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pw })
-    });
-    if (resp.ok) {
-      showApp();
-      loadAnnouncements();
-    } else {
-      document.getElementById('auth-error').style.display = 'block';
-      document.getElementById('auth-pw').value = '';
-      document.getElementById('auth-pw').focus();
-    }
-  } catch(err) {
-    document.getElementById('auth-error').textContent = 'Connection error. Try again.';
+  if (pw === TEAM_KEY) {
+    setCookie(COOKIE_NAME, TEAM_KEY, 90);
+    showApp();
+  } else {
     document.getElementById('auth-error').style.display = 'block';
+    document.getElementById('auth-pw').value = '';
+    document.getElementById('auth-pw').focus();
   }
 });
 

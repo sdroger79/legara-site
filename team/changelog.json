@@ -1,0 +1,44 @@
+[
+  {
+    "date": "2026-03-29",
+    "type": "major",
+    "title": "Messaging Pivot Complete",
+    "body": "All external content now leads with structural differentiation, not financial savings. The narrative arc is: Recognition → Understanding → Proof → Financial Validation. Financial messaging is deemphasized, not eliminated. 'Mission cash generated' stays as a phrase, but arrives 4th in the conversation, not 1st."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "major",
+    "title": "Timeline Claims Corrected",
+    "body": "Two timeline claims were corrected across all materials. Legara provider placement: 'as fast as 6 weeks from signed contract' (was '5 months'). Internal hire ramp: '6-9 months from hire to full caseload' (was '11 months'). Both independently verified with published AAPPR benchmarking data. These are the only approved phrasings going forward."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "major",
+    "title": "Assessment Replaces Calculator",
+    "body": "The ROI calculator is no longer public-facing. It's now a selective sales tool Roger uses in live CFO walkthroughs. The primary conversion tool is the Behavioral Health Capacity Assessment at GoLegara.com/assessment. All CTAs updated across site, emails, and collateral."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "update",
+    "title": "Brevo Email Sequences Updated",
+    "body": "Sequence A (post-assessment nurture, 4 emails) and Sequence B (meeting confirmation, 2 emails) rebuilt with post-pivot content. Templates now use assessment framing, three-pillar education arc, and correct variable syntax."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "update",
+    "title": "Blog Posts Rewritten",
+    "body": "'The 11-Month Blind Spot' retitled to 'The Ramp Cost Blind Spot' with concurrent timeline model. '$229K Therapist' blog updated with corrected CPE math."
+  },
+  {
+    "date": "2026-03-28",
+    "type": "major",
+    "title": "Assessment Page Live",
+    "body": "BH Capacity Index assessment deployed at GoLegara.com/assessment. 7-dimension scoring, 4 tiers, integrated with HubSpot and Brevo. Takes prospects ~3 minutes. Replaces the calculator as primary conversion path."
+  },
+  {
+    "date": "2026-03-27",
+    "type": "update",
+    "title": "ABM Campaign Launched",
+    "body": "Daily outreach campaign running. 8-12 orgs/day, multi-stakeholder, CEO-to-CEO positioning. ~125 emails across 86 contacts in first 4 days. Differentiation-first messaging across all role angles."
+  }
+]
