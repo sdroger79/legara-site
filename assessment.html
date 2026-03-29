@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GC0KH378ZK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GC0KH378ZK');
+    gtag('config', 'AW-1769529274');
+  </script>
+  <script src="js/utm.js"></script>
+  <script>
+    _linkedin_partner_id = "8941612";
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+  </script>
+  <script src="https://snap.licdn.com/li.ltr-js/insight.min.js" async></script>
+  <noscript><img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=8941612&fmt=gif" /></noscript>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Behavioral Health Capacity Assessment | Legara</title>
+  <meta name="description" content="Score your behavioral health operations against FQHC benchmarks. Get personalized insights on wait times, provider productivity, turnover, and scheduling infrastructure.">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="canonical" href="https://golegara.com/assessment.html">
+  <meta property="og:title" content="Behavioral Health Capacity Assessment | Legara">
+  <meta property="og:description" content="Score your behavioral health operations against FQHC benchmarks.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://golegara.com/assessment.html">
+  <meta property="og:image" content="https://golegara.com/img/og-image.png">
+  <meta property="og:site_name" content="Legara">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png?v=2">
+  <link rel="icon" href="/img/favicon.ico?v=2" sizes="any">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png?v=2">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <style>
+    /* Keyframe Animations */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(26, 107, 74, 0.2); }
+      50% { box-shadow: 0 0 0 4px rgba(26, 107, 74, 0.1); }
+    }
+
+    @keyframes countPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      0% { transform: translateX(30px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutLeft {
+      0% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(-30px); opacity: 0; }
+    }
+
+    @keyframes slideInLeft {
+      0% { transform: translateX(-30px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+      0% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(30px); opacity: 0; }
+    }
+
+    @keyframes spinner {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes countUp {
+      0% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes gaugeFill {
+      0% { width: 0%; }
+      100% { width: var(--target-width, 0%); }
+    }
+
+    @keyframes staggerFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Assessment Quiz Styles */
+    .assessment-hero {
+      padding: 120px 80px 60px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .assessment-hero.hidden {
+      opacity: 0;
+      display: none;
+    }
+
+    .assessment-hero .section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mist);
+      margin-bottom: 20px;
+    }
+
+    .assessment-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+
+    .assessment-hero .subtext {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--charcoal);
+      max-width: 700px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .assessment-hero .trust-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--mist);
+      margin-top: 20px;
+    }
+
+    .btn-hero-start {
+      display: inline-block;
+      padding: 16px 40px;
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-hero-start:hover {
+      background: #155a40;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 107, 74, 0.2);
+    }
+
+    /* Focus Mode Container */
+    .focus-mode {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--white);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .focus-mode.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .focus-mode-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      z-index: 1001;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .focus-mode.active .focus-mode-header {
+      opacity: 1;
+    }
+
+    .focus-logo {
+      width: 80px;
+      opacity: 0.5;
+    }
+
+    .focus-logo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .focus-content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 80px;
+      padding-bottom: 40px;
+    }
+
+    /* Quiz Container */
+    .quiz-container {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .quiz-container.focus-mode-quiz {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 100%;
+      padding: 48px 40px;
+    }
+
+    /* Progress Bar */
+    .progress-wrapper {
+      margin-bottom: 40px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .progress-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mist);
+      display: block;
+    }
+
+    .progress-percentage {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      animation: countPulse 0.5s ease;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: 0%;
+      box-shadow: 0 0 0 0 rgba(26, 107, 74, 0.2);
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    /* Question Area */
+    .question-area {
+      min-height: 280px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .question-card {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: none;
+      position: absolute;
+      width: 100%;
+    }
+
+    .question-card.active {
+      opacity: 1;
+      transform: translateX(0);
+      position: relative;
+      animation: slideInRight 0.35s ease-out;
+    }
+
+    .question-card.exiting-forward {
+      animation: slideOutLeft 0.35s ease-out forwards;
+    }
+
+    .question-card.exiting-backward {
+      animation: slideOutRight 0.35s ease-out forwards;
+    }
+
+    .question-card h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--charcoal);
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .question-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .option-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--charcoal);
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      position: relative;
+      min-height: 48px;
+      user-select: none;
+    }
+
+    .option-card:hover {
+      border-color: var(--green);
+      background: rgba(26, 107, 74, 0.04);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(26, 107, 74, 0.08);
+    }
+
+    .option-card.selected {
+      border: 2px solid var(--green);
+      background: rgba(26, 107, 74, 0.06);
+    }
+
+    .option-card.selected .option-text {
+      color: var(--charcoal);
+    }
+
+    .option-card.not-selected {
+      opacity: 0.6;
+    }
+
+    .option-card.selected::after {
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: var(--green);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .helper-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mist);
+      font-style: italic;
+      margin-top: 12px;
+    }
+
+    /* Navigation */
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 48px;
+      gap: 20px;
+    }
+
+    .nav-back {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--green);
+      cursor: pointer;
+      padding: 8px 12px;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-back:hover {
+      opacity: 0.8;
+    }
+
+    .nav-back.hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .nav-next {
+      margin-left: auto;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Loading State */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 60px 40px;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 0;
+    }
+
+    .loading-state.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .spinner-ring {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      animation: spinner 1s linear infinite;
+    }
+
+    .loading-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--slate);
+    }
+
+    /* Contact Form */
+    .contact-form {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .contact-form.active {
+      display: block;
+    }
+
+    .contact-form h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 12px;
+    }
+
+    .contact-form .form-intro {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--charcoal);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--charcoal);
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+
+    .form-group input[type="hidden"] {
+      display: none;
+    }
+
+    .form-group.honeypot {
+      display: none;
+    }
+
+    #turnstile-container {
+      margin-bottom: 24px;
+    }
+
+    .form-submit {
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    .form-privacy {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--mist);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    /* Results Page */
+    .results-container {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .results-container.active {
+      display: block;
+    }
+
+    .score-section {
+      text-align: center;
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .score-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 8px;
+      line-height: 1;
+      counter-increment: num var(--num);
+      content: counter(num);
+    }
+
+    .score-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--mist);
+      margin-bottom: 16px;
+    }
+
+    .score-tier {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 24px;
+      animation: popIn 0.5s ease-out;
+    }
+
+    .score-tier.strong {
+      background: #1a6b4a;
+    }
+
+    .score-tier.moderate {
+      background: #b8860b;
+    }
+
+    .score-tier.strained {
+      background: #cc6633;
+    }
+
+    .score-tier.critical {
+      background: #dc3545;
+    }
+
+    .gauge-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 24px;
+      position: relative;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(to right, #dc3545, #cc6633, #b8860b, #1a6b4a);
+      border-radius: 4px;
+      width: 0%;
+      animation: gaugeFill 1.5s ease-out forwards;
+    }
+
+    .gauge-marker {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 12px;
+      height: 12px;
+      background: var(--green);
+      border-radius: 50%;
+      border: 3px solid var(--white);
+      transform: translateY(-50%) translateX(-50%);
+      transition: left 1.5s ease-out;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .dimensions-section {
+      margin-bottom: 48px;
+    }
+
+    .dimensions-section h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 24px;
+    }
+
+    .dimension-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 60px;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      animation: staggerFadeIn 0.5s ease-out forwards;
+    }
+
+    .dimension-row:nth-child(1) { animation-delay: 2s; }
+    .dimension-row:nth-child(2) { animation-delay: 2.1s; }
+    .dimension-row:nth-child(3) { animation-delay: 2.2s; }
+    .dimension-row:nth-child(4) { animation-delay: 2.3s; }
+    .dimension-row:nth-child(5) { animation-delay: 2.4s; }
+    .dimension-row:nth-child(6) { animation-delay: 2.5s; }
+    .dimension-row:nth-child(7) { animation-delay: 2.6s; }
+
+    .dimension-row:last-child {
+      border-bottom: none;
+    }
+
+    .dimension-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+
+    .dimension-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .dimension-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1.5s ease-out;
+      width: 0%;
+    }
+
+    .dimension-fill.strong {
+      background: var(--green);
+    }
+
+    .dimension-fill.moderate {
+      background: #b8860b;
+    }
+
+    .dimension-fill.strained {
+      background: #cc6633;
+    }
+
+    .dimension-fill.critical {
+      background: #dc3545;
+    }
+
+    .dimension-score {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+      text-align: right;
+    }
+
+    .insights-section {
+      margin-bottom: 48px;
+    }
+
+    .insights-section h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out 2.7s forwards;
+    }
+
+    .insight-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .insight-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      background: var(--white);
+      opacity: 0;
+      animation: staggerFadeIn 0.5s ease-out forwards;
+    }
+
+    .insight-card:nth-child(1) { animation-delay: 2.7s; }
+    .insight-card:nth-child(2) { animation-delay: 2.8s; }
+    .insight-card:nth-child(3) { animation-delay: 2.9s; }
+
+    .insight-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    .insight-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 12px;
+    }
+
+    .insight-body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--charcoal);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .insight-benchmark {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--mist);
+    }
+
+    .cta-section {
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 48px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .cta-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--charcoal);
+      margin-bottom: 32px;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--green);
+      border: 2px solid var(--green);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-outline:hover {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .assessment-hero {
+        padding: 80px 40px 60px;
+      }
+
+      .quiz-container {
+        padding: 40px;
+      }
+
+      .assessment-hero h1 {
+        font-size: 44px;
+      }
+
+      .score-number {
+        font-size: 56px;
+      }
+
+      .cta-section {
+        padding: 40px;
+      }
+
+      .cta-section h3 {
+        font-size: 24px;
+      }
+
+      .dimension-row {
+        grid-template-columns: 120px 1fr 50px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .assessment-hero {
+        padding: 60px 24px 40px;
+      }
+
+      .quiz-container {
+        padding: 32px 24px;
+      }
+
+      .quiz-container.focus-mode-quiz {
+        padding: 32px 24px;
+      }
+
+      .assessment-hero h1 {
+        font-size: 36px;
+      }
+
+      .assessment-hero .subtext {
+        font-size: 15px;
+      }
+
+      .question-card h2 {
+        font-size: 17px;
+      }
+
+      .option-card {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+
+      .score-number {
+        font-size: 48px;
+      }
+
+      .score-section {
+        padding: 32px 0;
+      }
+
+      .cta-section {
+        padding: 32px 24px;
+      }
+
+      .cta-section h3 {
+        font-size: 22px;
+      }
+
+      .cta-section p {
+        font-size: 14px;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-outline {
+        width: 100%;
+      }
+
+      .dimension-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .dimension-score {
+        text-align: left;
+        order: -1;
+      }
+
+      .insight-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .dimensions-section h3,
+      .insights-section h3 {
+        font-size: 19px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .assessment-hero {
+        padding: 48px 20px 40px;
+      }
+
+      .quiz-container {
+        padding: 24px 20px;
+        border-radius: 12px;
+      }
+
+      .quiz-container.focus-mode-quiz {
+        padding: 24px 20px;
+      }
+
+      .assessment-hero h1 {
+        font-size: 28px;
+      }
+
+      .assessment-hero .subtext {
+        font-size: 14px;
+      }
+
+      .btn-hero-start {
+        padding: 14px 32px;
+        font-size: 15px;
+      }
+
+      .question-area {
+        min-height: 240px;
+      }
+
+      .question-card h2 {
+        font-size: 16px;
+      }
+
+      .option-card {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .progress-label {
+        font-size: 12px;
+      }
+
+      .quiz-nav {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+
+      .nav-back {
+        width: 100%;
+        text-align: center;
+      }
+
+      .nav-next {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .contact-form h2 {
+        font-size: 24px;
+      }
+
+      .score-number {
+        font-size: 40px;
+      }
+
+      .score-section {
+        padding: 24px 0;
+      }
+
+      .cta-section {
+        padding: 24px 20px;
+        margin-top: 32px;
+      }
+
+      .cta-section h3 {
+        font-size: 20px;
+      }
+
+      .cta-section p {
+        font-size: 13px;
+      }
+
+      .focus-mode-header {
+        padding: 0 20px;
+        height: 70px;
+      }
+
+      .focus-content {
+        padding-top: 70px;
+        padding-bottom: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Legara"></a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="for-health-centers.html">For Health Centers</a></li>
+      <li><a href="partners.html">Our Impact</a></li>
+      <li><a href="assessment.html" class="active">Assess Your Capacity</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="https://cal.com/roger-golegara.com/legara-roi-review" class="nav-cta">Let's Talk</a></li>
+    </ul>
+  </nav>
+
+  <!-- Focus Mode Overlay -->
+  <div class="focus-mode" id="focusMode">
+    <div class="focus-mode-header">
+      <div class="focus-logo">
+        <img src="img/logo.png" alt="Legara">
+      </div>
+    </div>
+    <div class="focus-content" id="focusContent">
+      <!-- Quiz will be moved here when focus mode is activated -->
+    </div>
+  </div>
+
+  <main>
+    <section class="assessment-hero reveal" id="assessmentHero">
+      <div class="section-label">Behavioral Health Capacity Assessment</div>
+      <h1>Get Your BH Capacity Score</h1>
+      <p class="subtext">7 questions. 2 minutes. See how your behavioral health operations compare to high-performing FQHCs in our network. Your results include a personalized capacity score and actionable insights.</p>
+      <button class="btn-hero-start" onclick="startAssessment()">Start Assessment</button>
+      <p class="trust-text">Based on benchmarks from 9 FQHC partnerships and 50,000+ annual encounters.</p>
+    </section>
+
+    <div class="quiz-container" id="quizContainerMain">
+      <!-- Quiz State -->
+      <div id="quizState" class="quiz-state">
+        <div class="progress-wrapper">
+          <div class="progress-header">
+            <span class="progress-label" id="progressLabel">Question 1 of 7</span>
+            <span class="progress-percentage" id="progressPercentage">14%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="question-area" id="questionArea">
+          <!-- Questions will be rendered here -->
+        </div>
+
+        <div class="loading-state" id="loadingState">
+          <div class="spinner-ring"></div>
+          <div class="loading-text" id="loadingText">Calculating your score...</div>
+        </div>
+
+        <div class="quiz-nav">
+          <button class="nav-back hidden" id="backBtn" onclick="previousQuestion()">← Back</button>
+          <button class="btn-primary nav-next" id="nextBtn" disabled onclick="nextQuestion()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Contact Form State -->
+      <form class="contact-form" id="contactForm" onsubmit="submitAssessmentForm(event)">
+        <h2>Your score is ready.</h2>
+        <p class="form-intro">Enter your details to see your personalized Capacity Index results and benchmark comparisons.</p>
+
+        <div class="form-group">
+          <label for="assessFirstName">First Name *</label>
+          <input type="text" id="assessFirstName" name="firstName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assessLastName">Last Name *</label>
+          <input type="text" id="assessLastName" name="lastName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assessTitle">Title / Role *</label>
+          <input type="text" id="assessTitle" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assessOrg">Organization *</label>
+          <input type="text" id="assessOrg" name="organization" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assessEmail">Email *</label>
+          <input type="email" id="assessEmail" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assessSites">Number of Sites *</label>
+          <select id="assessSites" name="sites" required>
+            <option value="">Select...</option>
+            <option value="1-3">1-3</option>
+            <option value="4-7">4-7</option>
+            <option value="8-15">8-15</option>
+            <option value="16-30">16-30</option>
+            <option value="30+">30+</option>
+          </select>
+        </div>
+
+        <div class="form-group honeypot">
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div id="turnstile-container"></div>
+
+        <button type="submit" class="btn-primary form-submit">Get My Results</button>
+        <p class="form-privacy">Your information is used solely to deliver your assessment results. We don't share your data.</p>
+      </form>
+
+      <!-- Results State -->
+      <div class="results-container" id="resultsContainer">
+        <div class="score-section">
+          <div class="score-number" id="scoreNumber">0</div>
+          <div class="score-label">Your BH Capacity Index</div>
+          <div class="score-tier" id="scoreTier">—</div>
+          <div class="gauge-bar">
+            <div class="gauge-fill" id="gaugeFill"></div>
+            <div class="gauge-marker" id="gaugeMarker"></div>
+          </div>
+        </div>
+
+        <div class="dimensions-section">
+          <h3>How You Scored</h3>
+          <div id="dimensionsGrid">
+            <!-- Dimension rows will be rendered here -->
+          </div>
+        </div>
+
+        <div class="insights-section">
+          <h3>Key Findings</h3>
+          <div class="insight-cards" id="insightCards">
+            <!-- Insight cards will be rendered here -->
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <h3>Want to dig deeper into your score?</h3>
+          <p>Schedule 30 minutes with Roger to discuss your specific situation, explore what's driving your capacity gaps, and see how other FQHCs with similar profiles have addressed these challenges.</p>
+          <div class="cta-buttons">
+            <a href="https://cal.com/roger-golegara.com/legara-roi-review" class="btn-primary">Schedule a Conversation</a>
+            <button type="button" class="btn-outline" onclick="downloadResults()">Download Your Results</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo"><img src="img/logo.png" alt="Legara"></div>
+        <p class="footer-about">Behavioral health workforce and operational infrastructure for Federally Qualified Health Centers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="for-health-centers.html">For Health Centers</a>
+        <a href="become-a-provider.html">Become a Provider</a>
+        <a href="assessment.html">Capacity Assessment</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Legara</a>
+        <a href="partners.html">Our Partners</a>
+        <a href="press.html">Press</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="mailto:contact@golegara.com">contact@golegara.com</a>
+        <a href="tel:+17604797860">760-479-7860</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 Legara, Inc. All rights reserved.</div>
+      <div>Behavioral health workforce solutions for FQHCs across California.</div>
+    </div>
+  </footer>
+
+  <script src="js/tracking.js"></script>
+  <script>
+    // Quiz State Management
+    const questions = [
+      {
+        id: 'waitTime',
+        text: 'What is the average wait time for a new behavioral health appointment at your organization?',
+        options: [
+          { text: 'Under 2 weeks', score: 100 },
+          { text: '2-4 weeks', score: 75 },
+          { text: '1-2 months', score: 50 },
+          { text: '2-4 months', score: 25 },
+          { text: '4+ months', score: 10 },
+          { text: 'Not sure', score: 30 }
+        ],
+        helper: 'If you\'re unsure, your front desk or intake team typically knows this.'
+      },
+      {
+        id: 'noShow',
+        text: 'What is your behavioral health no-show rate?',
+        options: [
+          { text: 'Under 10%', score: 100 },
+          { text: '10-15%', score: 80 },
+          { text: '15-25%', score: 50 },
+          { text: 'Over 25%', score: 20 },
+          { text: 'We don\'t track this', score: 25 }
+        ],
+        helper: 'Many organizations don\'t track this by department. Your best estimate is fine.'
+      },
+      {
+        id: 'serviceScope',
+        text: 'What types of behavioral health services does your organization currently offer?',
+        options: [
+          { text: 'Therapy only (LCSW, LMFT, psychologist)', score: 70 },
+          { text: 'Prescribing only (PMHNP, psychiatrist)', score: 60 },
+          { text: 'Both therapy and prescribing', score: 100 },
+          { text: 'We\'re trying to add behavioral health services', score: 40 }
+        ],
+        helper: null
+      },
+      {
+        id: 'productivity',
+        text: 'How would you describe your behavioral health providers\' effective productivity?',
+        options: [
+          { text: 'Providers see patients consistently with minimal gaps between appointments', score: 100 },
+          { text: 'Providers are scheduled but no-shows and cancellations create significant idle time', score: 40 },
+          { text: 'Appointment lengths vary and may not match the service type being delivered', score: 35 },
+          { text: 'We don\'t have clear visibility into effective productivity vs. scheduled time', score: 20 }
+        ],
+        helper: 'Effective productivity means completed patient encounters, not just scheduled slots. A fully booked provider with a 30% no-show rate and no backfill process is operating at roughly 70% capacity.'
+      },
+      {
+        id: 'timeToProductivity',
+        text: 'How long does it typically take to get a new behavioral health provider from hire to a full patient panel?',
+        options: [
+          { text: 'Under 3 months', score: 100 },
+          { text: '3-6 months', score: 75 },
+          { text: '6-9 months', score: 50 },
+          { text: '9-12 months', score: 25 },
+          { text: 'Over a year', score: 10 },
+          { text: 'Not sure', score: 30 }
+        ],
+        helper: 'Include recruiting, credentialing, payer enrollment, and panel ramp-up. Most organizations underestimate this.'
+      },
+      {
+        id: 'turnover',
+        text: 'How many behavioral health providers has your organization lost to turnover in the past 12 months?',
+        options: [
+          { text: 'None', score: 100 },
+          { text: '1-2', score: 70 },
+          { text: '3-5', score: 40 },
+          { text: 'More than 5', score: 15 },
+          { text: 'Not sure', score: 35 }
+        ],
+        helper: 'Include voluntary departures, retirements, and contract non-renewals.'
+      },
+      {
+        id: 'scheduling',
+        text: 'Who handles scheduling for your behavioral health providers?',
+        options: [
+          { text: 'Front desk shared with primary care', score: 40 },
+          { text: 'Dedicated behavioral health scheduler', score: 100 },
+          { text: 'Providers or their MAs self-schedule', score: 30 },
+          { text: 'Mixed or varies by site', score: 60 },
+          { text: 'Not sure', score: 35 }
+        ],
+        helper: null
+      }
+    ];
+
+    const dimensionNames = ['Wait Times', 'No-Show Management', 'Service Scope', 'Provider Productivity', 'Time to Productivity', 'Provider Retention', 'Scheduling Infrastructure'];
+
+    const weights = {
+      0: 0.20,
+      1: 0.15,
+      2: 0.10,
+      3: 0.20,
+      4: 0.15,
+      5: 0.10,
+      6: 0.10
+    };
+
+    const insights = {
+      waitTime: {
+        title: 'Access Bottleneck',
+        body: 'You reported wait times of {answer}. High-performing FQHCs in our network maintain behavioral health wait times under 2 weeks. Extended wait times typically indicate a capacity gap that compounds over time as referral backlogs grow and patients disengage from care.',
+        benchmark: 'Benchmark: <2 weeks for new behavioral health appointments.'
+      },
+      noShow: {
+        title: 'Unmanaged No-Show Impact',
+        body: 'Your reported no-show rate {answer} suggests significant capacity is being lost to missed appointments. Without dedicated scheduling infrastructure and active backfill protocols, every no-show becomes dead provider time that can\'t be recovered.',
+        benchmark: 'Benchmark: Organizations with dedicated behavioral health scheduling infrastructure average 14% no-show rates.'
+      },
+      serviceScope: {
+        title: 'Service Gap',
+        body: 'Offering {answer} limits your ability to provide integrated behavioral health care. Patients often need both therapy and medication management, and gaps in either create referral leakage and fragmented care.',
+        benchmark: 'Benchmark: Full-spectrum programs (therapy + prescribing) see higher patient retention and better outcomes.'
+      },
+      productivity: {
+        title: 'Productivity Blind Spot',
+        body: 'Your response suggests {answer}. Effective provider utilization requires infrastructure beyond scheduling. It requires dedicated support staff managing patient flow, backfill protocols, and appointment structures calibrated to service type.',
+        benchmark: 'Benchmark: Purpose-built programs achieve 82% effective utilization vs. the ~52% typical of salaried FQHC behavioral health providers.'
+      },
+      timeToProductivity: {
+        title: 'Extended Ramp Creates Hidden Costs',
+        body: 'Getting a new provider from hire to a full patient panel in {answer} means months of salary without corresponding encounter revenue. Every month in the ramp period is a month your organization carries full compensation costs with partial or no productivity.',
+        benchmark: 'Benchmark: Purpose-built workforce programs achieve full productivity in approximately 5 months from contract.'
+      },
+      turnover: {
+        title: 'Turnover Cycle',
+        body: 'Losing {answer} providers in 12 months creates a compounding problem: each departure restarts the recruiting, credentialing, and panel-build cycle. The true cost extends beyond replacement: patient panels dissolve, wait times spike, and remaining providers absorb the overflow.',
+        benchmark: 'Benchmark: Programs with dedicated operational infrastructure maintain <3% annual provider turnover.'
+      },
+      scheduling: {
+        title: 'Scheduling Infrastructure Gap',
+        body: 'Your behavioral health scheduling is handled by {answer}. When behavioral health scheduling shares resources with primary care or relies on provider self-scheduling, utilization suffers. Behavioral health scheduling has unique requirements: session length variation, crisis slots, follow-up cadence, and no-show backfill.',
+        benchmark: 'Benchmark: Dedicated behavioral health scheduling with a 1:3-4 scheduler-to-provider ratio drives measurably higher utilization.'
+      }
+    };
+
+    let currentQuestion = 0;
+    let answers = [];
+    let compositeScore = 0;
+    let tierLabel = '';
+    let dimensionScores = [];
+    let inFocusMode = false;
+    let questionDirection = 'forward';
+
+    // Initialize Quiz
+    function initQuiz() {
+      renderQuestion(0);
+      if (typeof turnstile !== 'undefined') {
+        turnstile.render('#turnstile-container', {
+          sitekey: '0x4AAAAAACrW0wLzmWlGZuLt',
+          theme: 'light',
+          size: 'compact',
+          retry: 'never'
+        });
+      }
+    }
+
+    function startAssessment() {
+      inFocusMode = true;
+      const hero = document.getElementById('assessmentHero');
+      const focusMode = document.getElementById('focusMode');
+      const quizContainer = document.getElementById('quizContainerMain');
+      const focusContent = document.getElementById('focusContent');
+      const nav = document.querySelector('nav');
+      const footer = document.querySelector('footer');
+
+      hero.classList.add('hidden');
+      nav.style.display = 'none';
+      footer.style.display = 'none';
+
+      setTimeout(() => {
+        focusMode.classList.add('active');
+        quizContainer.classList.add('focus-mode-quiz');
+        focusContent.appendChild(quizContainer);
+      }, 300);
+    }
+
+    function renderQuestion(index) {
+      const question = questions[index];
+      const questionArea = document.getElementById('questionArea');
+      const progressFill = document.getElementById('progressFill');
+      const progressLabel = document.getElementById('progressLabel');
+      const progressPercentage = document.getElementById('progressPercentage');
+      const nextBtn = document.getElementById('nextBtn');
+      const backBtn = document.getElementById('backBtn');
+
+      questionArea.innerHTML = '';
+
+      const card = document.createElement('div');
+      card.className = 'question-card active';
+      card.innerHTML = `
+        <h2>${question.text}</h2>
+        <div class="question-options">
+          ${question.options.map((opt, i) => `
+            <div class="option-card" data-index="${i}" onclick="selectOption(${index}, ${i})">
+              <span class="option-text">${opt.text}</span>
+            </div>
+          `).join('')}
+        </div>
+        ${question.helper ? `<div class="helper-text">ℹ ${question.helper}</div>` : ''}
+      `;
+
+      questionArea.appendChild(card);
+
+      const progress = ((index + 1) / questions.length) * 100;
+      progressFill.style.width = progress + '%';
+      progressLabel.textContent = `Question ${index + 1} of ${questions.length}`;
+      progressPercentage.textContent = Math.round(progress) + '%';
+
+      backBtn.classList.toggle('hidden', index === 0);
+      nextBtn.textContent = index === questions.length - 1 ? 'See My Results →' : 'Continue';
+      nextBtn.disabled = !answers[index];
+
+      if (answers[index]) {
+        const selectedCard = questionArea.querySelector(`[data-index="${answers[index].optionIndex}"]`);
+        if (selectedCard) selectedCard.classList.add('selected');
+      }
+
+      if (index === 0 && typeof gtag === 'function') {
+        gtag('event', 'quiz_start', {
+          event_category: 'Assessment'
+        });
+      }
+    }
+
+    function selectOption(questionIndex, optionIndex) {
+      const question = questions[questionIndex];
+      const option = question.options[optionIndex];
+      const cards = document.querySelectorAll('.option-card');
+      const isLastQuestion = questionIndex === questions.length - 1;
+
+      answers[questionIndex] = {
+        optionIndex: optionIndex,
+        text: option.text,
+        score: option.score
+      };
+
+      cards.forEach((card, i) => {
+        if (i === optionIndex) {
+          card.classList.add('selected');
+        } else {
+          card.classList.add('not-selected');
+        }
+      });
+
+      document.getElementById('nextBtn').disabled = false;
+
+      if (!isLastQuestion) {
+        setTimeout(() => {
+          nextQuestion();
+        }, 600);
+      }
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        questionDirection = 'forward';
+        currentQuestion++;
+        renderQuestion(currentQuestion);
+
+        if (typeof gtag === 'function') {
+          gtag('event', 'quiz_progress', {
+            event_category: 'Assessment',
+            question_number: currentQuestion + 1
+          });
+        }
+      } else {
+        transitionToLoadingState();
+      }
+    }
+
+    function previousQuestion() {
+      if (currentQuestion > 0) {
+        questionDirection = 'backward';
+        currentQuestion--;
+        renderQuestion(currentQuestion);
+      }
+    }
+
+    function transitionToLoadingState() {
+      const quizState = document.getElementById('quizState');
+      const loadingState = document.getElementById('loadingState');
+
+      quizState.style.opacity = '0';
+
+      setTimeout(() => {
+        quizState.style.display = 'none';
+        loadingState.classList.add('active');
+
+        setTimeout(() => {
+          transitionToContactForm();
+        }, 1500);
+      }, 300);
+    }
+
+    function transitionToContactForm() {
+      const loadingState = document.getElementById('loadingState');
+      const contactForm = document.getElementById('contactForm');
+
+      loadingState.classList.remove('active');
+      loadingState.style.display = 'none';
+      contactForm.classList.add('active');
+      contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function submitAssessmentForm(e) {
+      e.preventDefault();
+
+      const firstName = document.getElementById('assessFirstName').value.trim();
+      const lastName = document.getElementById('assessLastName').value.trim();
+      const org = document.getElementById('assessOrg').value.trim();
+      const title = document.getElementById('assessTitle').value.trim();
+      const email = document.getElementById('assessEmail').value.trim();
+      const sites = document.getElementById('assessSites').value;
+      const honeypot = document.querySelector('[name="website"]').value;
+      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
+
+      const utm = (typeof getUtmParams === 'function' && getUtmParams()) ||
+                  (typeof getFirstTouchUtm === 'function' && getFirstTouchUtm()) || {};
+
+      const gaCookie = document.cookie.split(';').find(c => c.trim().startsWith('_ga='));
+      const gaClientId = gaCookie ? gaCookie.split('.').slice(-2).join('.') : '';
+
+      calculateScores();
+
+      const quizData = {
+        quiz_wait_time: answers[0]?.text || '',
+        quiz_noshow_rate: answers[1]?.text || '',
+        quiz_service_scope: answers[2]?.text || '',
+        quiz_productivity: answers[3]?.text || '',
+        quiz_time_to_productive: answers[4]?.text || '',
+        quiz_turnover: answers[5]?.text || '',
+        quiz_scheduling: answers[6]?.text || '',
+        quiz_capacity_score: String(compositeScore),
+        quiz_capacity_tier: tierLabel,
+        quiz_version: 'v1'
+      };
+
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', {
+          event_category: 'Assessment',
+          event_label: org,
+          value: compositeScore
+        });
+        gtag('event', 'quiz_complete', {
+          event_category: 'Assessment',
+          quiz_score: compositeScore,
+          quiz_tier: tierLabel
+        });
+      }
+
+      if (typeof lintrk === 'function') {
+        lintrk('track', { conversion_id: 24768068 });
+      }
+
+      try {
+        await fetch('/api/assessment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            firstName,
+            lastName,
+            organization: org,
+            title,
+            sites,
+            'cf-turnstile-response': turnstileToken,
+            website: honeypot,
+            ...quizData,
+            utm_source: utm.utm_source || '',
+            utm_medium: utm.utm_medium || '',
+            utm_campaign: utm.utm_campaign || '',
+            utm_content: utm.utm_content || '',
+            utm_term: utm.utm_term || '',
+            ga_client_id: gaClientId
+          })
+        });
+      } catch (err) {
+        console.error('Assessment submission error:', err);
+      }
+
+      transitionToResults();
+    }
+
+    function transitionToResults() {
+      const contactForm = document.getElementById('contactForm');
+      const loadingState = document.getElementById('loadingState');
+
+      contactForm.style.opacity = '0';
+      contactForm.style.display = 'none';
+
+      loadingState.classList.add('active');
+      document.getElementById('loadingText').textContent = 'Preparing your results...';
+
+      setTimeout(() => {
+        loadingState.classList.remove('active');
+        loadingState.style.display = 'none';
+        showResults();
+      }, 1000);
+    }
+
+    function calculateScores() {
+      dimensionScores = answers.map(answer => answer.score);
+
+      compositeScore = Math.round(
+        Object.keys(weights).reduce((sum, key) => {
+          return sum + (dimensionScores[parseInt(key)] * weights[parseInt(key)]);
+        }, 0)
+      );
+
+      if (compositeScore >= 75) {
+        tierLabel = 'Strong';
+      } else if (compositeScore >= 50) {
+        tierLabel = 'Moderate';
+      } else if (compositeScore >= 25) {
+        tierLabel = 'Strained';
+      } else {
+        tierLabel = 'Critical';
+      }
+    }
+
+    function showResults() {
+      const resultsContainer = document.getElementById('resultsContainer');
+
+      renderResults();
+      resultsContainer.classList.add('active');
+      resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderResults() {
+      const scoreNumber = document.getElementById('scoreNumber');
+      const scoreTier = document.getElementById('scoreTier');
+      const gaugeFill = document.getElementById('gaugeFill');
+      const gaugeMarker = document.getElementById('gaugeMarker');
+      const dimensionsGrid = document.getElementById('dimensionsGrid');
+      const insightCards = document.getElementById('insightCards');
+
+      scoreNumber.textContent = '0';
+      scoreTier.textContent = tierLabel;
+      scoreTier.className = `score-tier ${tierLabel.toLowerCase()}`;
+
+      gaugeFill.style.setProperty('--target-width', compositeScore + '%');
+      gaugeMarker.style.left = compositeScore + '%';
+
+      dimensionsGrid.innerHTML = dimensionScores.map((score, i) => {
+        const tierClass = score >= 75 ? 'strong' : score >= 50 ? 'moderate' : score >= 25 ? 'strained' : 'critical';
+        return `
+          <div class="dimension-row">
+            <div class="dimension-name">${dimensionNames[i]}</div>
+            <div class="dimension-bar">
+              <div class="dimension-fill ${tierClass}" style="width: 0%;" data-target="${score}"></div>
+            </div>
+            <div class="dimension-score">${score}</div>
+          </div>
+        `;
+      }).join('');
+
+      const lowestScores = dimensionScores
+        .map((score, i) => ({ score, index: i }))
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 3);
+
+      insightCards.innerHTML = lowestScores.map(({ score, index }) => {
+        const questionId = questions[index].id;
+        const answerText = answers[index].text;
+        const insightTemplate = insights[questionId];
+
+        if (!insightTemplate) return '';
+
+        const body = insightTemplate.body.replace('{answer}', answerText);
+        const firstLetter = dimensionNames[index].charAt(0);
+
+        return `
+          <div class="insight-card">
+            <div class="insight-icon">${firstLetter}</div>
+            <div class="insight-title">${insightTemplate.title}</div>
+            <div class="insight-body">${body}</div>
+            <div class="insight-benchmark">${insightTemplate.benchmark}</div>
+          </div>
+        `;
+      }).join('');
+
+      animateCountUp(scoreNumber, compositeScore);
+      animateDimensionBars();
+    }
+
+    function animateCountUp(element, target) {
+      const duration = 1500;
+      const start = 0;
+      const startTime = Date.now();
+
+      function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+      }
+
+      function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutQuart(progress);
+        const current = Math.round(start + (target - start) * eased);
+
+        element.textContent = current;
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+
+    function animateDimensionBars() {
+      setTimeout(() => {
+        const bars = document.querySelectorAll('.dimension-fill');
+        bars.forEach(bar => {
+          const target = bar.getAttribute('data-target');
+          bar.style.width = target + '%';
+        });
+      }, 100);
+    }
+
+    function downloadResults() {
+      console.log('Download results:', { compositeScore, tierLabel, dimensionScores });
+      alert('Results download feature coming soon. Your score: ' + compositeScore);
+    }
+
+    // Keyboard Support
+    document.addEventListener('keydown', function(event) {
+      const quizState = document.getElementById('quizState');
+      const contactForm = document.getElementById('contactForm');
+
+      if (!quizState.style.display || quizState.style.display !== 'none') {
+        const question = questions[currentQuestion];
+
+        if (event.key >= '1' && event.key <= '6') {
+          const optionIndex = parseInt(event.key) - 1;
+          if (optionIndex < question.options.length) {
+            selectOption(currentQuestion, optionIndex);
+          }
+        }
+
+        if (event.key === 'Enter') {
+          const nextBtn = document.getElementById('nextBtn');
+          if (!nextBtn.disabled) {
+            nextQuestion();
+          }
+        }
+
+        if (event.key === 'ArrowLeft') {
+          previousQuestion();
+        }
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', initQuiz);
+  </script>
+
+  <!-- Scroll reveal animations -->
+  <script>
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

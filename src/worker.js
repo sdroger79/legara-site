@@ -142,6 +142,16 @@ export default {
       return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
     }
 
+    if (url.pathname === "/api/assessment") {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      if (request.method === "POST") {
+        return handleAssessment(request, env);
+      }
+      return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
+    }
+
     if (url.pathname === "/api/admin/contact-status") {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -160,10 +170,12 @@ export default {
       );
     }
 
-    if (url.pathname.toLowerCase() === "/roi" || url.pathname.toLowerCase() === "/calculator") {
+    // Assessment redirects (old calculator URLs → new assessment)
+    const assessPath = url.pathname.toLowerCase();
+    if (assessPath === "/roi" || assessPath === "/calculator" || assessPath === "/roi-calculator" || assessPath === "/roi-calculator.html") {
       return Response.redirect(
-        "https://golegara.com/roi-calculator.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=calculator_link",
-        302
+        "https://golegara.com/assessment.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=assessment_link",
+        301
       );
     }
 
@@ -451,6 +463,185 @@ async function handleBrevoWebhook(request, env) {
       headers: { "Content-Type": "application/json", ...CORS_HEADERS },
     });
   } catch (err) {
+    return json({ error: err.message }, 500);
+  }
+}
+
+// --- Assessment (BH Capacity Quiz) handler ---
+
+const ASSESSMENT_BREVO_LIST_ID = 8; // Brevo list for quiz leads (create in Brevo if not exists)
+
+async function handleAssessment(request, env) {
+  try {
+    const data = await request.json();
+
+    // Honeypot check
+    if (data.website) {
+      console.log("Assessment honeypot triggered, silently dropping");
+      return json({ ok: true }, 200);
+    }
+
+    // Turnstile verification
+    const cfToken = data["cf-turnstile-response"];
+    if (cfToken && env.TURNSTILE_SECRET) {
+      const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: env.TURNSTILE_SECRET,
+          response: cfToken,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        console.log("Assessment Turnstile failed:", JSON.stringify(verifyData));
+        return json({ error: "Human verification failed" }, 403);
+      }
+    }
+
+    const {
+      email, firstName, lastName, organization, title, sites,
+      utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+      quiz_wait_time, quiz_noshow_rate, quiz_service_scope,
+      quiz_productivity, quiz_time_to_productive, quiz_turnover,
+      quiz_scheduling, quiz_capacity_score, quiz_capacity_tier,
+      quiz_version, ga_client_id
+    } = data;
+
+    if (!email) {
+      return json({ error: "email is required" }, 400);
+    }
+
+    // Basic validation (assessment-specific: no salary field)
+    const onlyNumbers = /^\d+$/;
+    if (!firstName || firstName.trim().length < 2) return json({ ok: true }, 200);
+    if (!lastName || lastName.trim().length < 2) return json({ ok: true }, 200);
+    if (!organization || organization.trim().length < 3) return json({ ok: true }, 200);
+    if (onlyNumbers.test(firstName.trim()) || onlyNumbers.test(lastName.trim())) return json({ ok: true }, 200);
+
+    // Run Brevo + HubSpot in parallel
+    const [brevoRes, hsResult] = await Promise.all([
+      // Brevo: add to assessment-specific list (NOT list 5)
+      fetch("https://api.brevo.com/v3/contacts", {
+        method: "POST",
+        headers: {
+          "api-key": env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          attributes: {
+            FIRSTNAME: firstName || "",
+            LASTNAME: lastName || "",
+            COMPANY: organization || "",
+            JOBTITLE: title || "",
+            UTM_SOURCE: utm_source || "",
+            UTM_MEDIUM: utm_medium || "",
+            UTM_CAMPAIGN: utm_campaign || "",
+            QUIZ_SCORE: quiz_capacity_score || "",
+            QUIZ_TIER: quiz_capacity_tier || "",
+          },
+          listIds: [ASSESSMENT_BREVO_LIST_ID],
+          updateEnabled: true,
+        }),
+      }),
+
+      // HubSpot: upsert with quiz properties
+      upsertHubSpotContact(email, {
+        firstname: firstName || "",
+        lastname: lastName || "",
+        company: organization || "",
+        jobtitle: title || "",
+        quiz_wait_time: quiz_wait_time || "",
+        quiz_noshow_rate: quiz_noshow_rate || "",
+        quiz_service_scope: quiz_service_scope || "",
+        quiz_productivity: quiz_productivity || "",
+        quiz_time_to_productive: quiz_time_to_productive || "",
+        quiz_turnover: quiz_turnover || "",
+        quiz_scheduling: quiz_scheduling || "",
+        quiz_capacity_score: quiz_capacity_score || "",
+        quiz_capacity_tier: quiz_capacity_tier || "",
+        quiz_version: quiz_version || "v1",
+        number_of_sites: sites || "",
+        ga_client_id: ga_client_id || "",
+        utm_campaign: utm_campaign || "",
+        utm_medium: utm_medium || "",
+        utm_content: utm_content || "",
+        utm_term: utm_term || "",
+        hs_lead_status: "NEW",
+        email_sequence: "assessment_followup",
+      }, env),
+    ]);
+
+    const brevoBody = await brevoRes.text();
+    console.log(`Assessment Brevo: ${brevoRes.status} ${brevoBody}`);
+
+    // GA4 server-side event
+    await sendGA4Event("assessment_complete", {
+      quiz_score: quiz_capacity_score || "0",
+      quiz_tier: quiz_capacity_tier || "",
+      organization: organization || "",
+    }, email, env, ga_client_id);
+
+    // Admin notification to Roger
+    let hsStatus;
+    if (hsResult && hsResult.success) {
+      hsStatus = "\u2713 " + (hsResult.action || "synced") + " (ID: " + hsResult.contactId + ")";
+      if (hsResult.strippedFields) {
+        hsStatus += " | Data lost: " + hsResult.strippedFields.join(", ");
+      }
+    } else {
+      hsStatus = "\u2717 FAILED \u2014 " + (hsResult && hsResult.error ? hsResult.error.substring(0, 120) : "unknown error");
+    }
+
+    const tierColor = {
+      Critical: "#dc2626",
+      Strained: "#f59e0b",
+      Moderate: "#3b82f6",
+      Strong: "#16a34a",
+    }[quiz_capacity_tier] || "#666";
+
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
+        sender: { email: "roger@golegara.com", name: "Legara Assessment Alert" },
+        subject: "New Assessment Lead: " + (firstName || "") + " " + (lastName || "") + " \u2014 " + (organization || "Unknown org") + " [" + (quiz_capacity_tier || "?") + " " + (quiz_capacity_score || "?") + "/100]",
+        htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New BH Capacity Assessment</h2>" +
+          "<div style='font-family:sans-serif;font-size:18px;margin:12px 0 20px;'>" +
+          "<span style='font-weight:700;font-size:28px;color:" + tierColor + ";'>" + (quiz_capacity_score || "?") + "/100</span>" +
+          " <span style='background:" + tierColor + ";color:#fff;padding:3px 10px;border-radius:4px;font-size:13px;font-weight:600;'>" + (quiz_capacity_tier || "?") + "</span></div>" +
+          "<table style='width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;'>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;width:180px;'>Name</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (firstName || "") + " " + (lastName || "") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Email</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + email + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Organization</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (organization || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Title</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (title || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Sites</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (sites || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:10px 12px;border-bottom:1px solid #eee;font-weight:600;'>Source</td><td style='padding:10px 12px;border-bottom:1px solid #eee;'>" + (utm_source || "direct") + " / " + (utm_medium || "\u2014") + " / " + (utm_campaign || "\u2014") + "</td></tr>" +
+          "</table>" +
+          "<h3 style='color:#1a6b4a;font-family:sans-serif;margin-top:24px;'>Quiz Responses</h3>" +
+          "<table style='width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;'>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;width:180px;'>Wait Time</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_wait_time || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>No-Show Rate</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_noshow_rate || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>Service Scope</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_service_scope || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>Productivity</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_productivity || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>Time to Productive</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_time_to_productive || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>Turnover</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_turnover || "\u2014") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;'>Scheduling</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>" + (quiz_scheduling || "\u2014") + "</td></tr>" +
+          "</table>" +
+          "<p style='font-family:sans-serif;font-size:13px;color:#666;margin-top:16px;'>HubSpot: " + hsStatus + "</p>" +
+          "<p style='font-family:sans-serif;font-size:13px;color:#666;'>This lead completed the BH Capacity Assessment. Check <a href=\"https://app.hubspot.com\">HubSpot</a> for full details.</p>",
+      }),
+    });
+
+    return json({ ok: true }, 200);
+  } catch (err) {
+    console.error("Assessment handler error:", err);
     return json({ error: err.message }, 500);
   }
 }
