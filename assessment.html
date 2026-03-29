@@ -690,54 +690,136 @@
       color: var(--slate);
     }
 
-    /* Contact Form */
+    /* Contact Form / Score Unlock */
     .contact-form {
       display: none;
-      animation: fadeIn 0.3s ease;
+      animation: fadeIn 0.4s ease;
     }
 
     .contact-form.active {
       display: block;
     }
 
-    .contact-form h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
+    /* Score teaser card */
+    .score-teaser {
+      text-align: center;
+      padding: 28px 24px;
+      background: linear-gradient(135deg, #f0f7f4 0%, #f8faf9 100%);
+      border: 1px solid #d4e8dd;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-teaser-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--charcoal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
       margin-bottom: 12px;
+    }
+
+    .score-teaser-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 8px;
+      filter: blur(8px);
+      user-select: none;
+      transition: filter 0.6s ease;
+    }
+
+    .score-teaser-tier {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .score-teaser-tier.strong { background: #1a6b4a; }
+    .score-teaser-tier.moderate { background: #b8860b; }
+    .score-teaser-tier.strained { background: #cc6633; }
+    .score-teaser-tier.critical { background: #dc3545; }
+
+    .score-teaser-gauge {
+      width: 100%;
+      height: 6px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .score-teaser-gauge-fill {
+      height: 100%;
+      background: linear-gradient(to right, #dc3545, #cc6633, #b8860b, #1a6b4a);
+      border-radius: 3px;
+      transition: width 1s ease-out;
+      width: 0%;
+    }
+
+    .score-teaser-unlock {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--mist);
+      margin-top: 14px;
+    }
+
+    .contact-form h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+      text-align: center;
     }
 
     .contact-form .form-intro {
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--charcoal);
-      margin-bottom: 32px;
-      line-height: 1.6;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--mist);
+      margin-bottom: 24px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .form-group label {
       display: block;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--charcoal);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 12px 16px;
+      padding: 11px 14px;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--charcoal);
       box-sizing: border-box;
       transition: border-color 0.2s ease;
@@ -747,6 +829,7 @@
     .form-group select:focus {
       outline: none;
       border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(26, 107, 74, 0.08);
     }
 
     .form-group input[type="hidden"] {
@@ -758,12 +841,14 @@
     }
 
     #turnstile-container {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .form-submit {
       width: 100%;
-      margin-top: 32px;
+      margin-top: 8px;
+      padding: 14px;
+      font-size: 15px;
     }
 
     .form-privacy {
@@ -771,8 +856,17 @@
       font-size: 12px;
       color: var(--mist);
       text-align: center;
-      margin-top: 16px;
+      margin-top: 12px;
       line-height: 1.5;
+    }
+
+    @media (max-width: 500px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .score-teaser-number {
+        font-size: 44px;
+      }
     }
 
     /* Results Page */
@@ -1380,7 +1474,7 @@
         <div class="intro-card intro-card--solution">
           <span class="intro-card-label">What this measures</span>
           <p>This assessment scores the 7 operational dimensions that determine whether your BH program can scale. Not just headcount, but the structural factors underneath: access, utilization, retention, and scheduling infrastructure.</p>
-          <div class="stat-callout">Benchmarked against <span>50,000+</span> annual encounters across active FQHC partnerships.</div>
+          <div class="stat-callout">Scored against a growing benchmark of <span>50,000+</span> annual Legara encounters, plus every organization that takes this assessment.</div>
         </div>
       </div>
 
@@ -1394,22 +1488,23 @@
       </div>
 
       <button class="btn-hero-start" onclick="startAssessment()">Score My BH Capacity</button>
-      <p class="trust-text">90 seconds. No email required to start.</p>
+      <p class="trust-text">90 seconds. No email required to start. Your results contribute to the benchmark.</p>
     </section>
 
     <div class="quiz-container" id="quizContainerMain">
+      <!-- Progress bar (persists across quiz and form states) -->
+      <div class="progress-wrapper" id="progressWrapper">
+        <div class="progress-header">
+          <span class="progress-label" id="progressLabel">Question 1 of 7</span>
+          <span class="progress-percentage" id="progressPercentage">14%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
       <!-- Quiz State -->
       <div id="quizState" class="quiz-state">
-        <div class="progress-wrapper">
-          <div class="progress-header">
-            <span class="progress-label" id="progressLabel">Question 1 of 7</span>
-            <span class="progress-percentage" id="progressPercentage">14%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-        </div>
-
         <div class="quiz-back-row">
           <button class="quiz-back-btn hidden" id="backBtn" onclick="previousQuestion()">&#8592; Back</button>
         </div>
@@ -1428,46 +1523,40 @@
         </div>
       </div>
 
-      <!-- Contact Form State -->
+      <!-- Contact Form / Score Unlock State -->
       <form class="contact-form" id="contactForm" onsubmit="submitAssessmentForm(event)">
-        <h2>Your score is ready.</h2>
-        <p class="form-intro">Enter your details to see your personalized Capacity Index results and benchmark comparisons.</p>
+        <div class="score-teaser" id="scoreTeaser">
+          <div class="score-teaser-label">Your BH Capacity Index</div>
+          <div class="score-teaser-number" id="teaserScore">--</div>
+          <div class="score-teaser-tier" id="teaserTier">Calculating...</div>
+          <div class="score-teaser-gauge">
+            <div class="score-teaser-gauge-fill" id="teaserGauge"></div>
+          </div>
+          <div class="score-teaser-unlock">Complete the form below to unlock your full results</div>
+        </div>
 
-        <div class="form-group">
-          <label for="assessFirstName">First Name *</label>
-          <input type="text" id="assessFirstName" name="firstName" required>
+        <h2>Almost there.</h2>
+        <p class="form-intro">See your full breakdown, dimension scores, and personalized findings.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assessFirstName">First Name</label>
+            <input type="text" id="assessFirstName" name="firstName" required placeholder="Jane">
+          </div>
+          <div class="form-group">
+            <label for="assessLastName">Last Name</label>
+            <input type="text" id="assessLastName" name="lastName" required placeholder="Smith">
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="assessLastName">Last Name *</label>
-          <input type="text" id="assessLastName" name="lastName" required>
+          <label for="assessOrg">Organization</label>
+          <input type="text" id="assessOrg" name="organization" required placeholder="Your health center">
         </div>
 
         <div class="form-group">
-          <label for="assessTitle">Title / Role *</label>
-          <input type="text" id="assessTitle" name="title" required>
-        </div>
-
-        <div class="form-group">
-          <label for="assessOrg">Organization *</label>
-          <input type="text" id="assessOrg" name="organization" required>
-        </div>
-
-        <div class="form-group">
-          <label for="assessEmail">Email *</label>
-          <input type="email" id="assessEmail" name="email" required>
-        </div>
-
-        <div class="form-group">
-          <label for="assessSites">Number of Sites *</label>
-          <select id="assessSites" name="sites" required>
-            <option value="">Select...</option>
-            <option value="1-3">1-3</option>
-            <option value="4-7">4-7</option>
-            <option value="8-15">8-15</option>
-            <option value="16-30">16-30</option>
-            <option value="30+">30+</option>
-          </select>
+          <label for="assessEmail">Work Email</label>
+          <input type="email" id="assessEmail" name="email" required placeholder="jane@example.org">
         </div>
 
         <div class="form-group honeypot">
@@ -1476,8 +1565,8 @@
 
         <div id="turnstile-container"></div>
 
-        <button type="submit" class="btn-primary form-submit">Get My Results</button>
-        <p class="form-privacy">Your information is used solely to deliver your assessment results. We don't share your data.</p>
+        <button type="submit" class="btn-primary form-submit">Unlock My Results</button>
+        <p class="form-privacy">We'll only use this to deliver your results. No spam, no sales calls.</p>
       </form>
 
       <!-- Results State -->
@@ -1853,11 +1942,19 @@
       const quizState = document.getElementById('quizState');
       const loadingState = document.getElementById('loadingState');
 
+      // Calculate scores now so we can tease them
+      calculateScores();
+
       quizState.style.opacity = '0';
 
       setTimeout(() => {
         quizState.style.display = 'none';
         loadingState.classList.add('active');
+
+        // Keep progress bar at 100%
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressLabel').textContent = 'Assessment complete';
+        document.getElementById('progressPercentage').textContent = '100%';
 
         setTimeout(() => {
           transitionToContactForm();
@@ -1871,8 +1968,23 @@
 
       loadingState.classList.remove('active');
       loadingState.style.display = 'none';
+
+      // Populate score teaser
+      document.getElementById('teaserScore').textContent = compositeScore;
+      const teaserTier = document.getElementById('teaserTier');
+      teaserTier.textContent = tierLabel;
+      teaserTier.className = 'score-teaser-tier ' + tierLabel.toLowerCase();
+
+      // Animate gauge fill
+      setTimeout(() => {
+        document.getElementById('teaserGauge').style.width = compositeScore + '%';
+      }, 100);
+
       contactForm.classList.add('active');
-      contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Scroll focus card to top
+      const focusCard = document.getElementById('focusCard');
+      if (focusCard) focusCard.scrollTop = 0;
     }
 
     async function submitAssessmentForm(e) {
@@ -1881,9 +1993,9 @@
       const firstName = document.getElementById('assessFirstName').value.trim();
       const lastName = document.getElementById('assessLastName').value.trim();
       const org = document.getElementById('assessOrg').value.trim();
-      const title = document.getElementById('assessTitle').value.trim();
+      const title = ''; // captured later in HubSpot
       const email = document.getElementById('assessEmail').value.trim();
-      const sites = document.getElementById('assessSites').value;
+      const sites = ''; // captured later in HubSpot
       const honeypot = document.querySelector('[name="website"]').value;
       const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
 
@@ -1893,7 +2005,7 @@
       const gaCookie = document.cookie.split(';').find(c => c.trim().startsWith('_ga='));
       const gaClientId = gaCookie ? gaCookie.split('.').slice(-2).join('.') : '';
 
-      calculateScores();
+      // Scores already calculated in transitionToLoadingState
 
       const quizData = {
         quiz_wait_time: answers[0]?.text || '',
