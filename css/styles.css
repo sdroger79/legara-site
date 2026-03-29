@@ -29,6 +29,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ─── NAVIGATION ─── */
 nav {
   position: fixed;
@@ -1550,6 +1555,7 @@ footer {
   }
 
   /* Override inline padding on proof-bar-style flex rows */
+  div[style*="padding:20px 48px"],
   div[style*="padding: 20px 48px"] {
     padding: 16px 20px !important;
   }
@@ -1672,6 +1678,49 @@ footer {
   /* Form container padding override */
   div[style*="padding: 40px"] {
     padding: 24px 16px !important;
+  }
+
+  /* Comparison tables: tighten for small screens */
+  .comparison-header {
+    gap: 8px !important;
+    padding-right: 0 !important;
+  }
+
+  .comp-head {
+    width: 40px !important;
+    font-size: 9px !important;
+  }
+
+  .comparison-row {
+    gap: 8px;
+    font-size: 13px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .comparison-feature {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .comparison-symbols {
+    gap: 8px !important;
+    flex-shrink: 0;
+  }
+
+  .comparison-no,
+  .comparison-yes,
+  .comparison-neutral {
+    width: 40px !important;
+    font-size: 16px !important;
+  }
+
+  .why-aside {
+    padding: 24px 16px !important;
+  }
+
+  .stat-highlight {
+    min-width: 0 !important;
+    flex-basis: 100% !important;
   }
 }
 
