@@ -338,7 +338,7 @@ function generateReport(orgName) {
     { columnStyles: { 0: { cellWidth: CONTENT_W * 0.28 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } } }
   );
 
-  y = bodyText('Timeline: Internal hires take approximately ' + d.totalRampMonths + ' months to reach full productivity (recruiting, onboarding, credentialing, payer enrollment, and caseload building). Legara providers are typically seeing patients within 5 months, at zero cost to your health center during the ramp period.', y);
+  y = bodyText('Timeline: Internal hires take approximately ' + d.totalRampMonths + ' months to reach full productivity (recruiting, onboarding, credentialing, payer enrollment, and caseload building). Legara providers can be seeing patients in as few as 6 weeks from signed contract, at zero cost to your health center during the ramp period.', y);
 
   // Utilization callout + CTA block
   doc.setFontSize(9);
@@ -691,7 +691,7 @@ function generateReport(orgName) {
     'Encounter-based pricing: One rate per completed, billable encounter. No other costs. No salary, no benefits, no support staff overhead.',
     'Higher utilization: Legara providers operate at 82% effective utilization (vs. ~52% for employed providers) because we\u2019ve removed organizational overhead from their schedules.',
     'No turnover risk: If a provider leaves, Legara handles the backfill. No new recruiter fee, no new ramp period, no gap in coverage.',
-    'Faster time to revenue: Legara providers are typically seeing patients within 5 months vs. 11+ months for a traditional internal hire. That\u2019s 6 additional months of billable encounters in Year 1.'
+    'Faster time to revenue: Legara providers can be seeing patients in as few as 6 weeks from signed contract vs. months of salary during a traditional internal hire ramp. That means months of additional billable encounters in Year 1.'
   ];
 
   bullets.forEach(function(b) {
