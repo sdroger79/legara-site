@@ -1843,7 +1843,12 @@
     let questionDirection = 'forward';
 
     // Initialize Quiz
+    var quizStarted = false;
+    var quizCompleted = false;
+    var lastQuestionSeen = 0;
+
     function initQuiz() {
+      quizStarted = true;
       renderQuestion(0);
       if (typeof turnstile !== 'undefined') {
         turnstile.render('#turnstile-container', {
@@ -1925,11 +1930,21 @@
         if (selectedCard) selectedCard.classList.add('selected');
       }
 
-      if (index === 0 && typeof gtag === 'function') {
-        gtag('event', 'quiz_start', {
-          event_category: 'Assessment'
+      if (typeof gtag === 'function') {
+        if (index === 0) {
+          gtag('event', 'quiz_start', {
+            event_category: 'Assessment'
+          });
+        }
+        gtag('event', 'quiz_question_view', {
+          event_category: 'Assessment',
+          question_id: questions[index].id,
+          question_number: index + 1,
+          question_total: questions.length
         });
       }
+
+      lastQuestionSeen = index;
     }
 
     function selectOption(questionIndex, optionIndex) {
@@ -2034,6 +2049,34 @@
 
       contactForm.classList.add('active');
 
+      // GA4: form view
+      if (typeof gtag === 'function') {
+        gtag('event', 'quiz_form_view', {
+          event_category: 'Assessment',
+          quiz_score: compositeScore,
+          quiz_tier: tierLabel
+        });
+      }
+
+      // GA4: form start (first field focus)
+      (function() {
+        var formStarted = false;
+        var formFields = document.querySelectorAll('#contactForm input');
+        formFields.forEach(function(field) {
+          field.addEventListener('focus', function() {
+            if (!formStarted) {
+              formStarted = true;
+              if (typeof gtag === 'function') {
+                gtag('event', 'quiz_form_start', {
+                  event_category: 'Assessment',
+                  field_name: field.name || field.id
+                });
+              }
+            }
+          });
+        });
+      })();
+
       // Scroll focus card to top
       const focusCard = document.getElementById('focusCard');
       if (focusCard) focusCard.scrollTop = 0;
@@ -2041,6 +2084,7 @@
 
     async function submitAssessmentForm(e) {
       e.preventDefault();
+      quizCompleted = true;
 
       const firstName = document.getElementById('assessFirstName').value.trim();
       const lastName = document.getElementById('assessLastName').value.trim();
@@ -2312,6 +2356,24 @@
         if (event.key === 'Escape' && inFocusMode) {
           exitFocusMode();
         }
+      }
+    });
+
+    // GA4: abandon detection via sendBeacon on page unload
+    window.addEventListener('beforeunload', function() {
+      if (quizStarted && !quizCompleted && typeof navigator.sendBeacon === 'function') {
+        var gaCookie = document.cookie.split(';').find(function(c) { return c.trim().startsWith('_ga='); });
+        var cid = gaCookie ? gaCookie.split('.').slice(-2).join('.') : 'anonymous';
+        var reachedForm = document.getElementById('contactForm').offsetParent !== null ? 'yes' : 'no';
+        navigator.sendBeacon(
+          'https://www.google-analytics.com/g/collect?' +
+          'v=2&tid=G-GC0KH378ZK&cid=' + encodeURIComponent(cid) +
+          '&en=quiz_abandon' +
+          '&ep.event_category=Assessment' +
+          '&ep.last_question_number=' + (lastQuestionSeen + 1) +
+          '&ep.questions_completed=' + Object.keys(answers).length +
+          '&ep.reached_form=' + reachedForm
+        );
       }
     });
 
