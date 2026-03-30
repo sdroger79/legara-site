@@ -1,6 +1,30 @@
 [
   {
     "date": "2026-03-29",
+    "type": "update",
+    "title": "BD Team Portal Now Live",
+    "body": "Your new team portal is live at GoLegara.com/team (password: legara-team-2026). It has everything in one place: current messaging, competitive positioning, key numbers, objection handling, sales process, and this changelog. Check your email from Roger for the full intro."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "update",
+    "title": "Partners Page Rewritten with Deployment Models",
+    "body": "The Partners page now shows four real deployment archetypes (Scale, Rural Access, Backfill, Language Access) instead of fictional partner profiles. Use these when prospects ask 'who else does this?' — each model maps to a common FQHC scenario."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "update",
+    "title": "Assessment Results Page Enhanced",
+    "body": "Prospects who complete the assessment now get tier-specific next steps ('What Organizations at Your Level Typically Do Next'), a results email, and explore links. The experience is significantly better — they get immediate value, not just a form fill. If a prospect mentions their score or tier in conversation, you can reference the same framework."
+  },
+  {
+    "date": "2026-03-29",
+    "type": "fix",
+    "title": "Client-Facing Page Copy Cleaned Up",
+    "body": "Removed internal jargon ('ramp') from several client-facing pages and fixed a factual error on the Clinical landing page. Blog posts now cross-link to each other. Nothing you need to do differently — just cleaner pages when you share links."
+  },
+  {
+    "date": "2026-03-29",
     "type": "major",
     "title": "Messaging Pivot Complete",
     "body": "All external content now leads with structural differentiation, not financial savings. The narrative arc is: Recognition → Understanding → Proof → Financial Validation. Financial messaging is deemphasized, not eliminated. 'Mission cash generated' stays as a phrase, but arrives 4th in the conversation, not 1st."
