@@ -537,7 +537,7 @@ async function handleBrevoWebhook(request, env) {
       },
       body: JSON.stringify({
         to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
-        sender: { email: "roger@golegara.com", name: "Legara Lead Alert" },
+        sender: { email: "roger@em.golegara.com", name: "Legara Lead Alert" },
         subject: "New ROI Calculator Lead: " + (firstName || "") + " " + (lastName || "") + " — " + (organization || "Unknown org"),
         htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New Calculator Lead</h2>" +
           "<table style='width:100%;border-collapse:collapse;font-family:sans-serif;font-size:14px;'>" +
@@ -749,7 +749,8 @@ async function handleAssessment(request, env) {
       Strong: "#16a34a",
     }[quiz_capacity_tier] || "#666";
 
-    await fetch("https://api.brevo.com/v3/smtp/email", {
+    try {
+      const alertRes = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
         "api-key": env.BREVO_API_KEY,
@@ -757,7 +758,7 @@ async function handleAssessment(request, env) {
       },
       body: JSON.stringify({
         to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
-        sender: { email: "roger@golegara.com", name: "Legara Assessment Alert" },
+        sender: { email: "roger@em.golegara.com", name: "Legara Assessment Alert" },
         subject: (isABMTarget ? "\uD83C\uDFAF ABM TARGET: " : "") + "New Assessment Lead: " + (firstName || "") + " " + (lastName || "") + " \u2014 " + (organization || "Unknown org") + " [" + (quiz_capacity_tier || "?") + " " + (quiz_capacity_score || "?") + "/100]",
         htmlContent: "<h2 style='color:#1a6b4a;font-family:sans-serif;'>New BH Capacity Assessment</h2>" +
           "<div style='font-family:sans-serif;font-size:18px;margin:12px 0 20px;'>" +
@@ -786,6 +787,11 @@ async function handleAssessment(request, env) {
           "<p style='font-family:sans-serif;font-size:13px;color:#666;'>This lead completed the BH Capacity Assessment. Check <a href=\"https://app.hubspot.com\">HubSpot</a> for full details.</p>",
       }),
     });
+      const alertBody = await alertRes.text();
+      console.log("Roger alert email: " + alertRes.status + " " + alertBody);
+    } catch (alertErr) {
+      console.error("Roger alert email error:", alertErr);
+    }
 
     // Send results summary email to the user
     try {
@@ -803,7 +809,7 @@ async function handleAssessment(request, env) {
         return "<tr><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;font-weight:500;color:#4a5e54;'>" + label + "</td><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;color:#1c2b24;'>" + (dimValues[i] || "\u2014") + "</td></tr>";
       }).join("");
 
-      await fetch("https://api.brevo.com/v3/smtp/email", {
+      const userEmailRes = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
           "api-key": env.BREVO_API_KEY,
@@ -811,7 +817,7 @@ async function handleAssessment(request, env) {
         },
         body: JSON.stringify({
           to: [{ email: email, name: ((firstName || "") + " " + (lastName || "")).trim() }],
-          sender: { email: "roger@golegara.com", name: "Roger Stellers" },
+          sender: { email: "roger@em.golegara.com", name: "Roger Stellers" },
           replyTo: { email: "roger@golegara.com", name: "Roger Stellers" },
           subject: "Your BH Capacity Assessment Results \u2014 " + (quiz_capacity_score || "?") + "/100",
           htmlContent:
@@ -839,6 +845,8 @@ async function handleAssessment(request, env) {
             "</div>",
         }),
       });
+      const userEmailBody = await userEmailRes.text();
+      console.log("User results email: " + userEmailRes.status + " " + userEmailBody);
     } catch (emailErr) {
       console.error("User results email failed:", emailErr);
     }
@@ -1826,7 +1834,8 @@ async function handleEmailReport(request, env) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        sender: { name: "Roger Stellers | Legara", email: "roger@golegara.com" },
+        sender: { name: "Roger Stellers | Legara", email: "roger@em.golegara.com" },
+        replyTo: { email: "roger@golegara.com", name: "Roger Stellers" },
         to: [{ email, name: ((firstName || "") + " " + (lastName || "")).trim() }],
         subject: "Your Legara ROI Analysis for " + (organization || "Your Health Center"),
         htmlContent: "<html><body style='font-family: sans-serif; color: #1c2b24; max-width: 600px; margin: 0 auto;'><p style='margin-bottom: 16px;'>Hi " + (firstName || "there") + ",</p><p style='margin-bottom: 16px;'>Your personalized ROI analysis is attached. These results use industry benchmarks. Your organization's real numbers tell a more specific story.</p><p style='margin-bottom: 16px;'>If you'd like to see what the analysis looks like with your actual data, I'd welcome a quick conversation.</p><p style='margin-bottom: 24px;'><a href='https://cal.com/roger-golegara.com/legara-roi-review?utm_source=brevo&utm_medium=email&utm_campaign=roi-pdf-report' style='background: #1a6b4a; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;'>Schedule a 30-Minute Conversation</a></p><p style='margin-bottom: 4px;'>Roger Stellers</p><p style='color: #4a5e54; font-size: 14px;'>CEO, Legara Inc.</p><p style='color: #8fa89e; font-size: 13px;'>roger@golegara.com | 760-479-7860</p></body></html>",
@@ -1883,7 +1892,7 @@ async function handleBetaFeedback(request, env) {
       },
       body: JSON.stringify({
         to: [{ email: "roger@golegara.com", name: "Roger Stellers" }],
-        sender: { email: "roger@golegara.com", name: "Legara Beta Test" },
+        sender: { email: "roger@em.golegara.com", name: "Legara Beta Test" },
         subject: `Beta Feedback: ${data.name || "Anonymous"} — ${data.rating_overall || "?"}/5`,
         htmlContent: lines,
       }),
