@@ -590,6 +590,99 @@ const ABM_TARGET_DOMAINS = [
   "coastal.org", "cchealth.org", "rivcommhealth.org"
 ];
 
+const DIMENSION_INSIGHTS = {
+  quiz_wait_time: {
+    name: "Wait Time", title: "Access Bottleneck",
+    body: "You reported wait times of {answer}. Every week beyond two is a week patients either escalate to crisis, disengage entirely, or land in the ED.",
+    benchmark: "Benchmark: <2 weeks for new BH appointments. Programs with dedicated capacity infrastructure average 8 days."
+  },
+  quiz_noshow_rate: {
+    name: "No-Show Rate", title: "No-Show Recovery Gap",
+    body: "You reported that {answer}. Without active backfill protocols and dedicated scheduling, cancelled slots become unrecoverable dead time.",
+    benchmark: "Benchmark: 14% no-show rate with active backfill. Dedicated BH scheduling recovers 40-60% of cancellations same-day."
+  },
+  quiz_service_scope: {
+    name: "Service Scope", title: "Service Line Gap",
+    body: "You offer {answer}. Patients who need both therapy and medication management but can only access one create referral leakage.",
+    benchmark: "Benchmark: Full-spectrum programs retain 78% of patients vs. 34% for single-service."
+  },
+  quiz_productivity: {
+    name: "Provider Productivity", title: "Utilization Drag",
+    body: "You reported that {answer}. The typical salaried FQHC behavioral health provider completes about 1.0-1.5 encounters per hour. That is not a provider problem. It is an infrastructure problem.",
+    benchmark: "Benchmark: Purpose-built programs achieve 2.5 enc/hr (PMHNP) and 1.5 enc/hr (therapy) through dedicated operational support."
+  },
+  quiz_time_to_productive: {
+    name: "Time to Productive", title: "Ramp Cost Exposure",
+    body: "Getting a new provider productive in {answer} means months of full salary with partial or zero encounter revenue.",
+    benchmark: "Benchmark: Purpose-built programs can have providers seeing patients in as few as 6 weeks from signed contract."
+  },
+  quiz_turnover: {
+    name: "Provider Turnover", title: "Replacement Cycle",
+    body: "You have lost {answer} in 12 months. Each departure restarts a months-long cycle of recruiting, credentialing, and panel building.",
+    benchmark: "Benchmark: Programs with dedicated operational infrastructure maintain <3% annual turnover vs. the ~30% FQHC average."
+  },
+  quiz_scheduling: {
+    name: "Scheduling Model", title: "Scheduling Infrastructure Gap",
+    body: "Your behavioral health scheduling is handled by {answer}. BH scheduling has fundamentally different requirements than primary care.",
+    benchmark: "Benchmark: Dedicated BH scheduling at a 1:3-4 scheduler-to-provider ratio drives 25-35% higher utilization."
+  }
+};
+
+const TIER_NEXT_STEPS = {
+  Critical: {
+    context: "Organizations scoring in the Critical range typically have structural constraints that hiring alone cannot resolve. The gaps are systemic, not situational.",
+    items: [
+      "Map where your current providers spend non-clinical time. The gap between scheduled hours and completed encounters reveals the structural overhead.",
+      "Quantify your true cost per completed encounter, not per provider. Factor in no-shows, ramp time, benefits, and support staff.",
+      "Talk to someone who has seen the pattern across multiple health centers. A 30-minute walkthrough of your scores can clarify which gaps are fixable internally and which need a different operating structure."
+    ]
+  },
+  Strained: {
+    context: "Organizations scoring in the Strained range are typically doing the right things but hitting structural limits. The demand is there. The intent is there. The operating model is the bottleneck.",
+    items: [
+      "Identify which of your lowest-scoring dimensions are within your control to fix internally, and which are structural constraints of the employment model.",
+      "Calculate what your behavioral health program would look like with 30 more points of effective utilization.",
+      "Explore what a purpose-built operating layer looks like running alongside your existing team. Not instead of. Alongside."
+    ]
+  },
+  Moderate: {
+    context: "Organizations scoring in the Moderate range have a functional program but are likely leaving capacity on the table. The question is not whether you can serve more patients. It is whether your current infrastructure lets you.",
+    items: [
+      "Look at your two lowest-scoring dimensions. Those are where incremental investment yields the highest return in patient access.",
+      "Benchmark your provider utilization against the 82% standard that purpose-built behavioral health infrastructure achieves.",
+      "Consider whether your next capacity expansion should follow the same model as your current one, or whether a different structure could get you there faster with less risk."
+    ]
+  },
+  Strong: {
+    context: "Organizations scoring in the Strong range are outperforming most FQHCs on behavioral health capacity. Your infrastructure is working. The question now is scale and sustainability.",
+    items: [
+      "Pressure-test your weakest 1-2 dimensions. Even strong programs have structural vulnerabilities that show up under growth or turnover.",
+      "Model what happens to your capacity metrics if you lose one provider. Strong programs with thin margins become strained programs fast.",
+      "Explore whether a blended model (internal staff plus purpose-built external capacity) could protect your metrics while expanding access further."
+    ]
+  }
+};
+
+function scoreDimension(field, value) {
+  if (!value) return 50;
+  var v = value.toLowerCase();
+  var maps = {
+    quiz_wait_time: [["under 2", 100], ["2-4", 75], ["1-2 month", 50], ["2-3 month", 25], ["3+", 0]],
+    quiz_noshow_rate: [["under 10", 100], ["10-20", 75], ["20-30", 50], ["30-40", 25], ["over 40", 0], ["don't track", 25]],
+    quiz_service_scope: [["full spectrum", 100], ["therapy and basic", 75], ["therapy only", 50], ["medication management only", 25], ["limited", 0], ["referral", 0]],
+    quiz_productivity: [["consistently", 100], ["generally", 75], ["below target", 50], ["significantly", 25], ["don't track", 25]],
+    quiz_time_to_productive: [["under 3", 100], ["3-6", 75], ["6-9", 50], ["9-12", 25], ["over 12", 0]],
+    quiz_turnover: [["none", 100], ["1 provider", 75], ["2-3", 50], ["4+", 0], ["trouble", 25]],
+    quiz_scheduling: [["dedicated", 100], ["shared scheduling", 75], ["front desk", 50], ["providers manage", 25], ["no formal", 0]]
+  };
+  var fieldMap = maps[field];
+  if (!fieldMap) return 50;
+  for (var i = 0; i < fieldMap.length; i++) {
+    if (v.includes(fieldMap[i][0])) return fieldMap[i][1];
+  }
+  return 50;
+}
+
 async function handleAssessment(request, env) {
   try {
     const data = await request.json();
@@ -826,6 +919,33 @@ async function handleAssessment(request, env) {
         return "<tr><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;font-weight:500;color:#4a5e54;'>" + label + "</td><td style='padding:10px 16px;border-bottom:1px solid #edf2ef;color:#1c2b24;'>" + (dimValues[i] || "\u2014") + "</td></tr>";
       }).join("");
 
+      // Calculate dimension scores for gap analysis
+      const dimFields = ["quiz_wait_time", "quiz_noshow_rate", "quiz_service_scope", "quiz_productivity", "quiz_time_to_productive", "quiz_turnover", "quiz_scheduling"];
+      const dimFieldValues = { quiz_wait_time, quiz_noshow_rate, quiz_service_scope, quiz_productivity, quiz_time_to_productive, quiz_turnover, quiz_scheduling };
+      const dimScored = dimFields.map(function(f) { return { field: f, score: scoreDimension(f, dimFieldValues[f]), value: dimFieldValues[f] || "" }; });
+      const top3Gaps = dimScored.slice().sort(function(a, b) { return a.score - b.score; }).slice(0, 3);
+
+      const gapRows = top3Gaps.map(function(gap, i) {
+        var insight = DIMENSION_INSIGHTS[gap.field];
+        if (!insight) return "";
+        var bodyText = insight.body.replace("{answer}", gap.value);
+        var scoreColor = gap.score >= 75 ? "#16a34a" : gap.score >= 50 ? "#3b82f6" : gap.score >= 25 ? "#f59e0b" : "#dc2626";
+        return "<div style='margin-bottom:20px;padding:20px;background:#f9fafb;border-radius:8px;border-left:4px solid " + scoreColor + ";'>" +
+          "<div style='font-weight:600;color:#1c2b24;font-size:15px;margin-bottom:6px;'>" + (i + 1) + ". " + insight.title + "</div>" +
+          "<div style='color:#4a5e54;font-size:14px;line-height:1.6;margin-bottom:8px;'>" + bodyText + "</div>" +
+          "<div style='color:#8fa89e;font-size:13px;font-style:italic;'>" + insight.benchmark + "</div>" +
+          "</div>";
+      }).join("");
+
+      var tierSteps = TIER_NEXT_STEPS[quiz_capacity_tier] || TIER_NEXT_STEPS["Moderate"];
+      var nextStepsHtml = "<div style='color:#4a5e54;font-size:14px;line-height:1.7;margin-bottom:16px;'>" + tierSteps.context + "</div>" +
+        tierSteps.items.map(function(item, i) {
+          return "<table cellpadding='0' cellspacing='0' border='0' style='margin-bottom:14px;'><tr>" +
+            "<td style='vertical-align:top;width:28px;padding-right:12px;'><div style='width:28px;height:28px;background:#1a6b4a;color:#fff;border-radius:50%;text-align:center;line-height:28px;font-size:13px;font-weight:600;'>" + (i + 1) + "</div></td>" +
+            "<td style='color:#1c2b24;font-size:14px;line-height:1.6;'>" + item + "</td>" +
+            "</tr></table>";
+        }).join("");
+
       const userEmailRes = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
@@ -853,6 +973,10 @@ async function handleAssessment(request, env) {
             "<table style='width:100%;border-collapse:collapse;margin-bottom:32px;'>" +
             dimRows +
             "</table>" +
+            "<h3 style='font-family:Georgia,serif;font-size:18px;color:#1c2b24;margin:32px 0 16px;'>Where the Gaps Are</h3>" +
+            gapRows +
+            "<h3 style='font-family:Georgia,serif;font-size:18px;color:#1c2b24;margin:32px 0 16px;'>What Organizations at Your Level Typically Do Next</h3>" +
+            nextStepsHtml +
             "<div style='background:#f4faf7;border-radius:12px;padding:24px;margin-bottom:32px;'>" +
             "<h3 style='font-family:Georgia,serif;font-size:16px;color:#1c2b24;margin-bottom:8px;'>Want to walk through these results?</h3>" +
             "<p style='font-size:14px;color:#4a5e54;line-height:1.6;margin-bottom:16px;'>30 minutes with me to map your scores to what other FQHCs with similar profiles have done. No pitch, no proposal.</p>" +
