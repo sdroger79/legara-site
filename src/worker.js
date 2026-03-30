@@ -1,5 +1,5 @@
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://golegara.com",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
@@ -47,7 +47,8 @@ export default {
     const url = new URL(request.url);
 
     // Redirect www to non-www (SEO: canonical domain)
-    if (url.hostname === "www.golegara.com") {
+    // Skip redirect for API routes — 301 converts POST to GET, dropping request bodies
+    if (url.hostname === "www.golegara.com" && !url.pathname.startsWith("/api/")) {
       const newUrl = new URL(url);
       newUrl.hostname = "golegara.com";
       return Response.redirect(newUrl.toString(), 301);
