@@ -593,12 +593,14 @@ const ABM_TARGET_DOMAINS = [
 async function handleAssessment(request, env) {
   try {
     const data = await request.json();
+    console.log("Assessment handler entered, data keys:", Object.keys(data).join(", "));
 
     // Honeypot check
     if (data.website) {
       console.log("Assessment honeypot triggered, silently dropping");
       return json({ ok: true }, 200);
     }
+    console.log("Assessment: honeypot clear, checking turnstile");
 
     // Turnstile verification
     const cfToken = data["cf-turnstile-response"];
@@ -617,6 +619,7 @@ async function handleAssessment(request, env) {
         return json({ error: "Human verification failed" }, 403);
       }
     }
+    console.log("Assessment: turnstile OK, extracting fields");
 
     const {
       email, firstName, lastName, organization, title, sites,
@@ -633,10 +636,23 @@ async function handleAssessment(request, env) {
 
     // Basic validation (assessment-specific: no salary field)
     const onlyNumbers = /^\d+$/;
-    if (!firstName || firstName.trim().length < 2) return json({ ok: true }, 200);
-    if (!lastName || lastName.trim().length < 2) return json({ ok: true }, 200);
-    if (!organization || organization.trim().length < 3) return json({ ok: true }, 200);
-    if (onlyNumbers.test(firstName.trim()) || onlyNumbers.test(lastName.trim())) return json({ ok: true }, 200);
+    if (!firstName || firstName.trim().length < 2) {
+      console.log("Assessment REJECTED: firstName invalid:", JSON.stringify(firstName));
+      return json({ ok: true }, 200);
+    }
+    if (!lastName || lastName.trim().length < 2) {
+      console.log("Assessment REJECTED: lastName invalid:", JSON.stringify(lastName));
+      return json({ ok: true }, 200);
+    }
+    if (!organization || organization.trim().length < 3) {
+      console.log("Assessment REJECTED: organization invalid:", JSON.stringify(organization));
+      return json({ ok: true }, 200);
+    }
+    if (onlyNumbers.test(firstName.trim()) || onlyNumbers.test(lastName.trim())) {
+      console.log("Assessment REJECTED: numeric name:", firstName, lastName);
+      return json({ ok: true }, 200);
+    }
+    console.log("Assessment validation PASSED for:", email, firstName, lastName, organization);
 
     const emailDomain = email.split("@")[1]?.toLowerCase() || "";
     const isABMTarget = ABM_TARGET_DOMAINS.some(d => emailDomain === d || emailDomain.endsWith("." + d));
