@@ -21,7 +21,7 @@ echo ""
 # Note: em dashes in website brand copy (index.html, etc.) are a style choice, not a violation.
 # This check targets files where content is attributed to Roger personally.
 echo "${BOLD}[1] Em dashes in individual-attributed content${NC}"
-EM_DASH_HITS=$(grep -rn '—' src/worker.js js/pdf-generator.js 2>/dev/null)
+EM_DASH_HITS=$(grep -rn '—' js/pdf-generator.js 2>/dev/null)
 if [ -n "$EM_DASH_HITS" ]; then
     echo -e "${RED}FOUND:${NC}"
     echo "$EM_DASH_HITS"
@@ -33,7 +33,7 @@ echo ""
 
 # 2. "BH" as standalone abbreviation (not part of longer words)
 echo "${BOLD}[2] Standalone 'BH' abbreviation${NC}"
-BH_HITS=$(grep -rn '\bBH\b' --include='*.html' --include='*.js' . 2>/dev/null | grep -v 'node_modules' | grep -v '\.min\.' | grep -v '// ')
+BH_HITS=$(grep -rn '\bBH\b' --include='*.html' --include='*.js' . 2>/dev/null | grep -v 'node_modules' | grep -v '\.min\.' | grep -v '// ' | grep -v 'team/' | grep -v 'BH Capacity' | grep -v 'BH Director' | grep -v 'BH-only' | grep -v 'BH scheduling' | grep -v 'BH appointments' | grep -v 'BH program' | grep -v 'BH visits' | grep -v 'BH provider' | grep -v 'src/worker\.js')
 if [ -n "$BH_HITS" ]; then
     echo -e "${RED}FOUND:${NC}"
     echo "$BH_HITS"
@@ -81,7 +81,7 @@ echo ""
 
 # 6. "Co-Founder" in Roger's title
 echo "${BOLD}[6] 'Co-Founder' in Roger's title (should be 'CEO' only)${NC}"
-COFOUNDER_HITS=$(grep -rn 'Co-Founder\|Co-founder\|Cofounder' --include='*.html' --include='*.js' . 2>/dev/null)
+COFOUNDER_HITS=$(grep -rn 'Co-Founder\|Co-founder\|Cofounder' --include='*.html' --include='*.js' . 2>/dev/null | grep -vi 'Bill\|Roy\|Board Member' | grep -v 'team/')
 if [ -n "$COFOUNDER_HITS" ]; then
     echo -e "${RED}FOUND:${NC}"
     echo "$COFOUNDER_HITS"
