@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026-03-31",
+    "type": "major",
+    "title": "Portal Expansion: Mobile, Objections, Partner Context, Language Update",
+    "body": "Mobile layout fixed (hamburger nav, scrollable tables). Objection handling expanded to 4 personas (CEO, BH Director, Medical Director, Finance). Partner reference points added. Elevator pitches added. Financial language updated per Jonathon's feedback: 'cash generated to serve your mission' replaces 'mission cash generated.' Revenue qualifier added ($230 is an average, PPS rates vary $180-$400+). Additional competitor comparisons added."
+  },
+  {
     "date": "2026-03-29",
     "type": "update",
     "title": "BD Team Portal Now Live",

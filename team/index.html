@@ -198,15 +198,42 @@ a:hover { text-decoration: underline; }
 .arc-step .step-label { font-size: 0.8rem; font-weight: 600; margin-top: 0.15rem; }
 .arc-step.highlight { background: var(--surface-3); border-color: var(--accent); }
 
+/* ── Hamburger & Mobile Nav ────────────────────────────────────── */
+.hamburger {
+  display: none; position: fixed; top: 0.7rem; left: 0.7rem; z-index: 999;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text); font-size: 1.3rem; width: 40px; height: 40px;
+  cursor: pointer; align-items: center; justify-content: center; line-height: 1;
+}
+.sidebar-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.5);
+}
+.sidebar-backdrop.open { display: block; }
+
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .sidebar { width: 200px; min-width: 200px; }
-  .main { padding: 1.5rem; }
+  .hamburger { display: flex; }
+  .sidebar {
+    position: fixed; top: 0; left: -280px; width: 280px; min-width: 280px;
+    height: 100%; z-index: 1000; transition: left 0.25s ease;
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-close {
+    position: absolute; top: 0.7rem; right: 0.7rem; background: none; border: none;
+    color: var(--text-muted); font-size: 1.3rem; cursor: pointer; line-height: 1;
+  }
+  .main { padding: 1rem; padding-top: 3.5rem; width: 100%; }
+  #app.active { display: block; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .pillar-grid { grid-template-columns: 1fr; }
   .arc-steps { flex-direction: column; }
   .arc-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
   .arc-step:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .tab-bar { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .tab { white-space: nowrap; }
+  .info-card { padding: 0.8rem; }
+  .comparison-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 </style>
 </head>
@@ -232,8 +259,12 @@ a:hover { text-decoration: underline; }
 <!-- ══════════════════════════════════════════════════════════════ -->
 <div id="app">
 
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
 <!-- Sidebar -->
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
   <div class="sidebar-header">
     LEGARA <span>Team Portal</span>
   </div>
@@ -269,7 +300,7 @@ a:hover { text-decoration: underline; }
   </div>
 
   <div class="sidebar-footer">
-    Last updated: <span id="last-updated">2026-03-29</span><br>
+    Last updated: <span id="last-updated">2026-03-31</span><br>
     Questions? Slack Roger.
   </div>
 </nav>
@@ -384,7 +415,7 @@ a:hover { text-decoration: underline; }
     <li>Providers document in the FQHC's own EHR, same day</li>
     <li>Daily claims scrubbing before it hits the FQHC billing office</li>
     <li>Revenue from completed encounters (PPS + copays + secondaries) averages ~$230/encounter</li>
-    <li>Net "mission cash generated" after paying Legara: real dollars the FQHC keeps for its mission</li>
+    <li>Net cash generated to serve the mission after paying Legara: real dollars the FQHC keeps</li>
   </ul>
 
   <div class="callout warn">
@@ -451,6 +482,24 @@ a:hover { text-decoration: underline; }
     <li>Care coordination with the FQHC's primary care team is built in, not bolted on</li>
     <li>The financial model is completely different (encounter-based revenue for the FQHC vs subscription/platform fees)</li>
   </ul>
+
+  <h2>Other Comparisons You May Encounter</h2>
+  <p>Beyond the three main comparisons above, prospects sometimes reference these alternatives.</p>
+
+  <div class="info-card">
+    <h4>vs. Locum Tenens</h4>
+    <p>Locums are temporary. Legara is a permanent infrastructure. Locums fill gaps for weeks or months. They don't come with scheduling support, quality monitoring, documentation infrastructure, or turnover management. Locum rates are often higher than Legara's flat rate, and the FQHC gets none of the operational benefits. The comparison: locums are a band-aid. Legara is a managed program.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>vs. Academic / Trainee Programs</h4>
+    <p>Training programs are valuable but they produce supervisory burden, not immediate capacity. Trainees need oversight, limited caseloads, and extended ramp time. Legara provides fully credentialed, experienced providers who are productive from day one. The two models can coexist: Legara handles volume while the training program develops the next generation.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>vs. Referral Out (County BH, Community Agencies)</h4>
+    <p>Referring patients out means losing continuity. The patient leaves the FQHC ecosystem, follow-up is inconsistent, and the FQHC doesn't capture the encounter revenue. Legara keeps patients inside the FQHC's system. Providers credential at their sites, document in their EHR, and coordinate with their primary care team. Revenue stays with the FQHC.</p>
+  </div>
 </div>
 
 <!-- ── KEY NUMBERS ────────────────────────────────────────────── -->
@@ -472,6 +521,7 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
   <p>The rate is all-in. There is no separate fee for platform, compliance, scheduling, or anything else. The FQHC pays one flat rate per completed encounter.</p>
+  <p><strong>Note for prospect conversations:</strong> These are representative defaults used in our internal models. The actual fee schedule has ranges by CPT code and session length (e.g., therapy $148–$168, PMHNP $158–$176). Keep rate discussions directional in early conversations — "a flat per-encounter rate, all-in" is enough. Roger handles detailed pricing walkthroughs.</p>
 
   <h2>Provider Efficiency</h2>
   <table class="comparison-table">
@@ -483,11 +533,11 @@ a:hover { text-decoration: underline; }
   </table>
   <p>This gap is not about provider quality. It's about infrastructure. The same clinician, with dedicated scheduling support and no organizational overhead, produces different throughput. This is a useful talking point when prospects ask "how is that possible?"</p>
 
-  <h2>Revenue & Mission Cash</h2>
-  <p>The FQHC collects approximately <strong>$230 per encounter</strong> in revenue (PPS reimbursement + copays + secondary insurance). After paying Legara's flat rate, the difference is cash that stays with the FQHC for its mission.</p>
+  <h2>Revenue & Cash Generated for the Mission</h2>
+  <p>For simplicity, assume the average FQHC collects approximately <strong>$230 per encounter</strong> (PPS reimbursement + copays + secondary insurance, averaged with the occasional sliding scale, cash pay, etc). In practice, the PPS rate varies substantially between FQHCs: one could earn ~$180 and another could earn ~$400. After paying Legara's flat rate, the difference is cash generated to serve the FQHC's mission.</p>
 
   <div class="callout">
-    <p><strong>Language note:</strong> Call this "mission cash generated," not "savings" or "cost savings." Savings implies they're overspending. Mission cash implies they're generating new revenue. The distinction matters in how it lands.</p>
+    <p><strong>Language note:</strong> Call this "cash generated to serve your mission," not "savings" or "cost savings." Savings implies they're overspending. Cash generated to serve the mission implies they're generating new revenue with more leftover after Legara's expense. The distinction matters in how it lands.</p>
   </div>
 
   <h2>The True Cost of Internal Hiring</h2>
@@ -554,7 +604,7 @@ a:hover { text-decoration: underline; }
   <div class="info-card">
     <h4>Stage 4: Financial Validation</h4>
     <p>"Here's what it costs and why. The infrastructure is built into the rate."</p>
-    <p>Rates, mission cash, true cost comparison. This stage validates the decision after the prospect already understands and believes in the model.</p>
+    <p>Rates, cash generated to serve the mission, true cost comparison. This stage validates the decision after the prospect already understands and believes in the model.</p>
   </div>
 
   <div class="callout danger">
@@ -683,7 +733,27 @@ a:hover { text-decoration: underline; }
     <p><strong>Good:</strong> "Behavioral health capacity at [Org Name]" / "Behavioral health staffing for [County]" / "Quick question about [Org]'s behavioral health model"</p>
   </div>
   <div class="callout danger">
-    <p><strong>Bad:</strong> "How 9 California FQHCs run behavioral health without hiring" / "Unlock $60K in mission cash per provider" / "Legara: The Future of FQHC Behavioral Health"</p>
+    <p><strong>Bad:</strong> "How 9 California FQHCs run behavioral health without hiring" / "Unlock $60K in cash for your mission per provider" / "Legara: The Future of FQHC Behavioral Health"</p>
+  </div>
+
+  <h2>Elevator Pitches</h2>
+  <p>Calibrated versions at different lengths. Memorize the 10-second and 30-second versions. Use the longer ones as email or conversation frameworks.</p>
+
+  <div class="info-card">
+    <h4>10 seconds</h4>
+    <p>"Legara helps FQHCs expand behavioral health capacity fast, without adding FTE risk or giving up clinical control."</p>
+  </div>
+  <div class="info-card">
+    <h4>20 seconds</h4>
+    <p>"Legara helps FQHCs expand behavioral health access faster, so they can reduce wait times, serve more patients, and avoid the upfront cost and ramp risk of traditional hiring."</p>
+  </div>
+  <div class="info-card">
+    <h4>30 seconds</h4>
+    <p>"Legara delivers behavioral health providers to FQHCs with a full operational support layer: dedicated scheduling, credentialing, compliance, and quality monitoring. The FQHC retains all clinical authority and governance. Providers see patients in as few as six weeks from a signed agreement, and the FQHC pays a flat rate per completed encounter with no upfront cost."</p>
+  </div>
+  <div class="info-card">
+    <h4>45 seconds</h4>
+    <p>"Most FQHCs run behavioral health inside a primary care operating structure. That creates a ceiling: shared scheduling, slow hiring, high turnover. Legara adds capacity through a different structure that runs alongside the existing team. We provide credentialed behavioral health providers with dedicated scheduling support, quality monitoring, and documentation infrastructure. The FQHC keeps all clinical governance. Providers can see patients in as few as six weeks from contract, and the FQHC pays a flat per-encounter rate. No salary burn during ramp, no recruiter fees, no turnover risk."</p>
   </div>
 
   <h2>What Happens After Your Outreach</h2>
@@ -694,37 +764,124 @@ a:hover { text-decoration: underline; }
 <!-- ── OBJECTION HANDLING ─────────────────────────────────────── -->
 <div class="page" id="page-objections">
   <h1>Objection Handling</h1>
-  <p class="subtitle">Objections we have actually gotten and what has worked in response.</p>
+  <p class="subtitle">Objections we have actually gotten, organized by who raises them, and what has worked in response.</p>
 
-  <div class="info-card">
-    <h4>"That rate seems expensive. We can hire a therapist for $135K."</h4>
-    <p>This is the conditioning gap. They're comparing Legara's all-in encounter rate to a salary number that excludes benefits (1.4x), support staff ($11K/yr), recruiter fees ($8K), ramp cost (6-9 months of salary before full caseload), and turnover replacement (30%/yr). The true loaded cost of that $135K therapist is approximately $229K/yr. But the real answer isn't the math. It's: "Let's back up. The rate comparison makes more sense once you see what the operating structure produces. Can I walk you through how the model works?"</p>
-    <p><strong>If they persist on price before understanding the model:</strong> Offer to walk through the numbers together (the calculator, live, with Roger). I don't send the calculator link. The conversation around the numbers is what makes the comparison land. If a CFO wants to see numbers, I walk them through it live.</p>
+  <div class="tab-bar">
+    <div class="tab active" data-tab="obj-ceo">CEO / ED</div>
+    <div class="tab" data-tab="obj-bh">BH Director</div>
+    <div class="tab" data-tab="obj-cmo">Medical Director / CMO</div>
+    <div class="tab" data-tab="obj-fin">Finance / Compliance</div>
   </div>
 
-  <div class="info-card">
-    <h4>"We already have a telehealth vendor."</h4>
-    <p>Legara isn't telehealth. Telehealth is a delivery mechanism. Legara is an operating infrastructure. Our providers may deliver care via telehealth, but they credential at the FQHC's sites, document in their EHR, coordinate with their primary care team, and operate within a managed quality system. The question isn't "do you have telehealth?" It's "does your current model give you dedicated BH scheduling, incentive-aligned utilization, and daily claims quality monitoring?"</p>
+  <div class="tab-content active" id="tab-obj-ceo">
+    <div class="info-card">
+      <h4>"That rate seems expensive. We can hire a therapist for $135K."</h4>
+      <p>This is the conditioning gap. They're comparing Legara's all-in encounter rate to a salary number that excludes benefits (1.4x), support staff ($11K/yr), recruiter fees ($8K), ramp cost (6-9 months of salary before full caseload), and turnover replacement (30%/yr). The true loaded cost of that $135K therapist is approximately $229K/yr. But the real answer isn't the math. It's: "Let's back up. The rate comparison makes more sense once you see what the operating structure produces. Can I walk you through how the model works?"</p>
+      <p><strong>If they persist on price before understanding the model:</strong> Offer to walk through the numbers together (the calculator, live, with Roger). I don't send the calculator link. The conversation around the numbers is what makes the comparison land. If a CFO wants to see numbers, I walk them through it live.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"We already have a telehealth vendor."</h4>
+      <p>Legara isn't telehealth. Telehealth is a delivery mechanism. Legara is an operating infrastructure. Our providers may deliver care via telehealth, but they credential at the FQHC's sites, document in their EHR, coordinate with their primary care team, and operate within a managed quality system. The question isn't "do you have telehealth?" It's "does your current model give you dedicated BH scheduling, incentive-aligned utilization, and daily claims quality monitoring?"</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"We tried something like this before and it didn't work."</h4>
+      <p>Ask what they tried. Almost always it was a staffing company (no operational layer) or a telehealth platform (no integration). The difference is structural: Legara provides the full infrastructure around the provider, not just the provider. Dedicated scheduling, quality monitoring, documentation support, turnover management. The question is what was missing from the previous attempt, and we can show how Legara's three-pillar structure addresses those specific gaps.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Our board won't approve an external vendor for clinical services."</h4>
+      <p>Legara providers credential at the FQHC's sites. Clinical oversight stays with the FQHC's medical director. The FQHC approves the schedule, the provider types, and the clinical protocols. Legara handles the operational layer. This is augmentation of their existing program, not outsourcing clinical control. Frame it as: "Your team maintains all clinical governance. We handle the operations that make providers productive."</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"We're in the middle of a hiring cycle already."</h4>
+      <p>That's fine. Legara doesn't compete with their internal recruiting. We augment alongside it. If they're hiring one therapist, Legara can add two more while that hire ramps up. When the internal hire is fully productive (6-9 months out), they have more total capacity, not a conflict. The FQHC can always adjust Legara's provider count up or down based on their internal staffing trajectory.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"What happens if a Legara provider leaves?"</h4>
+      <p>Legara manages replacement. Under 3% annual turnover vs 30%+ industry average. If a provider does leave, Legara handles recruiting, credentialing, and placement of the replacement. The FQHC doesn't restart their own hiring cycle. That's one of the core structural advantages: turnover risk is Legara's to manage, not the FQHC's.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"We're too busy / no bandwidth right now."</h4>
+      <p><strong>What they really mean:</strong> Adding a new vendor feels like more work, not less.</p>
+      <p>This is where the operational model matters most. Legara doesn't create work for the FQHC. We handle scheduling, credentialing, compliance, documentation support, and quality monitoring. The FQHC's ops team approves the provider's schedule parameters. After that, Legara handles everything at the patient level. The total lift on the FQHC side is less than onboarding a new hire.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Will my board approve this? How do I describe it to them?"</h4>
+      <p><strong>What they really mean:</strong> I need to sell this internally and I'm not sure how to frame it.</p>
+      <p>Frame it as augmentation of existing behavioral health capacity through a managed services model. The FQHC retains all clinical governance. No FTE risk. Variable cost tied to completed encounters. Under 3% provider turnover. If the board needs a formal overview, Roger can provide a brief presentation tailored to their governance questions. The framing that tends to work: "We're adding capacity alongside our existing team through a managed model that eliminates the hiring and ramp risk."</p>
+    </div>
   </div>
 
-  <div class="info-card">
-    <h4>"We tried something like this before and it didn't work."</h4>
-    <p>Ask what they tried. Almost always it was a staffing company (no operational layer) or a telehealth platform (no integration). The difference is structural: Legara provides the full infrastructure around the provider, not just the provider. Dedicated scheduling, quality monitoring, documentation support, turnover management. The question is what was missing from the previous attempt, and we can show how Legara's three-pillar structure addresses those specific gaps.</p>
+  <div class="tab-content" id="tab-obj-bh">
+    <div class="info-card">
+      <h4>"I can't manage more contractors."</h4>
+      <p><strong>What they really mean:</strong> I've been burned by contractors who need babysitting.</p>
+      <p>Legara providers are not contractors the BH Director manages. They come with their own operational support layer: dedicated scheduling, documentation infrastructure, quality monitoring, and compliance oversight. The BH Director's role is clinical coordination, not contractor management. If a provider isn't performing, that's Legara's problem to solve, not the BH Director's.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Remote clinicians won't fit our population."</h4>
+      <p><strong>What they really mean:</strong> Our patients have language, cultural, or acuity needs that require specific provider matching.</p>
+      <p>Provider matching is part of Legara's model. We credential providers who match the FQHC's population needs: language capabilities, cultural competency, specialty focus, comfort with acuity levels. The FQHC approves every provider before they see patients. If a provider isn't the right fit, Legara handles the replacement. This is a conversation to have in the clinical alignment meeting with specific population details on the table.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Quality will be inconsistent."</h4>
+      <p><strong>What they really mean:</strong> I've seen quality slip when providers aren't embedded in the team.</p>
+      <p>Legara's quality infrastructure is more structured than what most FQHCs run internally. Daily claims scrubbing catches coding and documentation issues before they reach the billing office. Monthly 3% random sampling of every provider's notes, verified for uniqueness and appropriate length. Documentation must be completed and the encounter locked in the EHR same day. The BH Director has visibility into all of this.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Our workflows are fragile. Don't break them."</h4>
+      <p><strong>What they really mean:</strong> We've spent years getting things to work. Any disruption is unacceptable.</p>
+      <p>Legara providers credential at the FQHC's sites and document in the FQHC's EHR. From a workflow perspective, they look and act like internal providers. The key difference is who handles their scheduling and operational support. The clinical alignment meeting maps this out in detail: referral pathways, EHR documentation standards, communication protocols, warm handoff procedures. Nothing changes in the FQHC's existing workflows.</p>
+    </div>
   </div>
 
-  <div class="info-card">
-    <h4>"Our board won't approve an external vendor for clinical services."</h4>
-    <p>Legara providers credential at the FQHC's sites. Clinical oversight stays with the FQHC's medical director. The FQHC approves the schedule, the provider types, and the clinical protocols. Legara handles the operational layer. This is augmentation of their existing program, not outsourcing clinical control. Frame it as: "Your team maintains all clinical governance. We handle the operations that make providers productive."</p>
+  <div class="tab-content" id="tab-obj-cmo">
+    <div class="info-card">
+      <h4>"I'm taking on clinical risk without control."</h4>
+      <p><strong>What they really mean:</strong> If something goes wrong clinically, it falls on me.</p>
+      <p>Clinical governance stays with the FQHC. The Medical Director or CMO retains authority over clinical protocols, prescribing guidelines, and escalation procedures. Legara handles the operational layer (scheduling, documentation support, compliance monitoring), not the clinical layer. The boundaries are explicit and documented in the agreement. If the Medical Director wants to review a provider's clinical approach, they have full access.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"How is supervision handled, especially for PMHNPs?"</h4>
+      <p><strong>What they really mean:</strong> I need to understand the legal supervision structure before I'm comfortable.</p>
+      <p>Legara provides physician supervision for PMHNPs through our own supervising physicians. The supervision model meets California's standardized procedure requirements. The FQHC's Medical Director doesn't take on additional supervision burden. Legara handles the supervision documentation and compliance. If the Medical Director wants to be involved in the supervision framework or review the standardized procedures, that's welcomed and built into the clinical alignment process.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"Remote prescribing concerns me."</h4>
+      <p><strong>What they really mean:</strong> Medication management via telehealth feels risky.</p>
+      <p>Legara PMHNPs follow the FQHC's prescribing guidelines and formulary. All prescribing is documented in the FQHC's EHR with full visibility to the care team. The supervision model includes medication management oversight. The FQHC sets the clinical boundaries. If there are specific controlled substance policies, acuity limits, or prescribing protocols, those are established during clinical alignment and Legara providers follow them.</p>
+    </div>
   </div>
 
-  <div class="info-card">
-    <h4>"We're in the middle of a hiring cycle already."</h4>
-    <p>That's fine. Legara doesn't compete with their internal recruiting. We augment alongside it. If they're hiring one therapist, Legara can add two more while that hire ramps up. When the internal hire is fully productive (6-9 months out), they have more total capacity, not a conflict. The FQHC can always adjust Legara's provider count up or down based on their internal staffing trajectory.</p>
-  </div>
+  <div class="tab-content" id="tab-obj-fin">
+    <div class="info-card">
+      <h4>"Who bills? Are you billing for us?"</h4>
+      <p><strong>What they really mean:</strong> I need to understand the revenue cycle mechanics.</p>
+      <p>The FQHC bills. Legara providers document in the FQHC's EHR and complete all documentation requirements for billing. Legara's daily claims scrub reviews every encounter for coding accuracy, diagnosis consistency, and place-of-service correctness before it reaches the FQHC's billing office. The FQHC submits claims, collects revenue (PPS + copays + secondaries), and pays Legara's flat per-encounter rate. The difference is cash generated to serve the mission.</p>
+    </div>
 
-  <div class="info-card">
-    <h4>"What happens if a Legara provider leaves?"</h4>
-    <p>Legara manages replacement. Under 3% annual turnover vs 30%+ industry average. If a provider does leave, Legara handles recruiting, credentialing, and placement of the replacement. The FQHC doesn't restart their own hiring cycle. That's one of the core structural advantages: turnover risk is Legara's to manage, not the FQHC's.</p>
+    <div class="info-card">
+      <h4>"How do payments and reconciliation work?"</h4>
+      <p><strong>What they really mean:</strong> I need to see the financial mechanics before I can sign off.</p>
+      <p>Legara provides monthly settlement statements showing every completed encounter by provider, date, and CPT code. The FQHC verifies against their own EHR records. Payment is the flat per-encounter rate times completed encounters. No hidden fees, no platform charges, no add-ons. The rate is truly all-in. Jonathon handles the detailed financial walkthrough for prospects at this stage.</p>
+    </div>
+
+    <div class="info-card">
+      <h4>"What about liability and insurance?"</h4>
+      <p><strong>What they really mean:</strong> If something goes wrong, who's exposed?</p>
+      <p>Legara carries its own professional liability and general liability insurance. Legara providers are covered under Legara's policies, not the FQHC's. The agreement includes standard indemnification provisions. The FQHC is not taking on additional liability for Legara providers beyond what's normal for credentialed providers at their sites. Jonathon and the compliance team handle the specifics during the contracting process.</p>
+    </div>
   </div>
 </div>
 
@@ -764,6 +921,39 @@ a:hover { text-decoration: underline; }
     <p><strong>These organizations are existing clients or in active conversion. Do not outreach under any circumstances:</strong></p>
     <p>San Ysidro Health, Vista Community Clinic (VCC), La Maestra, Shasta Community Health Center, Neighborhood Healthcare, Inland Behavioral Health Services (IBHS), Native Health (nativehealth.org), Western Sierra Medical Clinic (WSMC)</p>
   </div>
+
+  <h2>Partner Reference Points</h2>
+  <p>Quick context on our current partners so you can reference them intelligently in conversations. These are not talking points to recite. They're context so you sound informed if a prospect asks "who are you working with?"</p>
+
+  <div class="info-card">
+    <h4>San Ysidro Health</h4>
+    <p><strong>What to know:</strong> Largest Legara partner. 50+ sites across San Diego County. Fully integrated medical, dental, and behavioral health. County-wide footprint serving one of the largest safety-net populations in California.</p>
+    <p><strong>Why it matters in conversation:</strong> When a prospect asks about scale, SYH is the proof point. Legara operates within a large, complex, multi-site FQHC with serious operational demands.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>Neighborhood Healthcare</h4>
+    <p><strong>What to know:</strong> Southern California community health organization across San Diego and Riverside counties. Over 500K visits annually. Strong whole-person care orientation.</p>
+    <p><strong>Why it matters in conversation:</strong> Demonstrates that Legara works within FQHCs focused on integrated, whole-person care models, not just siloed behavioral health.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>La Maestra Community Health Centers</h4>
+    <p><strong>What to know:</strong> Culturally responsive care model. Circle of Care approach. Serves highly diverse, underserved communities in San Diego.</p>
+    <p><strong>Why it matters in conversation:</strong> Shows Legara can match providers to populations with specific cultural and language needs. Good reference when a prospect raises population fit concerns.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>Vista Community Clinic (VCC)</h4>
+    <p><strong>What to know:</strong> Mature, multi-county FQHC with strong quality and HRSA recognition. New PACE program in Glendale launching July 2026 with Legara as BH provider.</p>
+    <p><strong>Why it matters in conversation:</strong> VCC trusted Legara enough to staff a brand-new program type (PACE). That's a strong signal of partnership depth beyond standard BH capacity.</p>
+  </div>
+
+  <div class="info-card">
+    <h4>Shasta Community Health Center</h4>
+    <p><strong>What to know:</strong> Northern California regional safety-net provider. Deep behavioral health and substance use treatment capabilities. Serves homeless and underserved populations in Shasta County.</p>
+    <p><strong>Why it matters in conversation:</strong> Proves Legara works in rural and Northern California settings, not just urban San Diego. Important for prospects outside metro areas.</p>
+  </div>
 </div>
 
 <!-- ── WHAT NOT TO SAY ────────────────────────────────────────── -->
@@ -782,7 +972,7 @@ a:hover { text-decoration: underline; }
   </div>
 
   <h2>How We Talk About Money</h2>
-  <p>Financial validation supports the sale. It never leads. The phrase is "mission cash generated," never "savings" or "cost savings." The difference matters: savings implies the FQHC is overspending. Mission cash implies they're generating new revenue for their mission. One frames them as inefficient. The other frames them as resourceful.</p>
+  <p>Financial validation supports the sale. It never leads. The phrase is "cash generated to serve your mission," never "savings" or "cost savings." The difference matters: savings implies the FQHC is overspending. Cash generated to serve the mission implies they're generating new revenue with more leftover after Legara's expense. One frames them as inefficient. The other frames them as resourceful.</p>
   <p>On specific rates: keep it directional in early conversations. "A flat per-encounter rate, all-in" is enough. Roger handles detailed pricing walkthroughs. If a prospect presses on numbers before they understand the model, the move is to pull back: "The numbers make a lot more sense once you see what the operating structure produces. Let me walk you through that first."</p>
 
   <h2>Terminology to Get Right</h2>
@@ -819,7 +1009,7 @@ a:hover { text-decoration: underline; }
 
   <h3>Phase 3: Structural Differentiation-First (Current)</h3>
   <p>The pivot: lead with structural differentiation, not financial comparison. The narrative arc (Recognition → Understanding → Proof → Financial Validation) ensures that prospects understand the operating model before they encounter the rate. The BH Capacity Assessment replaced the ROI calculator as the primary conversion tool. The calculator still exists as a selective tool Roger uses in live CFO walkthroughs.</p>
-  <p>Financial messaging is deemphasized, not eliminated. "Mission cash generated" remains the vocabulary. The order changed (4th not 1st), not the content.</p>
+  <p>Financial messaging is deemphasized, not eliminated. "Cash generated to serve the mission" is the vocabulary. The order changed (4th not 1st), not the content.</p>
 
   <h3>Phase 4: Timeline Corrections (Late March 2026)</h3>
   <p>Two claims that had been in use were corrected after independent verification:</p>
@@ -878,6 +1068,16 @@ document.getElementById('auth-form').addEventListener('submit', function(e) {
   }
 });
 
+// ── Mobile Sidebar Toggle ────────────────────────────────────────
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const isOpen = sidebar.classList.contains('open');
+  sidebar.classList.toggle('open');
+  backdrop.classList.toggle('open');
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+
 // ── Navigation ────────────────────────────────────────────────────
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', function() {
@@ -887,6 +1087,8 @@ document.querySelectorAll('.nav-item').forEach(item => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     document.querySelector('.main').scrollTop = 0;
+    // Close sidebar on mobile
+    if (window.innerWidth <= 768) { toggleSidebar(); }
   });
 });
 
