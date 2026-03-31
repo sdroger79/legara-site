@@ -31,7 +31,7 @@ The sweep checks for:
 | Wrong Brevo variables | Error | `{{contact.*}}` instead of `{{params.*}}` |
 | "Co-Founder" title | Error | Roger's title should be "CEO" only |
 | AI filler phrases | Warning | "I hope this email finds you," "I'd be happy to," etc. |
-| "Savings" in headlines | Warning | Cost-savings framing leading instead of mission cash |
+| "Savings" or "mission cash" in headlines | Warning | Should be "cash generated to serve your mission" |
 | TODO/FIXME/HACK comments | Warning | Stale dev comments in prospect-facing files |
 
 ## Secrets (already set in Cloudflare)
