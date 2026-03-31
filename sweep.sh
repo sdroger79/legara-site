@@ -67,8 +67,20 @@ else
 fi
 echo ""
 
-# 5. "Co-Founder" in Roger's title
-echo "${BOLD}[5] 'Co-Founder' in Roger's title (should be 'CEO' only)${NC}"
+# 5. PLACEHOLDER/TBD in prospect-facing files
+echo "${BOLD}[5] PLACEHOLDER or TBD content${NC}"
+PLACEHOLDER_HITS=$(grep -rn '\[PLACEHOLDER\|\[TBD\|\[DRAFT\|\[INSERT' --include='*.html' --include='*.js' . 2>/dev/null | grep -v 'node_modules' | grep -v 'sweep.sh')
+if [ -n "$PLACEHOLDER_HITS" ]; then
+    echo -e "${RED}FOUND — do NOT push with placeholder content:${NC}"
+    echo "$PLACEHOLDER_HITS"
+    ISSUES=$((ISSUES + $(echo "$PLACEHOLDER_HITS" | wc -l)))
+else
+    echo -e "${GREEN}Clean${NC}"
+fi
+echo ""
+
+# 6. "Co-Founder" in Roger's title
+echo "${BOLD}[6] 'Co-Founder' in Roger's title (should be 'CEO' only)${NC}"
 COFOUNDER_HITS=$(grep -rn 'Co-Founder\|Co-founder\|Cofounder' --include='*.html' --include='*.js' . 2>/dev/null)
 if [ -n "$COFOUNDER_HITS" ]; then
     echo -e "${RED}FOUND:${NC}"
@@ -79,8 +91,8 @@ else
 fi
 echo ""
 
-# 6. AI filler phrases
-echo "${BOLD}[6] AI filler phrases${NC}"
+# 7. AI filler phrases
+echo "${BOLD}[7] AI filler phrases${NC}"
 AI_HITS=$(grep -rni "I hope this email finds you\|I'd be happy to\|Let's dive in\|Here's the thing:\|We're excited to" --include='*.html' --include='*.js' . 2>/dev/null | grep -v 'node_modules' | grep -v 'sweep.sh')
 if [ -n "$AI_HITS" ]; then
     echo -e "${YELLOW}FOUND:${NC}"
@@ -91,8 +103,8 @@ else
 fi
 echo ""
 
-# 7. "Savings" as headline/lead framing (not supporting)
-echo "${BOLD}[7] 'Savings' in headlines or h1/h2/h3 tags${NC}"
+# 8. "Savings" as headline/lead framing (not supporting)
+echo "${BOLD}[8] 'Savings' in headlines or h1/h2/h3 tags${NC}"
 SAVINGS_HITS=$(grep -rni '<h[1-3].*savings\|savings.*</h[1-3]>' --include='*.html' . 2>/dev/null)
 if [ -n "$SAVINGS_HITS" ]; then
     echo -e "${YELLOW}FOUND:${NC}"
