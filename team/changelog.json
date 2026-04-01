@@ -1,6 +1,18 @@
 [
   {
     "date": "2026-03-31",
+    "type": "update",
+    "title": "New Client Testimonial Added to Website",
+    "body": "A testimonial from a COO at Shasta Community Health Center (Baynard) has been added to the homepage carousel, the For Health Centers page, and the Executive landing page. The existing Scheuber testimonial was also revised based on provider feedback. When you share these pages with prospects, they'll now see an additional real client voice."
+  },
+  {
+    "date": "2026-03-31",
+    "type": "fix",
+    "title": "Two Blog Posts Fixed — Had Incomplete Text",
+    "body": "The '9 Health Centers, One Question' and 'Doc in the Box' blog posts were live with placeholder text instead of finished content. Both are now corrected with complete copy. Safe to share these links again."
+  },
+  {
+    "date": "2026-03-31",
     "type": "major",
     "title": "Portal Expansion: Mobile, Objections, Partner Context, Language Update",
     "body": "Mobile layout fixed (hamburger nav, scrollable tables). Objection handling expanded to 4 personas (CEO, BH Director, Medical Director, Finance). Partner reference points added. Elevator pitches added. Financial language updated per Jonathon's feedback: 'cash generated to serve your mission' replaces 'mission cash generated.' Revenue qualifier added ($230 is an average, PPS rates vary $180-$400+). Additional competitor comparisons added."
