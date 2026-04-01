@@ -4,6 +4,7 @@
 User-agent: *
 Allow: /
 Disallow: /roi-calculator-internal.html
+Disallow: /meridian.html
 
 # Sitemap
 Sitemap: https://golegara.com/sitemap.xml

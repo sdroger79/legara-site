@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — Platform Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0e17; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; }
+
+  /* Hero */
+  .hero { padding: 48px 32px 32px; max-width: 1200px; margin: 0 auto; }
+  .hero h1 { font-size: 36px; font-weight: 700; color: #f0f6fc; letter-spacing: -0.5px; }
+  .hero h1 span { background: linear-gradient(135deg, #58a6ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { font-size: 16px; color: #7d8590; margin-top: 8px; line-height: 1.5; max-width: 700px; }
+  .hero-meta { font-size: 12px; color: #484f58; margin-top: 16px; }
+
+  /* Stats */
+  .stats-bar { display: flex; gap: 1px; background: #21262d; border-radius: 12px; overflow: hidden; max-width: 1200px; margin: 24px auto; }
+  .stat { flex: 1; padding: 16px 12px; text-align: center; background: #0d1117; }
+  .stat:first-child { border-radius: 12px 0 0 12px; }
+  .stat:last-child { border-radius: 0 12px 12px 0; }
+  .stat-val { font-size: 28px; font-weight: 700; color: #f0f6fc; }
+  .stat-label { font-size: 10px; color: #7d8590; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* Sections */
+  .content { max-width: 1200px; margin: 0 auto; padding: 0 32px 48px; }
+  .section { margin-bottom: 48px; }
+  .section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  .section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+  .section-line { flex: 1; height: 1px; background: #21262d; }
+  .section-desc { font-size: 13px; color: #7d8590; margin-bottom: 20px; line-height: 1.6; max-width: 800px; }
+
+  /* Cards */
+  .cards { display: grid; gap: 10px; }
+  .cards-4 { grid-template-columns: repeat(4, 1fr); }
+  .cards-3 { grid-template-columns: repeat(3, 1fr); }
+  .cards-2 { grid-template-columns: repeat(2, 1fr); }
+  .cards-5 { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 900px) {
+    .cards-4, .cards-3, .cards-5 { grid-template-columns: repeat(2, 1fr); }
+    .cards-2 { grid-template-columns: 1fr; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat { min-width: 80px; }
+  }
+  @media (max-width: 600px) {
+    .cards-4, .cards-3, .cards-2, .cards-5 { grid-template-columns: 1fr; }
+    .hero { padding: 32px 16px 24px; }
+    .content { padding: 0 16px 32px; }
+  }
+
+  .card { border-radius: 10px; padding: 16px; transition: transform 0.15s ease; }
+  .card:hover { transform: translateY(-2px); }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .card-desc { font-size: 12px; color: #7d8590; line-height: 1.5; }
+  .card-file { font-size: 10px; color: #3d444d; font-family: 'SF Mono', monospace; margin-top: 8px; }
+  .card-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-block; }
+
+  /* Color themes */
+  .c-api { background: #12101f; border: 1px solid #2d2460; }
+  .c-api .card-title { color: #a78bfa; }
+  .c-api .card-badge { background: #2d2460; color: #a78bfa; }
+
+  .c-sched { background: #0d1520; border: 1px solid #1c3354; }
+  .c-sched .card-title { color: #58a6ff; }
+  .c-sched .card-badge { background: #1c3354; color: #58a6ff; }
+
+  .c-out { background: #0a1510; border: 1px solid #163d28; }
+  .c-out .card-title { color: #3fb950; }
+  .c-out .card-badge { background: #163d28; color: #3fb950; }
+
+  .c-in { background: #170f08; border: 1px solid #4d2f12; }
+  .c-in .card-title { color: #f0883e; }
+  .c-in .card-badge { background: #4d2f12; color: #f0883e; }
+
+  .c-rule { background: #170d17; border: 1px solid #4d234d; }
+  .c-rule .card-title { color: #db61a2; }
+  .c-rule .card-badge { background: #4d234d; color: #db61a2; }
+
+  .c-ui { background: #0a1717; border: 1px solid #1a4040; }
+  .c-ui .card-title { color: #39d2c0; }
+  .c-ui .card-badge { background: #1a4040; color: #39d2c0; }
+
+  .c-data { background: #0d0d0d; border: 1px solid #252525; }
+  .c-data .card-title { color: #8b949e; }
+  .c-data .card-badge { background: #252525; color: #8b949e; }
+
+  .c-future { background: #0d0d12; border: 1px dashed #2d2d40; }
+  .c-future .card-title { color: #6e7681; }
+  .c-future .card-badge { background: #2d2d40; color: #6e7681; }
+
+  .c-notify { background: #141408; border: 1px solid #3d3d10; }
+  .c-notify .card-title { color: #d2d055; }
+  .c-notify .card-badge { background: #3d3d10; color: #d2d055; }
+
+  /* Flow */
+  .flow { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 0; flex-wrap: wrap; }
+  .flow-step { font-size: 11px; color: #484f58; background: #161b22; border: 1px solid #21262d; border-radius: 6px; padding: 4px 12px; }
+  .flow-arrow { color: #30363d; font-size: 14px; }
+
+  /* Divider */
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, #21262d, transparent); margin: 8px 0; }
+
+  /* Pipeline visual */
+  .pipeline { display: flex; align-items: stretch; margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid #21262d; }
+  .pipe-stage { flex: 1; padding: 12px 8px; text-align: center; position: relative; }
+  .pipe-stage::after { content: ''; position: absolute; right: 0; top: 15%; height: 70%; width: 1px; background: #21262d; }
+  .pipe-stage:last-child::after { display: none; }
+  .pipe-name { font-size: 11px; font-weight: 600; }
+  .pipe-desc { font-size: 9px; color: #484f58; margin-top: 2px; }
+
+  .pipe-compose { background: #0a1510; } .pipe-compose .pipe-name { color: #3fb950; }
+  .pipe-validate { background: #170d17; } .pipe-validate .pipe-name { color: #db61a2; }
+  .pipe-queue { background: #0d1520; } .pipe-queue .pipe-name { color: #58a6ff; }
+  .pipe-approve { background: #0a1717; } .pipe-approve .pipe-name { color: #39d2c0; }
+  .pipe-send { background: #0a1510; } .pipe-send .pipe-name { color: #3fb950; }
+  .pipe-log { background: #0d0d0d; } .pipe-log .pipe-name { color: #8b949e; }
+
+  /* Footer */
+  .footer { max-width: 1200px; margin: 0 auto; padding: 24px 32px 48px; border-top: 1px solid #161b22; }
+  .footer-text { font-size: 11px; color: #3d444d; }
+
+  /* Explainer blocks */
+  .explainer { background: #0d1117; border: 1px solid #21262d; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .explainer-title { font-size: 13px; font-weight: 600; color: #c9d1d9; margin-bottom: 8px; }
+  .explainer-text { font-size: 12px; color: #7d8590; line-height: 1.7; }
+
+  /* Phase timeline */
+  .timeline { display: flex; gap: 2px; margin: 24px 0; border-radius: 8px; overflow: hidden; }
+  .tl-phase { padding: 10px 16px; text-align: center; }
+  .tl-phase .tl-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .tl-phase .tl-name { font-size: 11px; margin-top: 2px; }
+  .tl-phase .tl-status { font-size: 9px; margin-top: 4px; font-weight: 600; }
+  .tl-done { background: #0a1510; flex: 1; }
+  .tl-done .tl-num { color: #3fb950; }
+  .tl-done .tl-name { color: #3fb950; }
+  .tl-done .tl-status { color: #1a7f37; }
+  .tl-active { background: #170f08; flex: 1; }
+  .tl-active .tl-num { color: #f0883e; }
+  .tl-active .tl-name { color: #f0883e; }
+  .tl-active .tl-status { color: #9a6700; }
+  .tl-next { background: #0d1117; flex: 1; }
+  .tl-next .tl-num { color: #484f58; }
+  .tl-next .tl-name { color: #484f58; }
+  .tl-next .tl-status { color: #30363d; }
+
+  .wide { grid-column: span 2; }
+  @media (max-width: 600px) { .wide { grid-column: span 1; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1><span>Meridian</span></h1>
+  <p class="hero-sub">A self-hosted business intelligence and relationship management platform built for Legara. Not just BD automation. An intelligence system that gives Legara deeper knowledge of its market than anyone else in FQHC behavioral health.</p>
+  <p class="hero-meta">Node.js + Express + SQLite + htmx &nbsp;·&nbsp; Claude API (Sonnet) &nbsp;·&nbsp; Microsoft Graph API &nbsp;·&nbsp; Playwright &nbsp;·&nbsp; Runs on macOS</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-val">518</div><div class="stat-label">Contacts</div></div>
+  <div class="stat"><div class="stat-val">193</div><div class="stat-label">Organizations</div></div>
+  <div class="stat"><div class="stat-val">204</div><div class="stat-label">Outreach Events</div></div>
+  <div class="stat"><div class="stat-val">6</div><div class="stat-label">Pipeline Deals</div></div>
+  <div class="stat"><div class="stat-val">15</div><div class="stat-label">REQs Enforced</div></div>
+  <div class="stat"><div class="stat-val">9</div><div class="stat-label">Scheduled Jobs</div></div>
+  <div class="stat"><div class="stat-val">12</div><div class="stat-label">DB Tables</div></div>
+</div>
+
+<div class="content">
+
+<!-- PHASE TIMELINE -->
+<div class="timeline">
+  <div class="tl-phase tl-done">
+    <div class="tl-num">Phase 1</div>
+    <div class="tl-name">Foundation</div>
+    <div class="tl-status">Complete</div>
+  </div>
+  <div class="tl-phase tl-done">
+    <div class="tl-num">Phase 2</div>
+    <div class="tl-name">Email Execution</div>
+    <div class="tl-status">Complete</div>
+  </div>
+  <div class="tl-phase tl-active">
+    <div class="tl-num">Phase 3</div>
+    <div class="tl-name">Automation</div>
+    <div class="tl-status">Testing</div>
+  </div>
+  <div class="tl-phase tl-next">
+    <div class="tl-num">Phase 4</div>
+    <div class="tl-name">Dashboard + CRM</div>
+    <div class="tl-status">Planned</div>
+  </div>
+  <div class="tl-phase tl-next">
+    <div class="tl-num">Phase 5</div>
+    <div class="tl-name">Intelligence</div>
+    <div class="tl-status">Planned</div>
+  </div>
+</div>
+
+<!-- EXTERNAL APIS -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #a78bfa;">External APIs</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="cards cards-3">
+    <div class="card c-api">
+      <div class="card-title">Microsoft Graph API <span class="card-badge">Live</span></div>
+      <div class="card-desc">Email send, draft creation, inbox monitoring, bounce detection. Certificate-based authentication through Azure AD. Application-level permissions for unattended operation.</div>
+    </div>
+    <div class="card c-api">
+      <div class="card-title">Claude API <span class="card-badge">Live</span></div>
+      <div class="card-desc">Sonnet for draft generation and reply classification. Opus reserved for strategic analysis. Voice rules, content constraints, and org context passed as structured system prompts. Every call logged with token count for cost tracking.</div>
+    </div>
+    <div class="card c-api">
+      <div class="card-title">Headless Browser <span class="card-badge">Live</span></div>
+      <div class="card-desc">Playwright drives a real Chromium browser without a visible window. It navigates websites, reads page content, and extracts data just like a human would, but programmatically. Used today for staff page scraping during bounce resolution. Future: competitor monitoring, live site verification, GSC/GA4 checks.</div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTBOUND PIPELINE -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #3fb950;">Outbound Pipeline</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">Every outbound email follows this pipeline. Claude generates, rules engines validate, Roger approves, Graph API sends. Nothing leaves without human approval.</p>
+
+  <div class="pipeline">
+    <div class="pipe-stage pipe-compose"><div class="pipe-name">Compose</div><div class="pipe-desc">Claude Sonnet generates personalized draft from contact + org data</div></div>
+    <div class="pipe-stage pipe-validate"><div class="pipe-name">Validate</div><div class="pipe-desc">15 content + email rules check every draft. Auto-fix or block.</div></div>
+    <div class="pipe-stage pipe-queue"><div class="pipe-name">Queue</div><div class="pipe-desc">Drafts stored in DB with violations, context, and history</div></div>
+    <div class="pipe-stage pipe-approve"><div class="pipe-name">Approve</div><div class="pipe-desc">Roger reviews in web UI. Edit, approve, or reject.</div></div>
+    <div class="pipe-stage pipe-send"><div class="pipe-name">Send</div><div class="pipe-desc">Graph API sends on approval. Rate-limited.</div></div>
+    <div class="pipe-stage pipe-log"><div class="pipe-name">Log</div><div class="pipe-desc">Event logged with confirmed send timestamp</div></div>
+  </div>
+
+  <div class="cards cards-4">
+    <div class="card c-out">
+      <div class="card-title">Email Composer <span class="card-badge">P2</span></div>
+      <div class="card-desc">Selects contacts ready for outreach based on cooldown, bounce status, exclusions, and touch history. Passes org context (pain signals, messaging angles, site count, region) to Claude Sonnet for personalized draft generation. 30 emails per batch.</div>
+    </div>
+    <div class="card c-out">
+      <div class="card-title">Follow-up Engine <span class="card-badge">P3</span></div>
+      <div class="card-desc">Timer-based drafting. When a follow-up comes due (OOO return, "not now" revisit, manual timer), generates a contextual draft with full outreach history as input. Skips contacts with pending activity.</div>
+    </div>
+    <div class="card c-out">
+      <div class="card-title">Draft Queue <span class="card-badge">P2</span></div>
+      <div class="card-desc">Full lifecycle tracking: pending, approved, rejected, blocked, sent, failed. Stores violations, auto-fixes, Roger's edits, token usage, and Graph message ID. REQ-019: sent timestamp is confirmed delivery time, never draft time.</div>
+    </div>
+    <div class="card c-out">
+      <div class="card-title">Send Engine <span class="card-badge">P2</span></div>
+      <div class="card-desc">Graph API send on approval. Daily cap (40), per-org cap (3), 500ms rate limiting. Domain verification on first send (REQ-015). Logs outreach event with confirmed timestamp.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ENFORCEMENT -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #db61a2;">Enforcement Layer</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">Every piece of outbound content passes through two rules engines that enforce 15 requirements mechanically. No LLM needed. Pure regex, lookups, and state checks. Fast, free, and deterministic. Rules stored as JSON config, editable without code changes.</p>
+
+  <div class="cards cards-3">
+    <div class="card c-rule">
+      <div class="card-title">Content Rules Engine <span class="card-badge">P2</span></div>
+      <div class="card-desc">Blocks forbidden phrases (timeline claims, financial language). Flags AI tells and em dashes. Enforces identity rules (Roger = CEO, Jonathon spelling), scheduling model, and augment framing. 11 REQs.</div>
+    </div>
+    <div class="card c-rule">
+      <div class="card-title">Email Rules Engine <span class="card-badge">P2</span></div>
+      <div class="card-desc">Auto-fixes links (GoLegara.com format, no protocol prefix). Checks phone routing, exclusion registry, Brevo variables. Enforces cooldown, bounce blocks, daily and per-org caps. 4 REQs.</div>
+    </div>
+    <div class="card c-rule">
+      <div class="card-title">Governance Config <span class="card-badge">P2</span></div>
+      <div class="card-desc">All rules stored as structured JSON. Forbidden phrases, approved alternatives, severity levels, and auto-fix patterns. Roger can edit rules without touching code. Changes logged to audit trail.</div>
+    </div>
+  </div>
+</div>
+
+<!-- INBOUND -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #f0883e;">Inbound Pipeline</span>
+    <span class="section-line"></span>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-stage" style="background: #170f08;"><div class="pipe-name" style="color: #f0883e;">Poll Inbox</div><div class="pipe-desc">Graph API fetches new messages</div></div>
+    <div class="pipe-stage" style="background: #170f08;"><div class="pipe-name" style="color: #f0883e;">Classify Type</div><div class="pipe-desc">Rules: bounce, OOO, auto-reply, or human reply</div></div>
+    <div class="pipe-stage" style="background: #12101f;"><div class="pipe-name" style="color: #a78bfa;">AI Classify</div><div class="pipe-desc">Sonnet: 8 reply types with confidence score</div></div>
+    <div class="pipe-stage" style="background: #0d1520;"><div class="pipe-name" style="color: #58a6ff;">Auto-Action</div><div class="pipe-desc">OOO → timer. Not now → 45d follow-up. Hot → notify.</div></div>
+    <div class="pipe-stage" style="background: #0a1717;"><div class="pipe-name" style="color: #39d2c0;">Review</div><div class="pipe-desc">Roger sees flagged items in /inbox</div></div>
+  </div>
+
+  <div class="cards cards-4">
+    <div class="card c-in">
+      <div class="card-title">Inbox Monitor <span class="card-badge">P2</span></div>
+      <div class="card-desc">Polls Roger's inbox via Graph API. Detects replies, bounces, OOO, and auto-replies using subject line and sender patterns. Deduplicates by message ID. Matches replies back to original drafts.</div>
+    </div>
+    <div class="card c-in">
+      <div class="card-title">Reply Classifier <span class="card-badge">P2</span></div>
+      <div class="card-desc">Claude Sonnet classifies replies into 8 types: interested, referral, OOO, not now, unsubscribe, wrong person, auto-reply, hostile. Extracts structured data (return dates, referral names/emails). Confidence scoring for auto-action gating.</div>
+    </div>
+    <div class="card c-in">
+      <div class="card-title">Bounce Handler <span class="card-badge">P2</span></div>
+      <div class="card-desc">Parses NDR messages to extract bounced addresses and failure reasons. Classifies as permanent (mailbox not found) vs temporary (mailbox full, server down). Marks contacts as unverified.</div>
+    </div>
+    <div class="card c-in">
+      <div class="card-title">Bounce Resolver <span class="card-badge">P3</span></div>
+      <div class="card-desc">Automated resolution pipeline. Infers 8 possible email formats from the contact's name. Launches headless browser to scrape org staff pages for correct email patterns. Learns domain formats for future use. REQ-015: domain verification lifecycle.</div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTOMATION -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #58a6ff;">Automation Layer</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">The scheduler runs the system on autopilot. Every morning: generate outreach batch, check follow-ups, process inbox, resolve bounces, and deliver a briefing. Roger approves from his phone over coffee.</p>
+
+  <div class="cards cards-3">
+    <div class="card c-sched">
+      <div class="card-title">Scheduler <span class="card-badge">P3</span></div>
+      <div class="card-desc">node-cron with Pacific Time. 6 active daily jobs + 3 stubs for future phases. Manual trigger via API for on-demand runs. Toggle enable/disable per job. All executions logged to governance audit trail.</div>
+    </div>
+    <div class="card c-notify">
+      <div class="card-title">Morning Briefing <span class="card-badge">P3</span></div>
+      <div class="card-desc">Daily at 7:45 AM. Hot leads, pending drafts, overnight inbox activity, pipeline snapshot, due follow-ups, system health, API usage. Sent as HTML email via Graph API and viewable at /briefing.</div>
+    </div>
+    <div class="card c-notify">
+      <div class="card-title">Priority Notifications <span class="card-badge">P3</span></div>
+      <div class="card-desc">Instant alerts for hot lead replies, hostile responses, and system errors. Email channel live. Slack webhook and SMS (Twilio) ready to activate. Wired into reply classifier and scheduler error handler.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEB UI -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #39d2c0;">Web Interface</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">Server-rendered HTML with htmx for interactivity. No React build step, no SPA complexity. Fast, lightweight, works on Roger's phone. Tailwind CSS for styling.</p>
+
+  <div class="cards cards-5">
+    <div class="card c-ui">
+      <div class="card-title">/drafts</div>
+      <div class="card-desc">Draft approval queue. Review with org context, edit inline, approve/reject. Bulk actions. Violations shown as badges.</div>
+    </div>
+    <div class="card c-ui">
+      <div class="card-title">/inbox</div>
+      <div class="card-desc">Reply and bounce queue. Filter by type and status. Action or dismiss with htmx inline updates.</div>
+    </div>
+    <div class="card c-ui">
+      <div class="card-title">/scheduler</div>
+      <div class="card-desc">Schedule management. Toggle jobs, manual trigger, execution log from governance table.</div>
+    </div>
+    <div class="card c-ui">
+      <div class="card-title">/briefing</div>
+      <div class="card-desc">Web view of daily morning briefing. Same content as the email, rendered in browser.</div>
+    </div>
+    <div class="card c-ui">
+      <div class="card-title">/health</div>
+      <div class="card-desc">System health. Table counts, last migration, server uptime.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA LAYER -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #8b949e;">Data Layer</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">SQLite via better-sqlite3. Single-file database, no server process, queryable in milliseconds, git-backupable. Handles the full prospect-to-client lifecycle. WAL mode for concurrent reads.</p>
+
+  <div class="cards cards-4">
+    <div class="card c-data"><div class="card-title">organizations <span class="card-badge">P1</span></div><div class="card-desc">193 orgs. Status, domains, pain signals, messaging angles, site count, region, name variants.</div></div>
+    <div class="card c-data"><div class="card-title">contacts <span class="card-badge">P1</span></div><div class="card-desc">518 contacts. Persona, email, title, source, LinkedIn URL, champion flag.</div></div>
+    <div class="card c-data"><div class="card-title">outreach_events <span class="card-badge">P1</span></div><div class="card-desc">204 events. Email, InMail, LinkedIn connect/engage. Unified cross-channel timeline.</div></div>
+    <div class="card c-data"><div class="card-title">email_drafts <span class="card-badge">P2</span></div><div class="card-desc">Draft lifecycle. Status, violations, edits, tokens, send timestamp, Graph message ID.</div></div>
+    <div class="card c-data"><div class="card-title">inbox_events <span class="card-badge">P2</span></div><div class="card-desc">Replies, bounces, OOO. Classification, confidence, matched contact/draft.</div></div>
+    <div class="card c-data"><div class="card-title">pipeline_deals <span class="card-badge">P1</span></div><div class="card-desc">6 deals. Sales, activation, Fidare conversion. Owner routing, stage tracking, revenue estimates.</div></div>
+    <div class="card c-data"><div class="card-title">follow_ups <span class="card-badge">P1</span></div><div class="card-desc">Timer-based actions. OOO returns, re-engagement, manual reminders.</div></div>
+    <div class="card c-data"><div class="card-title">bounce_resolutions <span class="card-badge">P3</span></div><div class="card-desc">Resolution pipeline state. Format inference, Playwright results, resolution status.</div></div>
+    <div class="card c-data"><div class="card-title">domain_verification <span class="card-badge">P3</span></div><div class="card-desc">REQ-015. Domain status, learned email format, sample emails, verification date.</div></div>
+    <div class="card c-data"><div class="card-title">content_signals <span class="card-badge">P1</span></div><div class="card-desc">12 content signals. Type, source, urgency, strength, publication status.</div></div>
+    <div class="card c-data"><div class="card-title">testimonials <span class="card-badge">P1</span></div><div class="card-desc">4 quotes, 7 deployments. Approved text, deployment tracking across pages.</div></div>
+    <div class="card c-data"><div class="card-title">governance_log <span class="card-badge">P1</span></div><div class="card-desc">Audit trail. Rule changes, scheduler runs, system decisions. Full history.</div></div>
+  </div>
+</div>
+
+<div class="divider" style="margin: 48px 0;"></div>
+
+<!-- PHASE 4: DASHBOARD + CRM -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #6e7681;">Phase 4 — Dashboard + CRM</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">HubSpot becomes redundant. A unified view of the entire prospect-to-client lifecycle with role-based access for Roger (full system), Jonathon (account management), and future BD team members (task queue).</p>
+
+  <div class="cards cards-3">
+    <div class="card c-future">
+      <div class="card-title">Pipeline Kanban</div>
+      <div class="card-desc">Drag-and-drop deal stages. Visual pipeline from prospect through outreach, discovery, leadership, clinical review, to won. Filter by pipeline type (sales, activation, Fidare conversion), owner, and stage. Deal cards show org profile, contact list, and full outreach history.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Organization Profiles</div>
+      <div class="card-desc">Every FQHC in one place. All contacts, complete outreach timeline across every channel, pipeline status, pain signals, messaging angles, site count, region, and notes. The "org dossier" from the database, rendered as a living page that updates as outreach progresses.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Account Management</div>
+      <div class="card-desc">Jonathon's workspace. Client health dashboard, onboarding progress tracking, activation pipeline management, contract renewal timelines. Same data as Roger's view, different workflow and actions. Post-contract relationship management with full history from pre-sales.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Board Reports</div>
+      <div class="card-desc">Auto-generated from live data. Pipeline velocity, conversion rates, revenue projections, outreach volume and response metrics. Replace the current HubSpot export + manual formatting. One click to generate. Exportable as PDF or spreadsheet.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Deal Revenue Calculator</div>
+      <div class="card-desc">Encounters x rate x provider type. Built from the same logic as the current calculator but connected to live deal data. Shows projected annual revenue, Legara cost, and cash generated for each deal. Board-ready financial projections.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Role-Based Access</div>
+      <div class="card-desc">Single platform, three roles. Admin (Roger): full system including governance. Account Manager (Jonathon): pipeline, clients, org intel, no outreach. Operator (future BD): daily task queue, draft approval, no governance. Password auth with bcrypt.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: INTELLIGENCE -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #6e7681;">Phase 5 — Intelligence</span>
+    <span class="section-line"></span>
+  </div>
+  <p class="section-desc">The durable asset. The BD and account management layers are the first applications built on top of an intelligence layer that gives Legara a structural information advantage in its market. Phase 5 is where the system starts making decisions within guardrails, not just executing them.</p>
+
+  <div class="cards cards-3">
+    <div class="card c-future wide">
+      <div class="card-title">Market Intelligence Engine</div>
+      <div class="card-desc">Continuous, automated research on every FQHC in the target market. Headless browsers monitor competitor websites for messaging changes, pricing signals, and service expansions. Public data (990 filings, HRSA data, state licensing databases) enriches org profiles automatically. The system builds a living map of the FQHC behavioral health landscape: who's growing, who's struggling, who just lost a provider, who got new grant funding. Roger knows before the prospect does.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Pattern Recognition</div>
+      <div class="card-desc">Which org profiles, personas, messaging angles, and subject lines correlate with positive replies? Which don't? Claude Opus analyzes outreach history to identify what's working and refine the methodology. Not guessing. Learning from hundreds of real touches with real decision-makers.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Content Intelligence</div>
+      <div class="card-desc">Blog posts, LinkedIn content, email sequences, case studies, and collateral generated from real market data and outreach insights. Content signals captured from Roger's conversations flow into a publishing calendar. Claude creates, rules engines validate, Roger approves. The content pipeline is an extension of the BD pipeline.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Governance Evolution</div>
+      <div class="card-desc">The rules that govern the platform aren't static. Claude Opus reviews outreach patterns, identifies governance gaps, and proposes new rules. "You've sent 40 emails to BH Directors with a 2% reply rate. CEO outreach gets 8%. Suggest: reallocate BH Director volume to CEO personas." Roger approves or rejects the proposed rule change. The system gets smarter.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Automated Site Verification</div>
+      <div class="card-desc">Headless browsers continuously rotate through Legara's own website and content inventory. Check for stale content, deprecated terms, broken links, and governance drift. The site stays clean without manual audits. Post-deploy verification happens automatically.</div>
+    </div>
+    <div class="card c-future">
+      <div class="card-title">Multi-Channel Orchestration</div>
+      <div class="card-desc">Email, LinkedIn InMail, LinkedIn engagement, phone, and meeting, all coordinated from a single intelligence layer. The system knows the optimal channel sequence per persona, respects cross-channel cooldowns, and prepares channel-specific talking points. LinkedIn connection requests and InMails drafted with org context, reviewed by Roger, executed manually (TOS-safe).</div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADLESS BROWSER EXPLAINER -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #a78bfa;">How Headless Browsers Work</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="explainer">
+    <div class="explainer-title">What is a headless browser?</div>
+    <div class="explainer-text">
+      A headless browser is a real web browser (in Meridian's case, Chromium, the engine behind Google Chrome) running without a visible window. It does everything a normal browser does: loads web pages, executes JavaScript, renders content, handles cookies and authentication. The difference is that instead of a human clicking around, a program controls it.
+      <br><br>
+      Think of it as a research assistant that can visit any website, read its content, fill out forms, click buttons, and report back what it found. It runs in the background, completely automated.
+    </div>
+  </div>
+  <div class="explainer">
+    <div class="explainer-title">How Meridian uses headless browsers today</div>
+    <div class="explainer-text">
+      <strong>Bounce resolution:</strong> When an email bounces, Meridian needs to find the correct address. The headless browser visits the organization's website, navigates to their staff/leadership page, reads the page content, and looks for email addresses that match the contact's name. If it finds one, it learns the email format for that entire domain (e.g., "this org uses firstname.lastname@domain.com") and applies that pattern to fix future bounces at the same org, without having to check the website again.
+    </div>
+  </div>
+  <div class="explainer">
+    <div class="explainer-title">Future headless browser capabilities</div>
+    <div class="explainer-text">
+      <strong>Competitor monitoring:</strong> Periodically visit competitor websites. Detect messaging changes, new service announcements, pricing updates, and leadership changes. Build competitive intelligence automatically.
+      <br><br>
+      <strong>Live site verification:</strong> Check Legara's own website for stale content, broken links, deprecated terms, and governance violations. Run after every deployment. The site stays clean without manual QA.
+      <br><br>
+      <strong>Market research:</strong> Scrape public data sources (HRSA UDS reports, state licensing databases, 990 filings) to enrich org profiles with current data. Detect new FQHCs entering the behavioral health space, leadership changes, grant awards, and expansion announcements.
+      <br><br>
+      <strong>LinkedIn intelligence:</strong> Monitor target contacts' LinkedIn activity. Identify recent posts, job changes, and company updates. Prepare engagement talking points before outreach. (Connection requests and messages stay manual for TOS compliance.)
+    </div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE PRINCIPLES -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title" style="color: #c9d1d9;">Architecture Principles</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="cards cards-2">
+    <div class="card" style="background: #0d1117; border: 1px solid #21262d;">
+      <div class="card-title" style="color: #f0f6fc;">Three Intelligence Tiers</div>
+      <div class="card-desc">Route every task to the cheapest tier that can handle it. <strong style="color:#db61a2;">Rules engine</strong> (regex, lookups, state checks) for mechanical enforcement. <strong style="color:#a78bfa;">Claude Sonnet</strong> for generation and classification. <strong style="color:#a78bfa;">Claude Opus</strong> reserved for strategic reasoning. Most work never touches an LLM.</div>
+    </div>
+    <div class="card" style="background: #0d1117; border: 1px solid #21262d;">
+      <div class="card-title" style="color: #f0f6fc;">Governance as Config</div>
+      <div class="card-desc">Every rule, constraint, and enforcement policy is stored as structured JSON. Editable without code changes, logged to an audit trail with before/after values. The system can explain why it blocked or flagged something by referencing the specific rule. When a new lesson is learned, it becomes a rule. When a rule proves wrong, it's updated. The platform evolves.</div>
+    </div>
+    <div class="card" style="background: #0d1117; border: 1px solid #21262d;">
+      <div class="card-title" style="color: #f0f6fc;">Human in the Loop</div>
+      <div class="card-desc">The system generates, validates, and prepares. Humans approve and decide. No email sends without Roger's approval. No deal created without manual action. No rule changed without logging. Automation handles volume. Judgment stays with people. When a future BD team member joins, they see a task queue, not an architecture.</div>
+    </div>
+    <div class="card" style="background: #0d1117; border: 1px solid #21262d;">
+      <div class="card-title" style="color: #f0f6fc;">Specificity Over Generality</div>
+      <div class="card-desc">Meridian serves one methodology, one market (FQHC behavioral health), and one pipeline shape. Every module is built for this specific use case. That's why it works better than any off-the-shelf CRM, agent platform, or automation tool. The specificity is the moat.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-text">Meridian Platform &nbsp;·&nbsp; Legara &nbsp;·&nbsp; Built 2026-03-31 &nbsp;·&nbsp; Node.js + SQLite + htmx &nbsp;·&nbsp; Self-hosted on macOS</div>
+</div>
+
+</body>
+</html>
