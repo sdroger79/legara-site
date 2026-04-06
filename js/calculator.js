@@ -74,7 +74,7 @@ function setProviderType(type, e) {
   }
   document.querySelectorAll('.provider-toggle button').forEach(btn => btn.classList.remove('active'));
   e.target.classList.add('active');
-  trackEvent('provider_type_change', CALC_MODE === 'internal' ? 'ROI Calculator Internal' : 'ROI Calculator', type);
+  _safeTrack('provider_type_change', { event_category: CALC_MODE === 'internal' ? 'ROI Calculator Internal' : 'ROI Calculator', event_label: type });
   calculate();
 }
 
@@ -420,7 +420,7 @@ function calculate() {
   if (CALC_MODE === 'public') {
     calcCount++;
     if (calcCount === 3) {
-      trackEvent('calculator_engaged', 'ROI Calculator', currentType, Math.round(internalCPE1));
+      _safeTrack('calculator_engaged', { event_category: 'ROI Calculator', event_label: currentType, value: Math.round(internalCPE1) });
     }
   }
 }

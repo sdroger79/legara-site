@@ -7,10 +7,22 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+  </script>
+  <script src="js/utm.js"></script>
+  <script>
+    var utm = typeof getUtmParams === 'function' ? getUtmParams() : {};
+    if (utm.utm_source) {
+      gtag('set', {
+        'campaign_source': utm.utm_source,
+        'campaign_medium': utm.utm_medium || '',
+        'campaign_name': utm.utm_campaign || '',
+        'campaign_content': utm.utm_content || '',
+        'campaign_term': utm.utm_term || ''
+      });
+    }
     gtag('config', 'G-GC0KH378ZK');
     gtag('config', 'AW-1769529274');
   </script>
-  <script src="js/utm.js"></script>
   <script>
     _linkedin_partner_id = "8941612";
     window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
@@ -2584,6 +2596,9 @@
           'https://www.google-analytics.com/g/collect?' +
           'v=2&tid=G-GC0KH378ZK&cid=' + encodeURIComponent(cid) +
           '&en=quiz_abandon' +
+          '&dl=' + encodeURIComponent(window.location.href) +
+          '&dt=' + encodeURIComponent(document.title) +
+          '&dr=' + encodeURIComponent(document.referrer || '') +
           '&ep.event_category=Assessment' +
           '&ep.last_question_number=' + (lastQuestionSeen + 1) +
           '&ep.questions_completed=' + Object.keys(answers).length +

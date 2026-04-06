@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-04-02",
+    "type": "update",
+    "title": "Your Meridian Role Is Now 'Sales'",
+    "body": "Meridian now has four distinct roles instead of three generic ones. Your login (bd_team / meridian2026) is now the 'sales' role, which gives you full access to outreach, CRM, and pipeline tools. Management users (like board members) get read-only CRM access. You won't notice much difference day-to-day — you still see everything you need."
+  },
+  {
+    "date": "2026-04-02",
+    "type": "update",
+    "title": "Operations Module Live in Meridian",
+    "body": "Jonathon now has his own Operations section in Meridian for tracking credentialing, contracts, activation checklists, and client health. You won't see this section (it's gated to operations and admin), but it means credentialing status and client activation progress are now tracked in one place instead of scattered across spreadsheets."
+  },
+  {
+    "date": "2026-04-02",
+    "type": "update",
+    "title": "Org Research Now Visible in Meridian",
+    "body": "When you open an org profile in Meridian, there's now a Research tab showing pain signals, messaging angles, and discovered contacts. The dashboard also has a research pipeline widget. This is the same intelligence that drives ABM email personalization — now you can see it before a call or meeting."
+  },
+  {
     "date": "2026-03-31",
     "type": "update",
     "title": "New Client Testimonial Added to Website",

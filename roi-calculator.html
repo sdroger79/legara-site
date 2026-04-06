@@ -8,8 +8,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-GC0KH378ZK');
-  gtag('config', 'AW-1769529274');
 </script>
 <script src="js/utm.js"></script>
 <script>
@@ -23,6 +21,8 @@ if (utm.utm_source) {
     'campaign_term': utm.utm_term || ''
   });
 }
+gtag('config', 'G-GC0KH378ZK');
+gtag('config', 'AW-1769529274');
 </script>
 <!-- LinkedIn Insight Tag -->
 <script type="text/javascript">
@@ -684,6 +684,10 @@ function submitDownloadForm(e) {
     lintrk('track', { conversion_id: 24768068 });
   }
 
+  if (typeof gtag === 'function') {
+    gtag('event', 'roi_report_download', { event_category: 'ROI Calculator', event_label: org });
+  }
+
   // Fire-and-forget: HubSpot
   fetch('https://api.hsforms.com/submissions/v3/integration/submit/243608205/23567105-e94f-457a-9b1f-f5990ee77821', {
     method: 'POST',
@@ -733,7 +737,7 @@ function submitDownloadForm(e) {
   var gaClientId = '';
   try {
     var gaCookie = document.cookie.split('; ').find(function(c) { return c.startsWith('_ga='); });
-    if (gaCookie) gaClientId = gaCookie.split('.').slice(2).join('.');
+    if (gaCookie) gaClientId = gaCookie.split('.').slice(-2).join('.');
   } catch(e) {}
 
   // Fire-and-forget: Brevo + HubSpot CRM (server-side, reliable)

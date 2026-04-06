@@ -20,5 +20,12 @@
       "binding": "TEAM_DATA",
       "id": "71197c42d7c54d7f8eebd7f4f8fdf5c9"
     }
+  ],
+  "d1_databases": [
+    {
+      "binding": "TRACKING",
+      "database_name": "legara-tracking",
+      "database_id": "804637df-8435-451a-9afb-1934f6bcee3b"
+    }
   ]
 }

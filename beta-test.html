@@ -528,6 +528,10 @@ function submitFeedback(e) {
     user_agent: navigator.userAgent
   };
 
+  if (typeof gtag === 'function') {
+    gtag('event', 'feedback_submit', { event_category: 'Beta Test', value: parseInt(data.rating_overall) || 0 });
+  }
+
   // Send to our worker endpoint
   fetch('/api/beta-feedback', {
     method: 'POST',

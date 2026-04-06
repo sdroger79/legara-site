@@ -43,7 +43,7 @@ const DEAL_RATE_CARD = {
 };
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // Redirect www to non-www (SEO: canonical domain)
@@ -211,6 +211,28 @@ export default {
       }
 
       // Static /team/* files fall through to ASSETS.fetch below
+    }
+
+    // Click tracking redirect: /r/:hash
+    if (url.pathname.startsWith("/r/") && url.pathname.length > 3) {
+      const hash = url.pathname.slice(3);
+      const tracked = await env.TRACKING.prepare("SELECT * FROM tracked_links WHERE link_hash = ?").bind(hash).first();
+
+      if (tracked) {
+        // Log click asynchronously (don't block redirect)
+        ctx.waitUntil(
+          env.TRACKING.prepare(
+            "INSERT INTO link_clicks (draft_id, contact_id, organization_id, link_hash, original_url, link_label, user_agent, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+          ).bind(
+            tracked.draft_id, tracked.contact_id, tracked.organization_id,
+            hash, tracked.original_url, tracked.link_label,
+            request.headers.get("user-agent") || "", request.headers.get("cf-connecting-ip") || ""
+          ).run()
+        );
+        return Response.redirect(tracked.original_url, 302);
+      }
+      // Unknown hash — graceful fallback
+      return Response.redirect("https://golegara.com", 302);
     }
 
     return env.ASSETS.fetch(request);
