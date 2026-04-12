@@ -15,9 +15,22 @@
 
 ## Deployment
 
-- **Push to `main` auto-deploys** via GitHub Actions + wrangler
+- **Push to `main` auto-deploys to prod** via GitHub Actions + wrangler (`deploy.yml`)
+- **PRs against `main` auto-deploy to staging** via `deploy-staging.yml` → staging URL posted as PR comment
+- Staging URL: `staging.golegara.com` (or workers.dev fallback if DNS CNAME not set)
 - Always commit and push to deploy — do NOT run `npx wrangler deploy` directly
 - GitHub repo: sdroger79/legara-site
+
+### When to use staging vs direct-to-main
+
+| Route to staging (feature branch → PR) | Push to main directly |
+|-----------------------------------------|-----------------------|
+| New Worker routes or cron triggers | Copy/content text edits |
+| wrangler.jsonc config changes | CSS/styling tweaks |
+| New or modified API endpoints | Static asset updates |
+| Dependency updates | Emergency hotfixes (`hotfix:` prefix) |
+| Email template logic changes | |
+| New KV/D1 bindings | |
 
 ## Pre-Deploy Checklist
 

@@ -35,10 +35,7 @@
   //   OR staging.golegara.com (requires DNS CNAME — see docs/staging-setup.md)
   //
   // Staging uses separate KV + D1 to avoid polluting prod data.
-  // Create them once via:
-  //   npx wrangler kv namespace create TEAM_DATA --env staging
-  //   npx wrangler d1 create legara-tracking-staging
-  // Then paste the IDs below.
+  // Resources created Session 49: KV "staging-TEAM_DATA", D1 "legara-tracking-staging".
   "env": {
     "staging": {
       "name": "legara-site-staging",
@@ -49,14 +46,14 @@
       "kv_namespaces": [
         {
           "binding": "TEAM_DATA",
-          "id": "<FILL-IN: run 'npx wrangler kv namespace create TEAM_DATA --env staging' and paste the id>"
+          "id": "7e645f28d3b64e9690bfc92299d9efed"
         }
       ],
       "d1_databases": [
         {
           "binding": "TRACKING",
           "database_name": "legara-tracking-staging",
-          "database_id": "<FILL-IN: run 'npx wrangler d1 create legara-tracking-staging' and paste the id>"
+          "database_id": "ae81dd21-4918-4ae3-81fe-2b147826db64"
         }
       ]
     }
