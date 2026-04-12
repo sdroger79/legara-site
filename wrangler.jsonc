@@ -27,5 +27,38 @@
       "database_name": "legara-tracking",
       "database_id": "804637df-8435-451a-9afb-1934f6bcee3b"
     }
-  ]
+  ],
+
+  // ─── Staging Environment ──────────────────────────────────────────
+  // Deploy with: npx wrangler deploy --env staging
+  // Accessible at: legara-site-staging.<account>.workers.dev
+  //   OR staging.golegara.com (requires DNS CNAME — see docs/staging-setup.md)
+  //
+  // Staging uses separate KV + D1 to avoid polluting prod data.
+  // Create them once via:
+  //   npx wrangler kv namespace create TEAM_DATA --env staging
+  //   npx wrangler d1 create legara-tracking-staging
+  // Then paste the IDs below.
+  "env": {
+    "staging": {
+      "name": "legara-site-staging",
+      "route": {
+        "pattern": "staging.golegara.com/*",
+        "zone_name": "golegara.com"
+      },
+      "kv_namespaces": [
+        {
+          "binding": "TEAM_DATA",
+          "id": "<FILL-IN: run 'npx wrangler kv namespace create TEAM_DATA --env staging' and paste the id>"
+        }
+      ],
+      "d1_databases": [
+        {
+          "binding": "TRACKING",
+          "database_name": "legara-tracking-staging",
+          "database_id": "<FILL-IN: run 'npx wrangler d1 create legara-tracking-staging' and paste the id>"
+        }
+      ]
+    }
+  }
 }
