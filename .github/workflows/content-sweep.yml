@@ -1,0 +1,29 @@
+name: Content Sweep
+
+# ENFORCE mode. Runs sweep.sh — the repo's existing brand-rule scanner
+# (em dashes in Roger-attributed content, "BH" abbreviation, Brevo
+# template-var format, Co-Founder title, AI filler, savings framing,
+# TODO/FIXME/HACK comments). The script already exits 1 on any
+# error-severity finding; this workflow is pure visibility — moving
+# the existing local discipline into a CI safety net.
+#
+# Landed 9f CI greenfield (2026-04-15). See docs/ci.md for the gate's
+# rationale, observation window (none — ENFORCE day 1 because the
+# rules are already enforced locally), and follow-ups.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sweep:
+    name: Content sweep (sweep.sh)
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run sweep.sh
+        run: bash sweep.sh
