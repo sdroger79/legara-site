@@ -1,0 +1,53 @@
+name: Link Check
+
+# REPORT mode until 2026-04-22 (1-week observation window), then
+# flip to ENFORCE via 9f-enforce-flip follow-up. Uses
+# lycheeverse/lychee-action to scan every .html at repo root and
+# under lp/. External-link flakiness on marketing sites is real
+# (partner URLs restructure) — REPORT lets us see what noise looks
+# like before the gate can fail merges.
+#
+# Landed 9f CI greenfield (2026-04-15). See docs/ci.md for the gate's
+# rationale, observation window, and calibration plan.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lychee:
+    name: Scan HTML for broken links
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        continue-on-error: true  # REPORT mode — flip to false on 2026-04-22
+        with:
+          # Scan top-level HTML + landing pages under lp/.
+          args: >-
+            --no-progress
+            --exclude-path admin
+            --exclude-path node_modules
+            --exclude localhost
+            --exclude 127.0.0.1
+            --exclude-mail
+            './*.html'
+            'lp/**/*.html'
+          output: link-check-report.md
+          fail: false  # REPORT mode
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-check-report
+          path: link-check-report.md
+          retention-days: 30
+          if-no-files-found: ignore
