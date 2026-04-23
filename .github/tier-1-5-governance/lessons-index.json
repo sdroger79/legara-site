@@ -1,0 +1,1375 @@
+{
+  "generated_at": "2026-04-23T17:51:18.198Z",
+  "source": "sys/lessons.md",
+  "lesson_count": 171,
+  "lessons": [
+    {
+      "id": "pin-the-reviewer-model-by-snapshot-not-by-floating-alias",
+      "title": "Pin the Reviewer Model by Snapshot, Not by Floating Alias",
+      "session": "102",
+      "date": "2026-04-23",
+      "one_sentence_summary": "P019 deployed Tier 1.5 per-PR cross-model review across meridian, legara-portals, and legara-site.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "integration-harness-must-seed-licensing-bridges-not-just-entities",
+      "title": "Integration Harness Must Seed Licensing Bridges, Not Just Entities",
+      "session": "89",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.4a's service layer validates that a provider is \"licensed at the target client\" before allowing a scheduled visit.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "atlas-dev-protocol-numbered-prompts-single-codebox-handoffs",
+      "title": "Atlas Dev Protocol — Numbered Prompts, Single-Codebox Handoffs",
+      "session": "88",
+      "date": "2026-04-22",
+      "one_sentence_summary": "Prior to this lesson, prompt handoffs drifted.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "role-array-gates-don-t-help-when-the-render-path-short-circuits",
+      "title": "Role-Array Gates Don't Help When the Render Path Short-Circuits",
+      "session": "88",
+      "date": "2026-04-22",
+      "one_sentence_summary": "Meridian's `src/views/partials/nav.ejs` declares a `sections` config array where each item carries a `roles: [...]` allowlist.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "test-concurrency-1-for-truncate-cleaned-integration-suites-against-a-shared-db",
+      "title": "`--test-concurrency=1` for TRUNCATE-Cleaned Integration Suites Against a Shared DB",
+      "session": "88",
+      "date": "2026-04-22",
+      "one_sentence_summary": "Pre-S1.4's meridian PR added two new integration test files, bringing the count from 3 to 5.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "replay-migrations-as-isolated-child-processes-not-inside-one-node-process",
+      "title": "Replay Migrations as Isolated Child Processes, Not Inside One Node Process",
+      "session": "87",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.2b's `scripts/setup-test-db.mjs` initially applied `schema-pg.sql` via pg's node driver and replayed the ~130 migrations with a simple `for (const f of files) { const m = require(f); await (m.up||m.run)(); }` loop.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "defer-backend-endpoints-ship-ui-v1-with-documented-todos",
+      "title": "Defer Backend Endpoints, Ship UI v1 With Documented TODOs",
+      "session": "87",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.2c's spec called for three combobox/type-ahead surfaces (client org, preferred provider, role-gated archived toggle) that all depend on backend endpoints that don't exist yet: `/api/v1/auth/me` (returns user role + scope), admin-scope `/",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "zod-default-survives-partial-watch-for-silent-updates",
+      "title": "Zod .default() Survives .partial() — Watch for Silent UPDATEs",
+      "session": "86",
+      "date": "2026-04-22",
+      "one_sentence_summary": "The S1.1 patients service built `updateSchema = createSchema.omit({ client_org_id: true, ehr_patient_id: true }).partial()`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "tailwind-v4-shadcn-css-first-theme-inline-tw-animate-css",
+      "title": "Tailwind v4 + shadcn — CSS-First, @theme inline, tw-animate-css",
+      "session": "85",
+      "date": "2026-04-22",
+      "one_sentence_summary": "Canonical shadcn install docs assume Tailwind v3 with `tailwind.config.js` (`theme.extend.colors`, `plugins: [require('tailwindcss-animate')]`, `darkMode: 'class'`).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "pin-pre-release-deps-with-a-graduation-plan",
+      "title": "Pin Pre-release Deps With a Graduation Plan",
+      "session": "85",
+      "date": "2026-04-22",
+      "one_sentence_summary": "`@tremor/react@3.18.7` (stable) peers `react@^18` and refuses to resolve against React 19.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "when-adding-an-app-to-a-portals-monorepo-touch-iam-twice",
+      "title": "When Adding an App to a Portals Monorepo, Touch IAM Twice",
+      "session": "85",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.0 deploy pipeline green'd the GitHub Actions secrets, the S3 bucket, the CloudFront distribution, and the deploy.yml matrix — and then CI failed twice in succession on AWS AccessDenied.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "mirror-repo-conventions-over-prompt-written-urls",
+      "title": "Mirror Repo Conventions Over Prompt-Written URLs",
+      "session": "85",
+      "date": "2026-04-22",
+      "one_sentence_summary": "The S1.0 architecture prompt and diagnostic both wrote the canary URL as `admin.golegara.com/patients-admin/*` — a path-based topology on a shared admin distribution.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "radix-tooltip-is-hover-focus-use-popover-for-tap-to-reveal",
+      "title": "Radix Tooltip Is Hover/Focus — Use Popover for Tap-to-Reveal",
+      "session": "85",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.0 canary Phase 3 exhibit 14 was specified as \"Radix Tooltip on three surfaces ...",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "story-expectations-is-a-living-document",
+      "title": "Story-Expectations Is a Living Document",
+      "session": "84",
+      "date": "2026-04-21",
+      "one_sentence_summary": "Provider Detail Tier 1 overhaul shipped and scored 83/100 — 2 points short of the 85 target.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "every-ship-needs-a-verification-evaluator",
+      "title": "Every Ship Needs a Verification Evaluator",
+      "session": "84",
+      "date": "2026-04-21",
+      "one_sentence_summary": "Client Detail overhaul shipped via PR #144 scored 57/100 on post-deploy rescan.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "new-react-surfaces-must-use-the-locked-design-language-stack",
+      "title": "New React Surfaces Must Use the Locked Design-Language Stack",
+      "session": "84",
+      "date": "2026-04-21",
+      "one_sentence_summary": "Roger flagged that Meridian often ships UI that \"works but looks and feels 15 years old\" — stock HTML selects, upload forms without drag-drop, utilitarian tables with zebra stripes, spinners where skeletons belong, system fonts, inconsisten",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "meridian-owns-company-profile-data-erp-owns-transactional",
+      "title": "Meridian Owns Company Profile Data, ERP Owns Transactional",
+      "session": "84",
+      "date": "2026-04-21",
+      "one_sentence_summary": "During v3 diagnostics, it became clear no client in prod had address, phone, email, or website populated (0 of 7).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "scanner-target-must-be-explicitly-pinned-not-heuristically-chosen",
+      "title": "Scanner Target Must Be Explicitly Pinned, Not Heuristically Chosen",
+      "session": "84",
+      "date": "2026-04-21",
+      "one_sentence_summary": "The contextual-action scanner initially picked its target client via `ORDER BY last_touch DESC NULLS LAST, id ASC` — which landed on org id 6 when no client had outreach events (all nulls → id asc → first).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "cowork-drafted-code-prompts-bypass-the-ux-standards-gate",
+      "title": "Cowork-Drafted Code Prompts Bypass the UX Standards Gate",
+      "session": "83",
+      "date": "2026-04-20",
+      "one_sentence_summary": "The 2FA sprint drafted 5 Code prompts in Cowork as standalone markdown files (`sys/prompts/prompt-2fa-phase*.md`).",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "all-meridian-forms-must-submit-through-htmx-no-standard-html-post",
+      "title": "All Meridian Forms Must Submit Through HTMX — No Standard HTML POST",
+      "session": "79",
+      "date": "2026-04-20",
+      "one_sentence_summary": "PR #109 fixed the duplicate portal user constraint error by returning `res.status(409).json({ error: \"...\" })`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "psr-portal-is-decommissioned-psrs-are-meridian-users",
+      "title": "psr-portal Is Decommissioned — PSRs Are Meridian Users",
+      "session": "79",
+      "date": "2026-04-20",
+      "one_sentence_summary": "A feedback audit and Code prompt referenced `apps/psr-portal/` as one of the portal apps to migrate.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "never-reference-icloud-paths-all-repos-live-at-code",
+      "title": "Never Reference iCloud Paths — All Repos Live at ~/code/",
+      "session": "79",
+      "date": "2026-04-20",
+      "one_sentence_summary": "A merge command was generated using the old iCloud path (`~/Library/Mobile Documents/com~apple~CloudDocs/Legara - Marketing V2/meridian`).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "three-tier-feedback-policy-governance-conflict-resolution-platform-standardizati",
+      "title": "Three-Tier Feedback Policy — Governance Conflict Resolution + Platform Standardization",
+      "session": "79",
+      "date": "2026-04-20",
+      "one_sentence_summary": "Full audit of both repos revealed six different feedback mechanisms used inconsistently: Notyf toasts (36 in Meridian), browser `alert()` (15 in Meridian, 11 `Alert.alert()` in provider-app), persistent banners (2 — only PSR dashboard), ful",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "sqlite-integer-booleans-don-t-survive-postgresql-grep-for-integer-literals-in-in",
+      "title": "SQLite Integer Booleans Don't Survive PostgreSQL — Grep for Integer Literals in INSERT/UPDATE",
+      "session": "78",
+      "date": "2026-04-19",
+      "one_sentence_summary": "`createProviderInvite` and `createClientInvite` in `src/services/operations-portal.js` used `VALUES (..., 1, 0)` for `is_active` and `onboarding_complete` columns.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "prod-migrate-phase-h-must-scan-all-indexed-tables-not-just-primary",
+      "title": "prod-migrate Phase H Must Scan All Indexed Tables, Not Just Primary",
+      "session": "78",
+      "date": "2026-04-19",
+      "one_sentence_summary": "Migration 115 created indexes on both `users` and `portal_users` tables.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "production-migration-is-a-manual-step-check-after-every-merge",
+      "title": "Production Migration Is a Manual Step — Check After Every Merge",
+      "session": "77",
+      "date": "2026-04-19",
+      "one_sentence_summary": "After merging the Provider Bench PR (#100), the evaluator hit 500 errors on every bench API call.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "governance-sync-should-be-automatic-not-triggered",
+      "title": "Governance Sync Should Be Automatic, Not Triggered",
+      "session": "77",
+      "date": "2026-04-19",
+      "one_sentence_summary": "After the evaluator scored bench-enroll and bench-dashboard, the scores existed in the evaluator JSON but weren't reflected in the registry, atlas, or scoring-history until manually triggered.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "error-feedback-must-be-persistent-toasts-are-for-success-only",
+      "title": "Error Feedback Must Be Persistent — Toasts Are For Success Only",
+      "session": "76",
+      "date": "2026-04-19",
+      "one_sentence_summary": "10.C3 migrated all error banners on the PSR dashboard to notyf toasts.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "stress-test-systems-with-zero-context-specialized-subagents-before-trusting-them",
+      "title": "Stress-Test Systems With Zero-Context Specialized Subagents Before Trusting Them",
+      "session": "76",
+      "date": "2026-04-19",
+      "one_sentence_summary": "Roger suggested spinning up specialized subagents (systems architect, cognitive psychologist, QA lead, product consultant) with zero prior context to evaluate the BDD governance system.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "prompt-claims-about-existing-validation-must-be-verified-not-assumed",
+      "title": "Prompt Claims About Existing Validation Must Be Verified, Not Assumed",
+      "session": "74",
+      "date": "2026-04-18",
+      "one_sentence_summary": "The 10.A3 prompt stated \"server-side NPI validation already exists in the POST route.\" It didn't — the route forwarded `body.npi` straight to `createProvider()` with no format check.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "prod-migrate-migration-type-coverage-flag-when-a-new-migration-shape-needs-its-o",
+      "title": "prod-migrate Migration Type Coverage — Flag When a New Migration Shape Needs Its Own Phase F Branch",
+      "session": "74",
+      "date": "2026-04-18",
+      "one_sentence_summary": "Migration 108 (ALTER TABLE ...",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "lifecycle-evaluation-is-a-scoping-tool-not-just-a-quality-tool",
+      "title": "Lifecycle Evaluation Is a Scoping Tool, Not Just a Quality Tool",
+      "session": "73",
+      "date": "2026-04-18",
+      "one_sentence_summary": "Phase 9.8 closed at an EJS-polish ceiling — 8 scored runs made it undeniable that Acts 1/3/5 were blocked on missing features (org CRUD, team detail, provider portal sessions), not UX polish.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "ux-patterns-are-platform-standards-not-optional-polish",
+      "title": "UX Patterns Are Platform Standards, Not Optional Polish",
+      "session": "72",
+      "date": "2026-04-17",
+      "one_sentence_summary": "Phase 9.8 revealed that every lifecycle act scored poorly on the same categories: silent failures, missing feedback, empty states with no guidance, raw error strings, forms without validation indicators.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "automated-ux-evaluation-beats-manual-walkthrough-for-volume",
+      "title": "Automated UX Evaluation Beats Manual Walkthrough for Volume",
+      "session": "71",
+      "date": "2026-04-17",
+      "one_sentence_summary": "manual browser walkthroughs (Phases 9.2–9.5) found ~11 findings per session.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "htmx-polling-breaks-networkidle-use-domcontentloaded-heading-assertion",
+      "title": "HTMX Polling Breaks networkidle — Use domcontentloaded + Heading Assertion",
+      "session": "71",
+      "date": "2026-04-17",
+      "one_sentence_summary": "Meridian EJS pages use `hx-trigger=\"every 10s\"` for HTMX polling.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "hx-post-attribute-selectors-are-stable-css-class-selectors-are-not",
+      "title": "hx-post Attribute Selectors Are Stable, CSS Class Selectors Are Not",
+      "session": "71",
+      "date": "2026-04-17",
+      "one_sentence_summary": "Act 4 tests used CSS class selectors for Cancel/Resend buttons.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "lifecycle-test-scores-need-3-consecutive-runs-for-validity",
+      "title": "Lifecycle Test Scores Need 3 Consecutive Runs for Validity",
+      "session": "71",
+      "date": "2026-04-17",
+      "one_sentence_summary": "Act 4 scored 3.6 on Run 3 and 2.6 on Run 2 with identical code.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "pro-authority-model-intermediary-for-providers-supervisor-for-psrs",
+      "title": "PRO Authority Model — Intermediary for Providers, Supervisor for PSRs",
+      "session": "70c",
+      "date": "2026-04-16",
+      "one_sentence_summary": "Phase 6.5f design revealed that the PRO has two fundamentally different authority relationships: intermediary between provider and client (mediation), and direct supervisor over PSRs (chain of command).",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "track-unlimited-pto-for-coverage-awareness-not-payroll",
+      "title": "Track Unlimited PTO for Coverage Awareness, Not Payroll",
+      "session": "70c",
+      "date": "2026-04-16",
+      "one_sentence_summary": "Legara PSRs have unlimited PTO.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "task-completion-does-not-equal-status-transition",
+      "title": "Task Completion Does Not Equal Status Transition",
+      "session": "70c",
+      "date": "2026-04-16",
+      "one_sentence_summary": "Phase 6.6 credentialing task delegation design faced a choice: when a PSR completes a \"collect BLS cert\" task, should the credentialing status auto-transition from `not_started` to `submitted`?",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "governance-commit-prompts-must-pre-scan-shipped-commits-against-open-roadmap-ite",
+      "title": "Governance-Commit Prompts Must Pre-Scan Shipped Commits Against Open Roadmap Items",
+      "session": "68",
+      "date": "2026-04-15",
+      "one_sentence_summary": "a Phase 6 prompt proposes work against an item in `sys/pre-launch-roadmap.md` or the FIND-* audit log.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "every-report-mode-ci-gate-ships-with-an-expiration-date-or-it-rots-into-lies",
+      "title": "Every REPORT-Mode CI Gate Ships With an Expiration Date or It Rots Into Lies",
+      "session": "68",
+      "date": "2026-04-15",
+      "one_sentence_summary": "the portals `portal-smoke` gate ran \"green\" in CI for an unknown number of weeks under `continue-on-error: true`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "report-first-does-not-apply-to-visibility-work-enforced-local-rules-land-in-enfo",
+      "title": "REPORT-First Does Not Apply to Visibility Work — Enforced Local Rules Land in ENFORCE",
+      "session": "68",
+      "date": "2026-04-15",
+      "one_sentence_summary": "the house default for new CI gates has been REPORT-first → ENFORCE after observation window.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "phase-0-must-check-third-party-integration-checks-not-just-repo-local-workflow-y",
+      "title": "Phase 0 Must Check Third-Party Integration Checks, Not Just Repo-Local Workflow YAML",
+      "session": "68",
+      "date": "2026-04-15",
+      "one_sentence_summary": "Phase 0 of the 9f legara-site CI greenfield reported the repo had \"no CI gates\" based on `ls .github/workflows/` — which returned empty.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "git-repos-do-not-belong-in-icloud-drive",
+      "title": "Git Repos Do Not Belong in iCloud Drive",
+      "session": "67",
+      "date": "2026-04-15",
+      "one_sentence_summary": "iCloud Drive syncs both tracked content AND the `.git/` metadata layer.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "governance-commit-prompts-must-scan-for-orphaned-predecessor-prompts-at-authorin",
+      "title": "Governance-Commit Prompts Must Scan for Orphaned Predecessor Prompts at Authoring Time",
+      "session": "66",
+      "date": "2026-04-15",
+      "one_sentence_summary": "close-out prompts for session N are authored at the end of session N, AFTER that session's governance-commit boundary has already closed.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "workspace-consumer-linted-in-ci-must-build-its-workspace-producer-in-the-same-jo",
+      "title": "Workspace Consumer Linted in CI Must Build Its Workspace Producer in the Same Job",
+      "session": "65",
+      "date": "2026-04-15",
+      "one_sentence_summary": "`eslint-plugin-import` with `import/no-unresolved` runs node/TS module resolution against every non-relative import.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "concurrent-red-siblings-on-a-pr-are-not-necessarily-caused-by-that-pr-always-dif",
+      "title": "Concurrent Red Siblings on a PR Are Not Necessarily Caused by That PR — Always Diff Before Blaming",
+      "session": "65",
+      "date": "2026-04-15",
+      "one_sentence_summary": "PR #7 shipped with 5/6 CI gates green and one red (provider-app-lint).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "promote-prompt-draft-path-pre-scan-to-mechanical-enforcement-after-three-firings",
+      "title": "Promote Prompt-Draft Path Pre-Scan to Mechanical Enforcement After Three Firings",
+      "session": "63",
+      "date": "2026-04-14",
+      "one_sentence_summary": "after a Phase 0 hedge fires on three consecutive cross-repo prompts, promote it to a draft-time enforcement step captured as a REQ in `sys/platform-requirements.md`.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "phase-0-discovery-must-resolve-gitlinks-and-verify-named-packages-exist",
+      "title": "Phase 0 Discovery Must Resolve Gitlinks and Verify Named Packages Exist",
+      "session": "61",
+      "date": "2026-04-14",
+      "one_sentence_summary": "Phase 0 discovery for any cross-repo prompt MUST include:",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "prompt-assumed-infrastructure-must-be-verified-before-drafting",
+      "title": "Prompt-Assumed Infrastructure Must Be Verified Before Drafting",
+      "session": "59",
+      "date": "2026-04-14",
+      "one_sentence_summary": "before drafting a prompt step that depends on infrastructure presence (linter, test runner, package manager, package layout, CI workflow shape, helper-script existence, framework choice), open the repo and confirm the infrastructure is ther",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "gates-often-catch-bugs-in-their-own-introducing-pr-plan-for-it",
+      "title": "Gates Often Catch Bugs in Their Own Introducing PR — Plan for It",
+      "session": "59",
+      "date": "2026-04-14",
+      "one_sentence_summary": "when scoping a gate-introduction PR, allocate explicit time/scope budget for \"fix the existing instances the new gate catches.\" Don't assume the introducing PR is just gate code + canary fixtures.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "mirror-repo-literals-in-prompts-grep-before-inventing-any-repo-specific-name",
+      "title": "Mirror Repo Literals in Prompts — Grep Before Inventing Any Repo-Specific Name",
+      "session": "57",
+      "date": "expanded Session 58, 2026-04-14",
+      "one_sentence_summary": "before writing a prompt step that names a repo-specific literal, open the canonical consumer (or the schema/migration/source of truth) in the repo and copy the exact name.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "promote-a-test-fixture-to-a-ci-workflow-when-the-regression-class-has-systemic-c",
+      "title": "Promote a Test Fixture to a CI Workflow When the Regression Class Has Systemic Cost",
+      "session": "56",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- The data-seed fingerprint prompt (`sys/prompts/prompt-prod-migrate-data-seed-fingerprint.md`) specified a canary fixture under `tests/prod-migrate/` with 7 behavior-matrix cells, per `REQ-GATE-CANARY`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "throwing-getter-pattern-for-rename-to-disambiguate-refactors",
+      "title": "Throwing-Getter Pattern for Rename-to-Disambiguate Refactors",
+      "session": "55",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- Phase 6.1 DIV-004 closed a UI/API name collision in the meridian repo: `requirePsrProviderAccess` + `requireProviderOnSchedule` existed in both `src/middleware/psr-scope.js` (UI-scoped, SOFT behavior — redirect on denial) and `src/api/mid",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "preserve-server-side-gates-when-ui-filtering-already-hides-the-symptom",
+      "title": "Preserve Server-Side Gates When UI Filtering Already Hides the Symptom",
+      "session": "55",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- Phase 6.1 DIV-003 was the honest triage call of the session.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "rbac-divergence-root-cause-inline-role-list-duplication",
+      "title": "RBAC Divergence Root Cause = Inline Role List Duplication",
+      "session": "55",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- Phase 6 RBAC audit found 13 divergences across ~280 meridian routes.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "playwright-storagestate-does-not-capture-sessionstorage",
+      "title": "Playwright storageState Does Not Capture sessionStorage",
+      "session": "54",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- Phase 9.1's first full-suite green run was blocked until we diagnosed that Playwright's `storageState` (which Meridian UI specs used cleanly) captures cookies + localStorage ONLY.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "prod-migrate-mjs-phase-f-short-circuits-data-seed-migrations",
+      "title": "prod-migrate.mjs Phase F Short-Circuits data-seed Migrations",
+      "session": "54",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- Phase 9.1 Loop 1 discovered that migration 086 (`data-seed` type, seeds test users into `users` + `portal_users`) was being marked \"already applied\" without ever inserting a row.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "per-email-login-rate-limit-punishes-test-frameworks-that-re-auth-per-test",
+      "title": "Per-Email Login Rate Limit Punishes Test Frameworks That Re-Auth Per Test",
+      "session": "54",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- `src/api/v1/auth.js:10` enforces a per-email rate limit of 5 attempts per 15-minute sliding window via an in-memory Map.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "portal-sessionstorage-key-convention-legara-client-provider-token-refreshtoken-u",
+      "title": "Portal sessionStorage Key Convention — legara_{client|provider}_{token,refresh_token,user}",
+      "session": "54",
+      "date": "2026-04-14",
+      "one_sentence_summary": "- The Legara portals store auth state under a clean but previously-undocumented convention.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "explicit-cli-git-guidance-for-roger",
+      "title": "Explicit CLI/Git Guidance for Roger",
+      "session": "54",
+      "date": "4/14/2026",
+      "one_sentence_summary": "- Roger is not a terminal/git power user.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "hardcoded-production-identifiers-outlive-the-systems-they-point-at",
+      "title": "Hardcoded Production Identifiers Outlive the Systems They Point At",
+      "session": "53",
+      "date": "4/14/2026",
+      "one_sentence_summary": "- `src/services/docusign-envelope.js:12-16` had a fallback `accountId = process.env.DOCUSIGN_ACCOUNT_ID || 'b9614d39-...'`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "secret-capture-via-cat-echoes-to-terminal",
+      "title": "Secret Capture via `cat >` Echoes to Terminal",
+      "session": "53",
+      "date": "4/14/2026",
+      "one_sentence_summary": "- During NEW.9 HMAC key setup, I directed Roger to paste the Connect HMAC into `/tmp/hmac.txt` via `cat > /tmp/hmac.txt` (Ctrl-D to close).",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "hmac-verified-webhooks-need-raw-body-capture-multi-signature-header-handling",
+      "title": "HMAC-Verified Webhooks Need Raw-Body Capture + Multi-Signature-Header Handling",
+      "session": "53",
+      "date": "4/14/2026",
+      "one_sentence_summary": "- NEW.9's base commit (`55a795a`) shipped two HMAC-verification bugs that both fired on first live envelope: (1) `JSON.stringify(req.body)` doesn't round-trip byte-for-byte, so HMAC computed over re-serialized body didn't match what DocuSig",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "schema-drift-gate-triage-five-categories",
+      "title": "Schema-Drift Gate Triage — Five Categories",
+      "session": "50 continuation",
+      "date": null,
+      "one_sentence_summary": "- Window A closed the 97-finding schema-drift backlog to 0 and flipped the gate to ENFORCE in 27m 50s.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "walk-away-prompts-must-verify-problem-state-first",
+      "title": "Walk-Away Prompts Must Verify Problem State First",
+      "session": "50",
+      "date": null,
+      "one_sentence_summary": "- Session 50 fired three parallel walk-away prompts for REQ-GATE-SCHEMA-DRIFT, REQ-GATE-SILENT-CATCH-RETROFIT, REQ-GATE-DOCKER-FRESH-BUILD.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "configurable-auth-keys-never-hardcode-storage-keys-in-shared-packages",
+      "title": "Configurable Auth Keys — Never Hardcode Storage Keys in Shared Packages",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- When a shared package (api-client) is used by multiple apps with different storage needs, hardcoding `legara_token` means all apps write to the same key.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "production-rds-is-vpc-only-cannot-connect-from-local-machine",
+      "title": "Production RDS is VPC-Only — Cannot Connect From Local Machine",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Production RDS (`erp-database.cfqu0w0k8r2v.us-west-1.rds.amazonaws.com`) returns ETIMEDOUT when accessed from Roger's Mac.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "api-field-names-must-match-typescript-types",
+      "title": "API Field Names Must Match TypeScript Types",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Reinforced from Session 40c: \"The frontend types are the contract.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "provider-placement-timeline-never-say-5-months-from-contract",
+      "title": "Provider Placement Timeline — NEVER say \"5 months from contract\"",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- The old \"5 months from contract\" claim included ~3 months of pre-contract negotiation.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "internal-hire-ramp-timeline-never-claim-11-months-or-11-2-months",
+      "title": "Internal Hire Ramp Timeline — NEVER claim \"11 months\" or \"11.2 months\"",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- The old 11.2-month claim was sequential math (recruit 3mo → onboard 3wk → credential 3mo → payer panel 3mo → panel build 3mo).",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "all-code-work-claude-code-not-cowork-rule-26",
+      "title": "All Code Work → Claude Code, Not Cowork (Rule 26)",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- VM sandbox blocks outbound API calls (403 proxy).",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "legara-is-a-platform-not-a-behavioral-health-group",
+      "title": "Legara Is a Platform, NOT a \"Behavioral Health Group\"",
+      "session": "21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- \"Behavioral health group\" implies clinical supervision hierarchy, medical group structure, professional corporation.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "terminology-behavioral-health-vs-bh-vs-psych",
+      "title": "Terminology — \"behavioral health\" vs \"BH\" vs \"psych\"",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- \"Behavioral health\" is the PREFERRED term in all external content",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "no-ai-giveaways-in-external-communications",
+      "title": "No AI Giveaways in External Communications",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "roger-is-a-builder-strategist-not-an-ops-guy",
+      "title": "Roger is a Builder/Strategist, Not an Ops Guy",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Roger's identity: he spots unmet needs and builds solutions around them.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "provider-bench-product-naming-and-framing",
+      "title": "Provider Bench — Product Naming and Framing",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- \"Provider Bench\" is the approved name for the feature where Legara providers publish spare capacity for other FQHCs.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "pro-contact-should-feel-immediate-not-like-a-contact-form",
+      "title": "PRO Contact Should Feel Immediate, Not Like a Contact Form",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Every client should have their PRO listed prominently with direct phone and email.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "client-portal-billing-model-visibility",
+      "title": "Client Portal Billing Model Visibility",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Legara Inc clients (SHC, NAH): see itemized columns (Professional Fees, Platform Fees, Total Billed) + Provider Detail tab",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "legara-controls-scheduling-key-differentiator",
+      "title": "Legara Controls Scheduling (Key Differentiator)",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Legara's MSO handles patient scheduling for Legara providers.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "clinical-collateral-must-address-medical-staff-not-just-leadership",
+      "title": "Clinical Collateral Must Address Medical Staff, Not Just Leadership",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Clinical directors/CMOs are not the only audience for clinical integration materials.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "augment-don-t-replace",
+      "title": "Augment, Don't Replace",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Legara AUGMENTS existing FQHC teams.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "presign-signedheaders-trap-p5-ds-new-4",
+      "title": "Presign SignedHeaders Trap (P5.DS.NEW.4)",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Presigned S3 URLs that declare `ServerSideEncryption`, `SSEKMSKeyId`, or `ContentLength` in SignedHeaders will return `SignatureDoesNotMatch` when a browser `fetch()` does the PUT, because fetch() doesn't send those headers.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "subcategory-aware-rbac-requires-subcategory-to-reach-checkaccess-p5-ds-new-5",
+      "title": "Subcategory-Aware RBAC Requires Subcategory to Reach checkAccess (P5.DS.NEW.5)",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- When subcategory-level RBAC rules exist (e.g., Ops-only subcategories inside an otherwise-accessible category), the subcategory must be passed through to the access-check function.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "rbac-scope-drift-generic-middleware-defaults-wider-than-ops-only-p5-ds-new-8",
+      "title": "RBAC Scope Drift — Generic Middleware Defaults Wider Than Ops-Only (P5.DS.NEW.8)",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Generic middleware like `requireWrite` often covers admin + operations + sales.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "log-dates-actual-send-dates-not-session-dates",
+      "title": "Log Dates = Actual Send Dates, Not Session Dates",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Discovered 3/31/2026 (Session 16): Three Sales Nav InMails were logged with date \"2026-03-31\" but were actually sent on 3/30 (confirmed by checking the Sales Nav inbox, which showed \"Mon\").",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "governance-protocols-run-at-completion-not-at-session-end",
+      "title": "Governance Protocols Run at Completion, Not at Session End",
+      "session": null,
+      "date": null,
+      "one_sentence_summary": "- Discovered 3/31/2026 (Session 17): After completing testimonial work (new data file, site deployment, text revision), Roger asked for a governance audit.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "no-physical-room-and-zero-telehealth-in-cold-emails",
+      "title": "No Physical Room — And ZERO \"Telehealth\" in Cold Emails",
+      "session": "20-21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- Legara providers deliver care via telehealth as the modality.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "per-encounter-pricing-never-say-per-provider",
+      "title": "Per-Encounter Pricing — NEVER Say \"Per Provider\"",
+      "session": "21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- Legara charges a flat rate PER ENCOUNTER.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "brand-messaging-hierarchy-differentiation-first-financial-validates",
+      "title": "Brand Messaging Hierarchy — Differentiation First, Financial Validates",
+      "session": "21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- Every external touchpoint follows this sequence:",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "legara-works-within-the-fqhc-s-infrastructure-not-independently",
+      "title": "Legara Works WITHIN the FQHC's Infrastructure, Not Independently",
+      "session": "20",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- Legara embeds into the FQHC's existing systems: their EHR, their referral workflows, their clinical environment.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "don-t-explain-partnership-mechanics-in-cold-emails",
+      "title": "Don't Explain Partnership Mechanics in Cold Emails",
+      "session": "21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- The \"what we need from you\" / \"the ask on your end\" / \"referral relationship\" framing is RETIRED from cold emails.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "infrastructure-references-must-be-precise-not-sweeping",
+      "title": "Infrastructure References Must Be Precise, Not Sweeping",
+      "session": "21",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- Saying \"Legara handles the credentialing, scheduling, billing, and compliance\" claims Legara takes over four operational departments.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "legara-never-bills-anyone-directly",
+      "title": "Legara NEVER Bills Anyone Directly",
+      "session": "20",
+      "date": "4/1/2026",
+      "one_sentence_summary": "- The FQHC bills for encounters under THEIR OWN NPI.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "provider-compensation-structure-mso-fee-vs-platform-fee",
+      "title": "Provider Compensation Structure — MSO Fee vs Platform Fee",
+      "session": "27",
+      "date": "4/6/2026",
+      "one_sentence_summary": "is what the FQHC pays Legara.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "rate-visibility-scoping-who-sees-what",
+      "title": "Rate Visibility Scoping — Who Sees What",
+      "session": "49e",
+      "date": "4/12/2026",
+      "one_sentence_summary": "Provider effective rate (net $/enc) is NEVER shown on client-facing surfaces.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "client-billing-model-landscape",
+      "title": "Client Billing Model Landscape",
+      "session": "49f-g",
+      "date": "4/12-13/2026",
+      "one_sentence_summary": "Client pays flat rate (~$155/$165) to Fidare.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "settled-week-single-source-of-truth",
+      "title": "Settled Week — Single Source of Truth",
+      "session": "49+",
+      "date": "4/13/2026",
+      "one_sentence_summary": "`is_week_settled(week_ending DATE)` — created in migration 076.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "virus-scan-guardduty-malware-protection-over-clamav-lambda",
+      "title": "Virus Scan — GuardDuty Malware Protection over ClamAV Lambda",
+      "session": "49+",
+      "date": "4/13/2026",
+      "one_sentence_summary": "Use AWS GuardDuty Malware Protection for S3 instead of a custom ClamAV Lambda.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "meridian-nav-nesting-architecture-standard",
+      "title": "Meridian Nav Nesting — Architecture Standard",
+      "session": "27",
+      "date": "4/6/2026",
+      "one_sentence_summary": "- Any Meridian section with more than one logical view gets nested sub-pages.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "erp-week-endings-are-sundays-dow-0-not-fridays",
+      "title": "ERP Week Endings Are Sundays (DOW=0), Not Fridays",
+      "session": "27",
+      "date": "4/6/2026",
+      "one_sentence_summary": "- The ERP `settlements.week_ending` and all derived tables use Sundays (DOW=0) as the canonical week boundary.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "cold-email-cta-progression-links-first-call-last",
+      "title": "Cold Email CTA Progression — Links First, Call Last",
+      "session": "23",
+      "date": "4/2/2026",
+      "one_sentence_summary": "- Asking for a call on Touch 1 is high friction.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "sqlite-pg-migration-api-routes-need-same-treatment-as-internal-routes",
+      "title": "SQLite→PG Migration — API Routes Need Same Treatment as Internal Routes",
+      "session": "33",
+      "date": "4/7/2026",
+      "one_sentence_summary": "- When migrating from SQLite (synchronous) to PG (async), every `db.get()` / `db.all()` call must be `await`ed.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "pg-returns-javascript-date-objects-not-strings",
+      "title": "PG Returns JavaScript Date Objects, Not Strings",
+      "session": "33",
+      "date": "4/7/2026",
+      "one_sentence_summary": "- SQLite stores dates as text strings.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "pg-aggregate-functions-need-explicit-cast-for-numeric-operations",
+      "title": "PG Aggregate Functions Need Explicit CAST for Numeric Operations",
+      "session": "33",
+      "date": "4/7/2026",
+      "one_sentence_summary": "- PG's `SUM()` over a text column does string concatenation, not numeric addition.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "never-query-erp-directly-from-portal-endpoints",
+      "title": "NEVER Query ERP Directly from Portal Endpoints",
+      "session": "39",
+      "date": "4/8/2026",
+      "one_sentence_summary": "- Attempted to query the ERP database directly from the client portal `/mission-cash` endpoint using a new `queryErp()` function.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "two-axis-settlement-model-entity-type-billing-model",
+      "title": "Two-Axis Settlement Model — Entity Type ≠ Billing Model",
+      "session": "40",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- Entity type (from `clinician_entities`) drives **provider payment** method.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "supervision-is-bundled-into-professional-compensation",
+      "title": "Supervision Is Bundled Into Professional Compensation",
+      "session": "40",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- The $15/NP-encounter supervision fee is NOT a separate earnings_type in settlement_earnings_calcs.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "one-client-code-system-no-aliases",
+      "title": "One Client Code System — No Aliases",
+      "session": "40",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- The alias layer (NAH→NATV, SHC→SHASTA, IHS→IBHS, NHC→NH) caused lookup mismatches between `organizations.erp_client_code` and the `erp_*` tables.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "atomic-sync-delete-must-be-inside-the-transaction",
+      "title": "Atomic Sync — DELETE Must Be Inside the Transaction",
+      "session": "40g",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- All 14 ERP sync tables had DELETE outside the transaction and INSERT inside.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "add-direct-query-fallback-for-critical-sync-tables",
+      "title": "Add Direct Query Fallback for Critical Sync Tables",
+      "session": "40g",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- When a sync table is persistently empty, don't keep fixing the sync and hoping — add a direct ERP query fallback so the user-facing feature works regardless.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "responsivecontainer-needs-explicit-height",
+      "title": "ResponsiveContainer Needs Explicit Height",
+      "session": "40g",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- Recharts `ResponsiveContainer` with `height=\"100%\"` inside a flex-grow parent chain resolves to 0px.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "use-the-real-brand-logo-never-auto-generate",
+      "title": "Use the Real Brand Logo — Never Auto-Generate",
+      "session": "40g",
+      "date": "4/9/2026",
+      "one_sentence_summary": "- The `generate-logo-svg.js` script converted Poppins 800 to SVG paths.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "set-a-reminder-is-a-dead-instruction-write-it-into-a-mechanism",
+      "title": "\"Set a Reminder\" Is a Dead Instruction — Write It Into a Mechanism",
+      "session": "42",
+      "date": "4/10/2026",
+      "one_sentence_summary": "- During the API contract validation phase 2 handoff, Cowork told Roger \"set a reminder to check CloudWatch 24h and 72h after deploy.\" That instruction was useless in practice because Cowork has no persistent memory between sessions and Rog",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "activity-log-silently-swallows-errors-audit-writes-must-be-strict",
+      "title": "activity.log Silently Swallows Errors — Audit Writes Must Be Strict",
+      "session": "43",
+      "date": "4/10/2026",
+      "one_sentence_summary": "- `src/services/activity.js` wraps the `INSERT INTO user_activity_log` in a try/catch with an empty catch block: `async function log(db, userId, action, path, detail, ip) { try { await db.run(...) } catch (e) {} }`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "application-layer-tenant-scope-without-a-db-level-constraint-is-a-cross-tenant-l",
+      "title": "Application-Layer Tenant Scope Without a DB-Level Constraint Is a Cross-Tenant Leak Waiting to Happen",
+      "session": "45",
+      "date": "4/10/2026",
+      "one_sentence_summary": "W2.1 `promoteToClient` email collision on `portal_users`.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "best-effort-loop-error-handlers-are-equivalent-to-silent-data-loss",
+      "title": "Best-Effort Loop Error Handlers Are Equivalent to Silent Data Loss",
+      "session": "45",
+      "date": "4/10/2026",
+      "one_sentence_summary": "W1.1 `promoteToClient` wrapped each iteration of its contact-inheritance loop in a `try/catch` that demoted failures to `warnings.push(...)` entries in the response JSON, and did the same for the activity-log write.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "same-symptom-same-cause-never-project-a-known-bug-pattern-onto-a-new-surface",
+      "title": "Same Symptom ≠ Same Cause — Never Project a Known Bug Pattern Onto a New Surface",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "W2.0.4 opened with a 500 on `/organizations` and `/contacts`.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "sequencing-three-commit-pattern-for-schema-type-migrations-that-affect-live-read",
+      "title": "β Sequencing — Three-Commit Pattern for Schema-Type Migrations That Affect Live Reader Code",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "changing a column's type (TEXT→DATE, INT→BIGINT, etc.) on a table that N reader sites actively query.",
+      "severity_if_violated": "Medium"
+    },
+    {
+      "id": "bigint-count-sum-coerces-to-javascript-string-cast-at-the-query-or-parse-at-the-",
+      "title": "Bigint COUNT/SUM Coerces to JavaScript String — Cast at the Query or Parse at the Call Site",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "/providers stats cards rendering \"Total Enc (YTD) 022872117192911\" — string concatenation of individual provider YTD counts.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "defensive-cast-was-insurance-not-correction-preflight-before-assuming-you-know-t",
+      "title": "Defensive Cast Was Insurance, Not Correction — Preflight Before Assuming You Know the Data",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "W2.0.5-α1 shipped a defensive `::date::text` writer cast on `erp-sync.js:355` (`clw.week_closed_locked_ending::date::text AS week_ending`), on the assumption that the source column might contain non-ISO-format strings that would break the u",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "silent-catches-convert-sql-errors-into-empty-ui-states-the-cluster-matters-more-",
+      "title": "Silent Catches Convert SQL Errors Into Empty UI States — The Cluster Matters More Than the Instance",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "W2.0.4's empty `/providers` tab investigation kept unrolling because `catch(e) { return [] }` and `catch(e) { return { total: 0 } }` patterns in route handlers were swallowing the real error (`text >= timestamptz` type mismatch) and returni",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "browser-verification-sweeps-distinguish-route-doesn-t-exist-404-from-auth-gated-",
+      "title": "Browser Verification Sweeps — Distinguish \"Route Doesn't Exist\" (404) From \"Auth-Gated\" (403) From \"Actually Broken\" (500) Before Flagging Anything",
+      "session": "46",
+      "date": "4/10/2026",
+      "one_sentence_summary": "the post-migration 067 verification sweep hit 5 routes.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "column-rename-prompts-must-distinguish-join-on-sites-from-select-projection-site",
+      "title": "Column-Rename Prompts Must Distinguish JOIN-ON Sites from SELECT-Projection Sites",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "α2-core Cat G prompt literal was `ps.client_id AS client_code` at both L415 and L437 of `command-center.js`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "phase-0-schema-audits-must-check-the-full-select-not-just-the-cloudwatch-reporte",
+      "title": "Phase 0 Schema Audits Must Check the Full SELECT, Not Just the CloudWatch-Reported Column",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Postgres stops at the first invalid column reference in a query.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "phase-0-consumer-audits-find-silent-bonus-beneficiaries-with-no-cloudwatch-signa",
+      "title": "Phase 0 Consumer Audits Find Silent Bonus Beneficiaries With No CloudWatch Signal",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "when Phase 0 greps the codebase for every reference to a broken column (e.g., `cd.expiry_date`), it finds sites that consume the column without the specific comparison that CloudWatch caught.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "unblocking-a-sql-error-reveals-the-next-layer-treat-new-signatures-as-expected-h",
+      "title": "Unblocking a SQL Error Reveals the Next Layer — Treat New Signatures as Expected Handback Output",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "when a query has multiple invalid column references or type mismatches, fixing the first one advances the Postgres planner past the initial barrier, which lets it reach and fail on the second.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "aggressive-mode-bundling-is-safe-when-phase-0-hard-gates-are-preserved",
+      "title": "Aggressive-Mode Bundling Is Safe When Phase 0 Hard Gates Are Preserved",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Roger clarified mid-session that Meridian has no real users yet — it's internal dev/test only, he's the only user, and the system is being built for internal deployment.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "never-cite-repo-infrastructure-claims-from-memory-verify-before-writing-a-prompt",
+      "title": "Never Cite Repo Infrastructure Claims From Memory — Verify Before Writing a Prompt",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Cowork wrote a walk-away master prompt (`w2-0-7-0-8-MASTER-telehealth-and-gates.md`) that assumed legara-portals had \"an existing ~170-test Playwright suite\" it would tag with `@smoke` for post-deploy verification.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "default-testing-tooling-versions-to-latest-not-pinned-versions-from-stale-knowle",
+      "title": "Default Testing Tooling Versions to `@latest`, Not Pinned Versions From Stale Knowledge Cutoff",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Cowork wrote `portals-testing-bootstrap.md` with pinned versions for the testing stack: `vitest@^2.1.0`, `@playwright/test@^1.48.0`, `@testing-library/react@^16.0.0`.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "phase-0-must-re-read-local-config-files-never-assume-framework-defaults",
+      "title": "Phase 0 Must Re-Read Local Config Files, Never Assume Framework Defaults",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Cowork wrote `portals-testing-bootstrap.md` assuming Vite dev server ports follow the framework default (`5173`, `5174`, `5175`, `5176` for the 4 web apps).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "ci-drift-gates-produce-meta-findings-the-gate-s-reference-schema-can-be-stale-to",
+      "title": "CI Drift Gates Produce Meta-Findings — The Gate's Reference Schema Can Be Stale Too",
+      "session": "46",
+      "date": "4/11/2026",
+      "one_sentence_summary": "Session 46 Phase G-MER shipped a SCHEMA-DRIFT gate in meridian's CI.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "gate-existence-gate-function-the-silent-catch-scan-engine-was-a-no-op-for-months",
+      "title": "Gate Existence ≠ Gate Function — The Silent-Catch Scan Engine Was a No-Op for Months",
+      "session": "48",
+      "date": "4/11/2026",
+      "one_sentence_summary": "",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "name-tools-for-their-capability-not-their-first-use-case-ssm-tunnel-tool-was-inv",
+      "title": "Name Tools for Their Capability, Not Their First Use Case — SSM Tunnel Tool Was Invisible to Audit Prompt",
+      "session": "49c",
+      "date": "4/12/2026",
+      "one_sentence_summary": "Session 49 built `scripts/prod-migrate.mjs` with an extracted `scripts/lib/ssm-tunnel.mjs` as a reusable SSM tunnel + prod RDS connection tool.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "silent-catch-removal-surfaces-hidden-bugs-expect-a-wave-and-check-logs-before-gu",
+      "title": "Silent-Catch Removal Surfaces Hidden Bugs — Expect a Wave, and Check Logs Before Guessing",
+      "session": "49d",
+      "date": "4/12/2026",
+      "one_sentence_summary": "The B1a silent-catch ENFORCE sweep (Session 49, commit `5cd4551`) converted 197 `catch (e) {}` blocks to `throw err` across Meridian.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "list-view-and-detail-view-must-use-the-same-table-not-just-the-same-column",
+      "title": "List-View and Detail-View Must Use the Same TABLE, Not Just the Same Column",
+      "session": "49d",
+      "date": "4/12/2026",
+      "one_sentence_summary": "The providers list view showed negative/zero \"Last Payout\" and \"4-Wk Avg\" for nearly all providers.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "fidare-processed-payments-are-reconciled-not-estimated-never-stack-estimates-on-",
+      "title": "Fidare-Processed Payments Are Reconciled, Not Estimated — Never Stack \"Estimates\" on Complete Data",
+      "session": "49d",
+      "date": "4/12/2026",
+      "one_sentence_summary": "After fixing the providers list to use `erp_billable_weekly` (v3, commit `2c5ea20`), the 4-wk average was still wrong.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "methodology-inventory-before-methodology-layer-audit-first-build-second",
+      "title": "Methodology Inventory Before Methodology Layer — Audit First, Build Second",
+      "session": "49d",
+      "date": "4/12/2026",
+      "one_sentence_summary": "After 4 fix attempts on providers list payouts (v1: wrong column, v2: wrong table, v3: right table but estimated comp double-count survived, v4: finally clean), we ran a full methodology inventory across both repos.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "erp-sync-altitude-pull-upstream-not-downstream",
+      "title": "ERP Sync Altitude — Pull Upstream, Not Downstream",
+      "session": "49",
+      "date": "4/13/2026",
+      "one_sentence_summary": "Provider pay was derived from `erp_billable_weekly`, which is itself a downstream-derived table built by counting encounters and applying contractor rates.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "fresh-deploys-surface-latent-docker-landmines",
+      "title": "Fresh Deploys Surface Latent Docker Landmines",
+      "session": "49",
+      "date": "4/13/2026",
+      "one_sentence_summary": "Migration 078 (ERP upstream ingest) rollout failed its first ECS deploy on two issues unrelated to the migration itself.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "schema-drift-gate-triage-five-categories",
+      "title": "Schema-Drift Gate Triage — Five Categories",
+      "session": "50",
+      "date": "4/13/2026",
+      "one_sentence_summary": "First-pass schema-drift gate surfaced 97 EXPLAIN failures across 963 extracted SQL queries.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "prompt-handoff-format-path-reference-not-inline-dump",
+      "title": "Prompt Handoff Format — Path Reference, Not Inline Dump",
+      "session": "52b",
+      "date": "4/14/2026",
+      "one_sentence_summary": "When handing off a Claude Code prompt that already exists as a file in `sys/prompts/`, dumping the full prompt content inline in a code block is wasteful and error-prone.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "surface-git-actions-explicitly-always-flag-always-provide-the-command",
+      "title": "Surface Git Actions Explicitly — Always Flag + Always Provide the Command",
+      "session": "52c",
+      "date": "4/14/2026",
+      "one_sentence_summary": "Roger works across Cowork (strategy/content) and Claude Code (code execution) and frequently forgets which git actions are outstanding between handoffs.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "dnd-kit-drag-tanstack-query-optimistic-patch-trust-the-409-don-t-pre-empt-double",
+      "title": "@dnd-kit Drag + TanStack Query Optimistic PATCH — Trust the 409, Don't Pre-empt Double-Booking in UI",
+      "session": "90",
+      "date": "4/22/2026",
+      "one_sentence_summary": "S1.4b daily schedule UI (legara-portals #48) needed drag-to-reschedule that feels instant on the 15-min PT grid.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "pre-test-api-validation-with-a-demo-data-seed-step-bundle-the-seed-with-the-nav-",
+      "title": "Pre-test API Validation with a Demo-Data Seed Step — Bundle the Seed with the Nav/Infra PR",
+      "session": "90",
+      "date": "4/22/2026",
+      "one_sentence_summary": "The S1.4a `/api/v1/scheduled-visits` backend validates provider-licensing via the `erp_encounters_weekly.licensee_id ↔ organizations.erp_client_code` bridge.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "seed-factories-must-denormalize-the-same-fields-the-service-filters-on",
+      "title": "Seed Factories Must Denormalize the Same Fields the Service Filters On",
+      "session": "91",
+      "date": "2026-04-22",
+      "one_sentence_summary": "S1.4c's bulk clone-day endpoint filters source visits with `cancelled_at IS NULL` — a partial-index-friendly predicate.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "vaul-drawer-radix-popover-cmdk-portal-collision-route-popovers-inside-drawer-con",
+      "title": "Vaul Drawer + Radix Popover/cmdk Portal Collision — Route Popovers Inside Drawer Content",
+      "session": "91",
+      "date": "4/22/2026",
+      "one_sentence_summary": "S1.4b shipped the add-visit drawer with patient + provider combobox pickers (cmdk `Command` inside shadcn `Popover`).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "preview-before-commit-is-the-right-ux-for-all-or-nothing-bulk-mutations",
+      "title": "Preview-Before-Commit Is the Right UX For All-or-Nothing Bulk Mutations",
+      "session": "91",
+      "date": "4/22/2026",
+      "one_sentence_summary": "S1.4c's \"Import last {weekday}\" bulk op clones N visits from one PT day onto another in a single transaction.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "react-19-strictmode-inline-ref-callbacks-with-setstate-cause-infinite-render-loo",
+      "title": "React 19 + StrictMode — Inline Ref Callbacks With `setState` Cause Infinite Render Loops. Use Ref-as-State.",
+      "session": "91",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P003 / S1.4c's `DrawerPortalContext` (legara-portals PR #49) needed to expose the `Vaul.Content` DOM node to nested Radix popovers so they portal inside the drawer's `pointer-events: auto` subtree instead of the body's locked subtree.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "display-formatters-for-tz-local-values-must-not-round-trip-through-utc-diagnose-",
+      "title": "Display Formatters For Tz-Local Values Must Not Round-Trip Through UTC. Diagnose Multi-Symptom Specs Before Patching.",
+      "session": "91",
+      "date": "4/22/2026",
+      "one_sentence_summary": "S1.4b's add-visit drawer kept 15-minute time slots as PT \"HH:mm\" strings (\"07:00\" = 7 AM PT, \"19:00\" = 7 PM PT).",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "apply-lessons-broadly-not-just-to-the-reported-symptom-site",
+      "title": "Apply Lessons Broadly, Not Just To The Reported Symptom Site",
+      "session": "91",
+      "date": "2026-04-22",
+      "one_sentence_summary": "P005 (Session 91) logged a lesson about tz-local display formatters never round-tripping through UTC.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "sethours-setutchours-with-fixed-numbers-is-a-tz-anti-pattern-use-an-explicit-off",
+      "title": "`setHours` / `setUTCHours` With Fixed Numbers Is a Tz Anti-Pattern — Use an Explicit-Offset Constructor",
+      "session": "92",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P007 / S1.5 opened with a CI-only integration test failure.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "ranking-based-suggestion-ux-needs-a-visual-confidence-cue-per-row",
+      "title": "Ranking-Based Suggestion UX Needs a Visual Confidence Cue Per Row",
+      "session": "92",
+      "date": "4/22/2026",
+      "one_sentence_summary": "S1.5 ranks recurring-visit suggestions by `confidence DESC, history_count DESC, last_visit_date DESC` and returns a numeric `confidence: 0..1` per row.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "phase-1-discovery-earns-its-keep-on-cross-subsystem-prompts-make-it-mandatory",
+      "title": "Phase 1 Discovery Earns Its Keep on Cross-Subsystem Prompts — Make It Mandatory",
+      "session": "93",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P008 / S1.6 was the first cross-subsystem prompt of Sprint S1: it bridged Phase 7's Telehealth domain (deeply built, denormalized, designed before patients/scheduling existed) into S1.4's `patient_scheduled_visits` domain (built fresh again",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "trx-aware-service-helpers-should-be-additive-via-optional-trx-parameter-not-a-fo",
+      "title": "Trx-Aware Service Helpers Should Be Additive Via Optional `trx` Parameter, Not a Forked Function",
+      "session": "93",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P008's bridge needed `telehealth.createSession` to participate in the `patientScheduledVisits.checkinVisit` transaction so the visit-status update + the session insert commit-or-roll-back together.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "phase-1-discovery-as-a-scope-reduction-opportunity-not-a-spec-checkpoint",
+      "title": "Phase 1 Discovery As A Scope-Reduction Opportunity, Not A Spec Checkpoint",
+      "session": "94",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P009 / S1.7 shipped the patient-SMS-invite pipeline.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "cloudflare-dns-automation-requires-token-provisioned-in-advance-pre-sprint-prere",
+      "title": "Cloudflare DNS Automation Requires Token Provisioned In Advance — Pre-Sprint Prerequisite For New-Subdomain Sprints",
+      "session": "95",
+      "date": "4/23/2026",
+      "one_sentence_summary": "P010 / S2 brief called for fully-automated subdomain provisioning — S3 bucket + CloudFront distribution + bucket policy + IAM extension + GH secrets + Cloudflare CNAME — with zero human-in-browser steps per Atlas Dev Protocol's \"Code owns e",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "subagent-dispatched-code-requires-post-return-grep-verification-against-non-nego",
+      "title": "Subagent-Dispatched Code Requires Post-Return Grep Verification Against Non-Negotiables",
+      "session": "95",
+      "date": "4/23/2026",
+      "one_sentence_summary": "P010 / S2's portals side was dispatched to a background subagent (worktree-isolated per existing feedback-parallel-agents memory) with a brief carrying three verbatim non-negotiables: (a) ErrorBoundary lands FIRST in commit order before the",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "scaffold-copy-carries-stale-template-strings-into-new-apps-tab-title-is-the-cana",
+      "title": "Scaffold-Copy Carries Stale Template Strings Into New Apps — Tab Title Is The Canary",
+      "session": "95",
+      "date": "4/23/2026",
+      "one_sentence_summary": "`apps/people-directory/` was scaffolded by copying `apps/patients-admin/` and stripping patient-specific code.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "integration-test-harness-buildapp-has-explicit-mount-list-update-it-every-new-ro",
+      "title": "Integration Test Harness `buildApp()` Has Explicit Mount List — Update It Every New Router",
+      "session": "95",
+      "date": "4/23/2026",
+      "one_sentence_summary": "Meridian's integration test harness (`tests/integration/harness.js`) exposes `withHttpApp(async ({ baseUrl, seed, query, ...",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "ecs-task-definition-is-the-source-of-truth-for-container-env-secrets-manager-upd",
+      "title": "ECS Task Definition Is The Source Of Truth For Container Env — Secrets Manager Updates Alone Don't Add New Keys",
+      "session": "96",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P011 / S3.0 introduced a new env var `CHAT_CHANNEL_NAMING_SECRET` (256-bit hex, consumed at module-load time in `src/services/chat/channels.js`).",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "create-table-if-not-exists-migrations-need-explicit-already-exists-logging-for-p",
+      "title": "`CREATE TABLE IF NOT EXISTS` Migrations Need Explicit \"Already Exists\" Logging For prod-migrate Phase I",
+      "session": "96",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P011 / S3.0 migration 134 created four chat tables via a block of `CREATE TABLE IF NOT EXISTS chat_channels (...)` + sibling statements.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "identity-endpoints-need-multi-audience-dual-auth-single-audience-hardcode-is-a-l",
+      "title": "Identity Endpoints Need Multi-Audience Dual-Auth — Single-Audience Hardcode Is A Latent Cross-Portal Bug",
+      "session": "96",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P011 / S3.0 Phase 0 discovery surfaced a latent bug in `src/api/v1/auth.js::/me`.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "prompt-authoring-must-cross-check-canonical-decisions-against-prior-lessons-befo",
+      "title": "Prompt-Authoring Must Cross-Check Canonical Decisions Against Prior Lessons Before Handoff",
+      "session": "97",
+      "date": "4/22/2026",
+      "one_sentence_summary": "P012 / S3.1 landed with `sys/prompts/P012-s3-1-dm-ux.md` asserting in canonical decision #11 that the Start-DM palette would hit `GET /api/v1/users?q=…&audience=chat` — \"the people-directory list endpoint, which already returns every user i",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "1714-meta-lesson-first-post-promotion-firing-fired-mechanically-surfaced-a-diffe",
+      "title": "§1714 Meta-Lesson First Post-Promotion Firing — Fired Mechanically, Surfaced A Different Class Than It Was Designed For",
+      "session": "98",
+      "date": "4/23/2026",
+      "one_sentence_summary": "§1714 (Session 97) codified \"cross-check canonical decisions against prior lessons before handoff\" after P012's canonical decision #11 was almost built against a boundary §1707 already ruled out.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "prompt-internal-consistency-enumerated-primitives-must-support-enumerated-endpoi",
+      "title": "Prompt-Internal Consistency — Enumerated Primitives Must Support Enumerated Endpoint Behaviors",
+      "session": "98",
+      "date": "4/23/2026",
+      "one_sentence_summary": "P013 §\"Two PRs\" opener enumerated six S3.0/S3.1 primitives as \"every primitive needed\" — `createTeamChannel`, `addChannelMember`, `removeChannelMember`, `archiveChannel`, `listChannelsForUser`, `GET /api/v1/chat/users`.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "phase-i-comparator-normalization-expected-observed-type-coercion-must-be-explici",
+      "title": "Phase I Comparator Normalization — Expected/Observed Type Coercion Must Be Explicit",
+      "session": "99",
+      "date": "2026-04-23",
+      "one_sentence_summary": "P014 Phase 0 diagnosis.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "integration-tests-must-use-deterministic-pt-anchors-not-now-offset",
+      "title": "Integration Tests Must Use Deterministic PT Anchors, Not `now + offset`",
+      "session": "100",
+      "date": "2026-04-23",
+      "one_sentence_summary": "P015 / pre-S3.3 cleanup.",
+      "severity_if_violated": "Critical"
+    },
+    {
+      "id": "prompt-authoring-must-grep-actual-schema-before-locking-column-table-names",
+      "title": "Prompt Authoring Must Grep Actual Schema Before Locking Column + Table Names",
+      "session": "101",
+      "date": "2026-04-23",
+      "one_sentence_summary": "P016 Phase 0.",
+      "severity_if_violated": "High"
+    },
+    {
+      "id": "canonical-decisions-must-verify-every-named-entity-relationship-exists-in-the-cu",
+      "title": "Canonical Decisions Must Verify Every Named Entity Relationship Exists in the Current Schema",
+      "session": "101",
+      "date": "2026-04-23",
+      "one_sentence_summary": "P016 Phase 0.",
+      "severity_if_violated": "Critical"
+    }
+  ]
+}
