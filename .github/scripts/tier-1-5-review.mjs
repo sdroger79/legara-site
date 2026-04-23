@@ -15,8 +15,10 @@
  *   GITHUB_TOKEN                default token with pull-requests+issues write
  *   GITHUB_EVENT_PATH           path to GitHub Actions event payload
  *   GITHUB_REPOSITORY           "owner/repo"
- *   GOVERNANCE_REPO             "sdroger79/legara-marketing-v2" (default)
- *   GOVERNANCE_BRANCH           "main" (default)
+ *   GOVERNANCE_DIR              absolute path to governance dir (set by workflow
+ *                               to the sparse-checkout of legara-marketing-v2:sys/governance/)
+ *   GOVERNANCE_SOURCE_REPO      "sdroger79/legara-marketing-v2" (default)
+ *   GOVERNANCE_SOURCE_BRANCH    "main" (default)
  *   MAX_DIFF_LOC                100000 (default — skip PRs larger than this)
  *   TOKEN_BUDGET                45000 (default — conservative under 50k cap)
  */
@@ -27,18 +29,22 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const GOVERNANCE_DIR = resolve(__dirname, '..', 'tier-1-5-governance');
 
 const {
   CROSS_MODEL_REVIEW_API_KEY,
   GITHUB_TOKEN,
   GITHUB_EVENT_PATH,
   GITHUB_REPOSITORY,
+  GOVERNANCE_DIR: GOVERNANCE_DIR_ENV,
   GOVERNANCE_SOURCE_REPO = 'sdroger79/legara-marketing-v2',
   GOVERNANCE_SOURCE_BRANCH = 'main',
   MAX_DIFF_LOC = '100000',
   TOKEN_BUDGET = '45000',
 } = process.env;
+
+const GOVERNANCE_DIR = GOVERNANCE_DIR_ENV
+  ? resolve(GOVERNANCE_DIR_ENV)
+  : resolve(__dirname, '..', '..', 'legara-marketing-v2', 'sys', 'governance');
 
 const MAX_LOC = Number(MAX_DIFF_LOC);
 const BUDGET = Number(TOKEN_BUDGET);
@@ -69,7 +75,7 @@ const prBody = pr.body || '';
 const prAuthor = pr.user?.login || 'unknown';
 const [owner, repo] = GITHUB_REPOSITORY.split('/');
 
-const selfScopeFiles = /^\.github\/workflows\/tier-1-5-.*\.ya?ml$|^\.github\/scripts\/tier-1-5-review\.mjs$|^\.github\/tier-1-5-governance\//;
+const selfScopeFiles = /^\.github\/workflows\/tier-1-5-.*\.ya?ml$|^\.github\/scripts\/tier-1-5-review\.mjs$/;
 
 // --- tiny token estimator (4 chars ≈ 1 token) ---
 const estimateTokens = (s) => Math.ceil((s || '').length / 4);
@@ -100,7 +106,8 @@ function readGovernanceFile(name) {
   } catch (e) {
     throw new Error(
       `governance file missing at ${p}: ${e.message}. ` +
-      `Mirror sys/governance/* from ${GOVERNANCE_SOURCE_REPO}:${GOVERNANCE_SOURCE_BRANCH} into .github/tier-1-5-governance/`
+      `The workflow sparse-checkouts ${GOVERNANCE_SOURCE_REPO}:${GOVERNANCE_SOURCE_BRANCH}/sys/governance/ into legara-marketing-v2/; ` +
+      `confirm the checkout step ran and LEGARA_GOVERNANCE_READ_TOKEN is set in repo secrets.`
     );
   }
 }
@@ -134,13 +141,13 @@ function readTouchedFile(path) {
   }
 }
 
-// --- governance load (mirrored-locally pattern) ---
+// --- governance load (workflow-time checkout pattern) ---
 // Governance source of truth lives at `sys/governance/*` in
-// sdroger79/legara-marketing-v2 (private). Raw URLs 404 on private repos
-// without cross-repo credentials. Each downstream repo mirrors the three
-// artifacts into `.github/tier-1-5-governance/` and the runner reads them
-// from the checkout. Mirror maintenance lives in the legara-marketing-v2
-// governance commit flow (manual today; automation slated as follow-up).
+// sdroger79/legara-marketing-v2 (private). The workflow sparse-checkouts
+// that directory at review time using a fine-grained PAT scoped to
+// legara-marketing-v2 contents:read (LEGARA_GOVERNANCE_READ_TOKEN). Fresh
+// state every review — no local mirror, no drift. GOVERNANCE_DIR env var
+// points the runner at the checkout path.
 function loadGovernance() {
   const prompt = readGovernanceFile('tier-1-5-review-prompt.md');
   const lessons = JSON.parse(readGovernanceFile('lessons-index.json'));
