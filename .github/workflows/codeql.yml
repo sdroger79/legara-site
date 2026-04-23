@@ -1,0 +1,72 @@
+# Tier 1 Static Analysis — CodeQL
+#
+# P018 (2026-04-23): deployed in REPORT mode for the 7-day burn-in window.
+# Burn-in ends 2026-04-30 — after which the Action Queue task escalates
+# any Critical severity finding to merge-blocking. High/Medium/Low stay
+# advisory, triaged at sprint closure alongside Tier 2 cross-model review
+# findings.
+#
+# Scope: scans the repo root (static HTML/JS landing pages + admin/) and
+# the Cloudflare Worker in-repo (wrangler.jsonc). Workers are pure JS —
+# default CodeQL javascript scanning covers them without extra config.
+#
+# This is a public repository, so CodeQL SARIF uploads to the GitHub
+# Security tab work natively. Artifact upload is retained as a belt-and-
+# suspenders fallback.
+
+name: CodeQL
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    # Sunday 00:00 America/Los_Angeles == 07:00 UTC (PT; DST-agnostic
+    # approximation — runs at 00:00 PDT / 23:00 PST Saturday).
+    - cron: '0 7 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  analyze:
+    name: Analyze JavaScript/TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality,security-extended
+
+      - name: Perform CodeQL Analysis
+        id: analyze
+        uses: github/codeql-action/analyze@v3
+        continue-on-error: true # burn-in REPORT mode
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: always
+          output: codeql-results
+
+      - name: Upload SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results-sarif
+          path: codeql-results
+          retention-days: 30
+          if-no-files-found: ignore
