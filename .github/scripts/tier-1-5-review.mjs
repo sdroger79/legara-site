@@ -69,7 +69,7 @@ const prBody = pr.body || '';
 const prAuthor = pr.user?.login || 'unknown';
 const [owner, repo] = GITHUB_REPOSITORY.split('/');
 
-const selfScopeFiles = /^\.github\/workflows\/tier-1-5-.*\.ya?ml$|^\.github\/scripts\/tier-1-5-review\.mjs$/;
+const selfScopeFiles = /^\.github\/workflows\/tier-1-5-.*\.ya?ml$|^\.github\/scripts\/tier-1-5-review\.mjs$|^\.github\/tier-1-5-governance\//;
 
 // --- tiny token estimator (4 chars ≈ 1 token) ---
 const estimateTokens = (s) => Math.ceil((s || '').length / 4);
