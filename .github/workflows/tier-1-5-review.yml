@@ -1,0 +1,39 @@
+name: Tier 1.5 — per-PR cross-model review
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout merge commit with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Tier 1.5 review
+        env:
+          CROSS_MODEL_REVIEW_API_KEY: ${{ secrets.CROSS_MODEL_REVIEW_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GOVERNANCE_REPO: sdroger79/legara-marketing-v2
+          GOVERNANCE_BRANCH: main
+          MAX_DIFF_LOC: '100000'
+          TOKEN_BUDGET: '45000'
+        run: node .github/scripts/tier-1-5-review.mjs
