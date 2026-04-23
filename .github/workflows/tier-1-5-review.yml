@@ -32,8 +32,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GOVERNANCE_REPO: sdroger79/legara-marketing-v2
-          GOVERNANCE_BRANCH: main
+          GOVERNANCE_SOURCE_REPO: sdroger79/legara-marketing-v2
+          GOVERNANCE_SOURCE_BRANCH: main
           MAX_DIFF_LOC: '100000'
           TOKEN_BUDGET: '45000'
         run: node .github/scripts/tier-1-5-review.mjs

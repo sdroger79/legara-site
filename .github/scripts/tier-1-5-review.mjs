@@ -23,14 +23,19 @@
 
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { resolve, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const GOVERNANCE_DIR = resolve(__dirname, '..', 'tier-1-5-governance');
 
 const {
   CROSS_MODEL_REVIEW_API_KEY,
   GITHUB_TOKEN,
   GITHUB_EVENT_PATH,
   GITHUB_REPOSITORY,
-  GOVERNANCE_REPO = 'sdroger79/legara-marketing-v2',
-  GOVERNANCE_BRANCH = 'main',
+  GOVERNANCE_SOURCE_REPO = 'sdroger79/legara-marketing-v2',
+  GOVERNANCE_SOURCE_BRANCH = 'main',
   MAX_DIFF_LOC = '100000',
   TOKEN_BUDGET = '45000',
 } = process.env;
@@ -88,10 +93,16 @@ async function gh(path, init = {}) {
   return res.json();
 }
 
-async function fetchRaw(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`raw fetch ${url} → ${res.status}`);
-  return res.text();
+function readGovernanceFile(name) {
+  const p = join(GOVERNANCE_DIR, name);
+  try {
+    return readFileSync(p, 'utf8');
+  } catch (e) {
+    throw new Error(
+      `governance file missing at ${p}: ${e.message}. ` +
+      `Mirror sys/governance/* from ${GOVERNANCE_SOURCE_REPO}:${GOVERNANCE_SOURCE_BRANCH} into .github/tier-1-5-governance/`
+    );
+  }
 }
 
 function sh(cmd, args) {
@@ -123,15 +134,18 @@ function readTouchedFile(path) {
   }
 }
 
-// --- governance fetch ---
-async function fetchGovernance() {
-  const rawBase = `https://raw.githubusercontent.com/${GOVERNANCE_REPO}/${GOVERNANCE_BRANCH}`;
-  const [prompt, lessonsRaw, atlasRaw] = await Promise.all([
-    fetchRaw(`${rawBase}/sys/governance/tier-1-5-review-prompt.md`),
-    fetchRaw(`${rawBase}/sys/governance/lessons-index.json`),
-    fetchRaw(`${rawBase}/sys/governance/atlas-summary.json`),
-  ]);
-  return { prompt, lessons: JSON.parse(lessonsRaw), atlas: JSON.parse(atlasRaw) };
+// --- governance load (mirrored-locally pattern) ---
+// Governance source of truth lives at `sys/governance/*` in
+// sdroger79/legara-marketing-v2 (private). Raw URLs 404 on private repos
+// without cross-repo credentials. Each downstream repo mirrors the three
+// artifacts into `.github/tier-1-5-governance/` and the runner reads them
+// from the checkout. Mirror maintenance lives in the legara-marketing-v2
+// governance commit flow (manual today; automation slated as follow-up).
+function loadGovernance() {
+  const prompt = readGovernanceFile('tier-1-5-review-prompt.md');
+  const lessons = JSON.parse(readGovernanceFile('lessons-index.json'));
+  const atlas = JSON.parse(readGovernanceFile('atlas-summary.json'));
+  return { prompt, lessons, atlas };
 }
 
 // --- model pin from prompt ---
@@ -293,7 +307,7 @@ function renderComment({ findings, reviewNotes, model, usage, truncationNotes })
   const header = [
     `## 🤖 Tier 1.5 Cross-Model Review`,
     ``,
-    `Reviewer: \`${model}\` — [canonical prompt](https://github.com/${GOVERNANCE_REPO}/blob/${GOVERNANCE_BRANCH}/sys/governance/tier-1-5-review-prompt.md)`,
+    `Reviewer: \`${model}\` — [canonical prompt](https://github.com/${GOVERNANCE_SOURCE_REPO}/blob/${GOVERNANCE_SOURCE_BRANCH}/sys/governance/tier-1-5-review-prompt.md)`,
     `Findings: **${findings.length}**${findings.length ? ` (${sorted.filter((f) => f.severity === 'Critical').length} Critical, ${sorted.filter((f) => f.severity === 'High').length} High, ${sorted.filter((f) => f.severity === 'Medium').length} Medium, ${sorted.filter((f) => f.severity === 'Low').length} Low)` : ''}`,
     usage
       ? `Tokens: ${usage.prompt_tokens} in / ${usage.completion_tokens} out / ${usage.total_tokens} total`
@@ -423,7 +437,7 @@ async function main() {
     return;
   }
 
-  const governance = await fetchGovernance();
+  const governance = loadGovernance();
   const model = extractModelPin(governance.prompt);
   console.log(`[tier-1-5-review] pinned model: ${model}`);
 
