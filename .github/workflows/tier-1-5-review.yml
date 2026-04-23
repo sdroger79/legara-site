@@ -21,6 +21,16 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.merge_commit_sha }}
 
+      - name: Checkout legara-marketing-v2 governance (sys/governance/)
+        uses: actions/checkout@v4
+        with:
+          repository: sdroger79/legara-marketing-v2
+          ref: main
+          path: legara-marketing-v2
+          sparse-checkout: sys/governance/
+          sparse-checkout-cone-mode: false
+          token: ${{ secrets.LEGARA_GOVERNANCE_READ_TOKEN }}
+
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
@@ -34,6 +44,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GOVERNANCE_SOURCE_REPO: sdroger79/legara-marketing-v2
           GOVERNANCE_SOURCE_BRANCH: main
+          GOVERNANCE_DIR: ${{ github.workspace }}/legara-marketing-v2/sys/governance
           MAX_DIFF_LOC: '100000'
           TOKEN_BUDGET: '45000'
         run: node .github/scripts/tier-1-5-review.mjs
