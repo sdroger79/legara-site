@@ -99,8 +99,16 @@ function sh(cmd, args) {
 }
 
 // --- diff extraction ---
+// The workflow's actions/checkout step runs with fetch-depth: 0, so all
+// history is already local. We only need to pull the specific base SHA if
+// it isn't reachable (rare: stale base after long-lived PR). Try a targeted
+// fetch; tolerate failure (diff will surface its own error if truly missing).
 function computeDiff(baseSha, mergeSha) {
-  sh('git', ['fetch', '--no-tags', '--depth=0', 'origin', baseSha, mergeSha].filter(Boolean));
+  try {
+    sh('git', ['fetch', '--no-tags', 'origin', baseSha]);
+  } catch {
+    // fetch-depth: 0 checkout should have covered it; ignore.
+  }
   const filesTxt = sh('git', ['diff', '--name-only', `${baseSha}..${mergeSha}`]).trim();
   const files = filesTxt ? filesTxt.split('\n') : [];
   const diff = sh('git', ['diff', '--unified=3', `${baseSha}..${mergeSha}`]);
