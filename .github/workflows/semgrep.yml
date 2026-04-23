@@ -1,0 +1,76 @@
+# Tier 1 Static Analysis — Semgrep (OSS)
+#
+# P018 (2026-04-23): deployed in REPORT mode for the 7-day burn-in window.
+# Burn-in ends 2026-04-30 — after which the Action Queue task escalates
+# any Critical severity finding to merge-blocking. High/Medium/Low stay
+# advisory, triaged at sprint closure alongside Tier 2 cross-model review
+# findings.
+#
+# Rulesets: p/default + p/javascript + p/typescript + p/react +
+# p/owasp-top-ten + p/secrets. OSS tier is sufficient; no SEMGREP_APP_TOKEN
+# or paid features used. Default path-walk picks up the Cloudflare Worker
+# code + all static page JS automatically.
+#
+# This is a public repository, so Semgrep SARIF uploads to the GitHub
+# Security tab work natively. Artifact upload is retained as a belt-and-
+# suspenders fallback.
+
+name: Semgrep
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    # Sunday 00:00 America/Los_Angeles == 07:00 UTC (PT; DST-agnostic
+    # approximation — runs at 00:00 PDT / 23:00 PST Saturday).
+    - cron: '0 7 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        id: semgrep
+        continue-on-error: true # burn-in REPORT mode
+        run: |
+          semgrep scan \
+            --config p/default \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/react \
+            --config p/owasp-top-ten \
+            --config p/secrets \
+            --sarif --output semgrep-results.sarif \
+            --metrics=off
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        continue-on-error: true # defensive — tolerate transient upload flakes during burn-in
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.sarif
+          category: semgrep
+
+      - name: Upload SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results-sarif
+          path: semgrep-results.sarif
+          retention-days: 30
+          if-no-files-found: ignore
