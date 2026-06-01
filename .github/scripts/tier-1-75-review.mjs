@@ -189,6 +189,52 @@ export function sensitiveHits(files, patterns) {
 }
 
 // ---------------------------------------------------------------------------
+// Generated/baseline files — diff-only treatment (P670, S293)
+// ---------------------------------------------------------------------------
+
+// Files whose bulk is GENERATED/BASELINE content rather than hand-authored source.
+// These are reviewed via their DIFF ONLY — their full content is NOT included in
+// the review request. Rationale: the diff already carries every reviewable line
+// (an added migration's unified diff IS its full body; a `schema-pg.sql` dump is a
+// generated baseline whose ~130k-token bulk is the same on every schema PR and adds
+// no signal beyond its diff). Including the full baseline content blew the assembled
+// request past the model context budget and false-blocked legitimate schema
+// migrations (P667 #641: ~176066 tokens > 170000 — the bulk was schema-pg.sql's
+// 130k-token full content, NOT the 1.7k-token diff). Real source files keep the
+// existing full-content-with-trim treatment, so adversarial review of actual code
+// is UNCHANGED. Kept deliberately narrow: only declared-generated/baseline artifacts.
+export const GENERATED_PATTERNS = [
+  'src/db/schema-pg.sql',
+  '**/schema-pg.sql',
+  'src/migrations/**',
+  'src/migrations-demo/**',
+  '**/migrations/**',
+  '**/migrations-demo/**',
+  'package-lock.json',
+  '**/package-lock.json',
+  'pnpm-lock.yaml',
+  '**/pnpm-lock.yaml',
+  'yarn.lock',
+  '**/yarn.lock',
+  'npm-shrinkwrap.json',
+  '**/npm-shrinkwrap.json',
+];
+
+// The stub that stands in for a generated file's full content. Tiny (~30 tokens),
+// so it never counts against the budget and is never itself trimmed. It tells the
+// reviewer the file exists and was reviewed via its diff by design (not silently
+// dropped). Exported pure.
+export const GENERATED_STUB =
+  '(generated/baseline file — reviewed via its diff above; full content omitted by ' +
+  'design so generated bulk does not consume the review budget. P670.)';
+
+// Is this touched path a generated/baseline artifact (→ diff-only)? Reuses the
+// glob matcher so the semantics match the sensitive-path matcher exactly. Exported pure.
+export function isGeneratedFile(path) {
+  return matchesSensitive(path, GENERATED_PATTERNS);
+}
+
+// ---------------------------------------------------------------------------
 // Verdict derivation
 // ---------------------------------------------------------------------------
 
@@ -461,9 +507,25 @@ function assembleUserMessage({ lessons, atlas, files, hits, diff, fileContents, 
   return `${header}\n\n${fileBlocks}\n\n${context}${noteBlock}`;
 }
 
-function budgetedFileContents(files, diff, prompt, lessons, atlas) {
+// `readFile` is injectable (defaults to the git-backed reader) so this is unit-
+// testable without git/network. Generated/baseline files (schema dumps, migrations,
+// lockfiles) are represented by a tiny diff-only STUB rather than their full content
+// — the diff (assembled separately and never trimmed) is their reviewable surface
+// (P670). Real source files keep the full-content-with-largest-first-trim treatment.
+export function budgetedFileContents(files, diff, prompt, lessons, atlas, readFile = readTouchedFile) {
   const notes = [];
-  let fileContents = files.map((path) => ({ path, content: readTouchedFile(path) ?? '(deleted in this PR)', truncated: false }));
+  let fileContents = files.map((path) =>
+    isGeneratedFile(path)
+      ? { path, content: GENERATED_STUB, truncated: false, generated: true }
+      : { path, content: readFile(path) ?? '(deleted in this PR)', truncated: false }
+  );
+  const generated = files.filter(isGeneratedFile);
+  if (generated.length) {
+    notes.push(
+      `generated_diff_only: ${generated.length} generated/baseline file(s) reviewed via diff only ` +
+        `(full content omitted so generated bulk does not consume the budget): ${generated.join(', ')}`
+    );
+  }
   const overhead =
     estimateTokens(prompt) + estimateTokens(diff) + estimateTokens(JSON.stringify(lessons)) + estimateTokens(JSON.stringify(atlas));
   let total = overhead + fileContents.reduce((n, f) => n + estimateTokens(f.content), 0);
@@ -950,6 +1012,10 @@ export const __test = {
   globToRegExp,
   matchesSensitive,
   sensitiveHits,
+  isGeneratedFile,
+  GENERATED_PATTERNS,
+  GENERATED_STUB,
+  budgetedFileContents,
   deriveVerdict,
   normalizeSeverity,
   normalizeStatedVerdict,
