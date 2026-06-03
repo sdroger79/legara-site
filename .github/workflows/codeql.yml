@@ -3,8 +3,9 @@
 # P018 (2026-04-23): deployed in REPORT mode for the 7-day burn-in window.
 # Burn-in ends 2026-04-30 — after which the Action Queue task escalates
 # any Critical severity finding to merge-blocking. High/Medium/Low stay
-# advisory, triaged at sprint closure alongside Tier 2 cross-model review
-# findings.
+# advisory (P713, S292: legara-site is a marketing site and was right-sized to
+# light gates only — the product-grade Tier 1.75 + Tier 2 cross-model reviews
+# were removed; the advisory Tier 1.5 review remains).
 #
 # Scope: scans the repo root (static HTML/JS landing pages + admin/) and
 # the Cloudflare Worker in-repo (wrangler.jsonc). Workers are pure JS —

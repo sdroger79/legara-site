@@ -328,7 +328,7 @@ function renderComment({ findings, reviewNotes, model, usage, truncationNotes })
     const body = [
       header,
       ``,
-      `✅ No findings. Tier 2 (sprint closure) will re-examine at the next sprint boundary.`,
+      `✅ No findings.`,
       reviewNotes ? `\n> ${reviewNotes}` : '',
     ].join('\n');
     return body;
@@ -348,7 +348,7 @@ function renderComment({ findings, reviewNotes, model, usage, truncationNotes })
   return [
     header,
     ``,
-    `> **Advisory only.** Tier 1.5 never blocks merges. Critical findings auto-open follow-up issues. High / Medium / Low roll up to Tier 2.`,
+    `> **Advisory only.** This marketing-site review never blocks merges. Critical findings auto-open follow-up issues; High / Medium / Low are advisory.`,
     ``,
     rows,
     reviewNotes ? `\n---\n\n> ${reviewNotes}` : '',
@@ -438,7 +438,7 @@ async function main() {
     await gh(`/repos/${owner}/${repo}/issues/${prNumber}/comments`, {
       method: 'POST',
       body: JSON.stringify({
-        body: `## 🤖 Tier 1.5 Cross-Model Review\n\nSkipped: diff ${diffLoc} LOC exceeds per-PR budget (${MAX_LOC}). Will be covered at sprint closure (Tier 2). — canonical decision §11.`,
+        body: `## 🤖 Tier 1.5 Cross-Model Review\n\nSkipped: diff ${diffLoc} LOC exceeds per-PR budget (${MAX_LOC}). — canonical decision §11.`,
       }),
     });
     return;
