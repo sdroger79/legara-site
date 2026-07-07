@@ -2071,3 +2071,45 @@ footer {
   background: var(--white);
   white-space: nowrap;
 }
+
+/* ── Login dropdown (nav) ────────────────────────────────── */
+.nav-login { position: relative; }
+.nav-login > a { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.nav-login-caret { font-size: 10px; line-height: 1; }
+.nav-login-menu {
+  position: absolute;
+  top: 100%; right: 0;
+  margin-top: 12px;
+  min-width: 232px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  padding: 8px;
+  list-style: none;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 200;
+}
+.nav-login:hover .nav-login-menu,
+.nav-login.open .nav-login-menu { display: flex; }
+.nav-login-menu li { width: 100%; }
+.nav-login-menu a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--charcoal);
+  white-space: nowrap;
+}
+.nav-login-menu a:hover { background: rgba(26,107,74,0.08); color: var(--green); }
+.nav-login-menu .nav-login-hint { display: block; font-size: 12px; font-weight: 400; color: var(--slate); opacity: 0.7; margin-top: 2px; }
+@media (max-width: 768px) {
+  .nav-login-menu {
+    position: static; display: flex; margin: 4px 0 0 12px;
+    box-shadow: none; border: none; padding: 0; min-width: 0;
+  }
+  .nav-login-caret { display: none; }
+}
