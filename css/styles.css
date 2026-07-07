@@ -2074,8 +2074,10 @@ footer {
 
 /* ── Login dropdown (nav) ────────────────────────────────── */
 .nav-login { position: relative; }
-.nav-login > a { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
-.nav-login-caret { font-size: 10px; line-height: 1; }
+.nav-login > a { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+/* invisible hover bridge spanning the full menu width so the menu never collapses mid-move */
+.nav-login > a::after { content: ""; position: absolute; top: 100%; right: -16px; width: 250px; height: 16px; }
+.nav-login-caret { font-size: 9px; line-height: 1; position: relative; top: 1px; opacity: 0.75; }
 .nav-login-menu {
   position: absolute;
   top: 100%; right: 0;
