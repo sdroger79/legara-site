@@ -1,0 +1,29 @@
+name: SPF one-off fix (remove cal.com)
+on:
+  workflow_dispatch:
+jobs:
+  patch-spf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Patch golegara.com SPF
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          zone=$(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones?name=golegara.com" | jq -r '.result[0].id // empty')
+          if [ -z "$zone" ]; then
+            echo "::error::cannot read zone - token likely lacks Zone/DNS scope"
+            curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones?name=golegara.com" | jq '.'
+            exit 1
+          fi
+          echo "zone=$zone"
+          rec=$(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones/$zone/dns_records?type=TXT&per_page=100" | jq -r '.result[] | select(.content|startswith("v=spf1")) | .id')
+          echo "record=$rec"
+          before=$(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones/$zone/dns_records/$rec" | jq -r '.result.content')
+          echo "BEFORE: $before"
+          resp=$(curl -s -X PATCH -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" \
+            "$api/zones/$zone/dns_records/$rec" \
+            --data '{"content":"v=spf1 include:spf.protection.outlook.com include:amazonses.com -all"}')
+          echo "$resp" | jq '{success, errors, content:.result.content}'
+          echo "$resp" | jq -e '.success' >/dev/null
