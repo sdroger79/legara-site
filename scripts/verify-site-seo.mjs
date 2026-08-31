@@ -164,6 +164,7 @@ for (const file of moneyPages) {
   assert(`${file} no EmploymentAgency`, !html.includes("EmploymentAgency"));
   assert(`${file} no street address`, !/"streetAddress"/.test(html) && !/619-251/.test(html));
   assert(`${file} no em dash`, !html.includes("\u2014"));
+  assert(`${file} no inline blue links`, !/style="[^"]*color:\s*blue/i.test(html) && !html.includes("<u>"));
   assert(`${file} no ROI`, !/\bROI\b/.test(html));
   assert(`${file} no savings`, !/savings/i.test(html));
   assert(`${file} no revenue gap`, !/revenue gap/i.test(html));
@@ -198,6 +199,23 @@ assert("case-studies Mattson has no SYH URL", !/href="[^"]*san-ysidro/i.test(hub
 
 const shasta = fs.readFileSync("case-studies/shasta-community-health-center.html", "utf8");
 assert("Shasta does not claim 18-to-2", !/Shasta went from 18 weeks to 2/.test(shasta) || shasta.includes("We do not write that Shasta went from 18 weeks to 2"));
+
+console.log("\nContent links are theme-styled");
+const css = fs.readFileSync("css/styles.css", "utf8");
+assert("sitewide a uses brand green", /^\s*a\s*\{[^}]*color:\s*var\(--green\)/m.test(css));
+assert("sitewide a has no UA underline", /^\s*a\s*\{[^}]*text-decoration:\s*none/m.test(css));
+assert("pillar h3 a is green and inherits type", css.includes(".pillar h3 a") && css.includes("font-size: inherit"));
+assert("content-section links exclude buttons", css.includes(".content-section a:not(.btn-primary)"));
+const publicHtml = [
+  ...publicPages.map(([file]) => file),
+  "lp/clinical.html",
+  "lp/executive.html",
+];
+for (const file of publicHtml) {
+  const html = fs.readFileSync(file, "utf8");
+  assert(`${file} no color:blue`, !/style="[^"]*color:\s*blue/i.test(html));
+  assert(`${file} no <u> underline tag`, !/<u[>\s]/i.test(html));
+}
 
 console.log("\nCluster is indexed, not chrome");
 const htmlFiles = [

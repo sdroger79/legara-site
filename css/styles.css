@@ -29,6 +29,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Sitewide default: never leave in-content links to the user-agent.
+   Nav, footer, buttons, CTA band, and login dropdown have more specific
+   component rules and keep their own colors. */
+a {
+  color: var(--green);
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--green-mid);
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -2126,6 +2139,66 @@ footer {
     border: none;
   }
   .nav-login-menu a { padding: 0; white-space: normal; }
+}
+
+/* In-content text links: weight + accent hairline. Exclude chrome/buttons. */
+.content-section a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):not(.testimonial-card),
+.content-section-alt a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):not(.testimonial-card),
+.section-body a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta),
+.page-header a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta) {
+  color: var(--green);
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.content-section a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):not(.testimonial-card):hover,
+.content-section-alt a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):not(.testimonial-card):hover,
+.section-body a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):hover,
+.page-header a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-outline-white):not(.nav-cta):hover {
+  color: var(--green-mid);
+  border-bottom-color: var(--green-mid);
+}
+
+a.testimonial-card {
+  color: inherit;
+  font-weight: inherit;
+  border-bottom: none;
+}
+a.testimonial-card:hover {
+  color: inherit;
+}
+
+/* Blog index cards are block links, not text links. */
+.content-section a[href*="blog-"][style] {
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  border-bottom: none;
+}
+
+.pillar {
+  position: relative;
+}
+.pillar h3 a {
+  color: var(--green);
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+  border-bottom: none;
+}
+.pillar h3 a:hover,
+.pillar:hover h3 a {
+  color: var(--charcoal);
+}
+.pillar h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .compare-table { width: 100%; border-collapse: collapse; }
