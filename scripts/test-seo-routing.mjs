@@ -120,6 +120,14 @@ assert(
 );
 
 assert(
+  "/next/ with trailing slash still goes to /how-it-works",
+  (() => {
+    const r = resolveSeoRedirect(url("https://golegara.com/next/?utm_source=test"));
+    return r && r.status === 301 && r.location === "https://golegara.com/how-it-works?utm_source=test";
+  })()
+);
+
+assert(
   "calculator aliases go to /assessment and keep query",
   (() => {
     const r = resolveSeoRedirect(url("https://golegara.com/roi-calculator.html?foo=1"));

@@ -125,7 +125,8 @@ export function resolveSeoRedirect(url) {
     hostChanged = true;
   }
 
-  if (pathnameLower === "/next") {
+  const pathNorm = pathnameLower.replace(/\/+$/, "") || "/";
+  if (pathNorm === "/next") {
     return {
       status: 301,
       location: buildLocation(protocol, hostname, "/how-it-works", search),
