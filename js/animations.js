@@ -6,14 +6,23 @@
 (function() {
   'use strict';
 
+  function formatCountValue(el) {
+    var target = el.dataset.target || '';
+    var prefix = el.dataset.prefix || '';
+    var suffix = el.dataset.suffix || '';
+    var decimals = target.indexOf('.') > -1 ? 2 : 0;
+    var value = parseFloat(target) || 0;
+    return prefix + (decimals ? value.toFixed(decimals) : Math.round(value).toLocaleString()) + suffix;
+  }
+
   // Bail out entirely if user prefers reduced motion
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion) {
     document.querySelectorAll('.reveal, .reveal-slide-left, .reveal-slide-right, .reveal-scale, .count-up').forEach(function(el) {
       el.classList.add('visible');
-      // For count-up, just show the final number
+      // For count-up, just show the final number (prefix/suffix/locale)
       if (el.classList.contains('count-up') && el.dataset.target) {
-        el.textContent = el.dataset.target;
+        el.textContent = formatCountValue(el);
       }
     });
     return;

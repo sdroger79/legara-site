@@ -1,0 +1,7 @@
+# Extensionless canonicals. Worker also 301s these (run_worker_first).
+# This file covers the assets-first path if Worker-first is ever turned off.
+/index.html                         /                               301
+/:page.html                         /:page                          301
+/lp/:page.html                      /lp/:page                       301
+/admin/:page.html                   /admin/:page                    301
+/team/index.html                    /team                           301
