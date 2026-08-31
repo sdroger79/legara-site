@@ -176,7 +176,7 @@ assert("missing ASSETS binding → 404", unbound.status === 404);
 const asset404 = await serveStaticOr404(new Request("https://golegara.com/faq"), {
   ASSETS: {
     fetch: async (req) => {
-      const path = typeof req === "string" ? req : req.url;
+      const path = req instanceof URL ? req.href : typeof req === "string" ? req : req.url;
       if (String(path).includes("/404.html")) {
         return new Response("<h1>static 404</h1>", { status: 200, headers: { "Content-Type": "text/html" } });
       }

@@ -201,7 +201,7 @@ export async function serveStaticOr404(request, env) {
     const res = await env.ASSETS.fetch(request);
     if (res && res.status === 404) {
       try {
-        const page = await env.ASSETS.fetch(new URL("/404.html", request.url));
+        const page = await env.ASSETS.fetch(new Request(new URL("/404.html", request.url)));
         if (page && page.ok) {
           return new Response(page.body, {
             status: 404,
