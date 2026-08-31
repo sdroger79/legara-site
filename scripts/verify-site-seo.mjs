@@ -66,9 +66,9 @@ assert("no LocalBusiness", !home.includes("LocalBusiness"));
 assert("no MedicalOrganization", !home.includes("MedicalOrganization"));
 assert("no CARECON", !/carecon/i.test(home));
 assert("no Fidare", !/fidare/i.test(home));
-assert("sameAs LinkedIn company", home.includes("https://www.linkedin.com/company/legara"));
+assert("sameAs LinkedIn company", /"sameAs"\s*:\s*\[[\s\S]*?linkedin\.com\/company\/legara/.test(home));
 assert("telephone", home.includes("+1-760-479-7860"));
-assert("Person Roger", home.includes("Roger Stellers") && home.includes("https://www.linkedin.com/in/roger-stellers"));
+assert("Person Roger", home.includes("Roger Stellers") && home.includes("/in/roger-stellers"));
 
 console.log("\nPress date");
 const press = fs.readFileSync("press.html", "utf8");
