@@ -8,10 +8,12 @@
 /vs-staffing-agency.html            /vs-locums                      301
 /fqhc-behavioral-health-pps         /per-encounter-pps              301
 /fqhc-behavioral-health-pps.html    /per-encounter-pps              301
-/cpom                               /california-cpom                301
-/cpom.html                          /california-cpom                301
-/corporate-practice-of-medicine-fqhc /california-cpom               301
-/corporate-practice-of-medicine-fqhc.html /california-cpom          301
+/california-cpom                    /fqhc-telepsychiatry            301
+/california-cpom.html               /fqhc-telepsychiatry            301
+/cpom                               /fqhc-telepsychiatry            301
+/cpom.html                          /fqhc-telepsychiatry            301
+/corporate-practice-of-medicine-fqhc /fqhc-telepsychiatry           301
+/corporate-practice-of-medicine-fqhc.html /fqhc-telepsychiatry      301
 /fqhc-hiring-vs-per-encounter       /vs-hiring                      301
 /fqhc-hiring-vs-per-encounter.html  /vs-hiring                      301
 /index.html                         /                               301

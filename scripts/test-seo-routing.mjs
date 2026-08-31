@@ -176,13 +176,34 @@ assert(
 );
 
 assert(
-  "/cpom → /california-cpom",
-  resolveSeoRedirect(url("https://golegara.com/cpom")).location === "https://golegara.com/california-cpom"
+  "/california-cpom → /fqhc-telepsychiatry",
+  resolveSeoRedirect(url("https://golegara.com/california-cpom")).location === "https://golegara.com/fqhc-telepsychiatry"
 );
 
 assert(
-  "/corporate-practice-of-medicine-fqhc → /california-cpom",
-  resolveSeoRedirect(url("https://golegara.com/corporate-practice-of-medicine-fqhc")).location === "https://golegara.com/california-cpom"
+  "/california-cpom.html → /fqhc-telepsychiatry (not stripped first)",
+  resolveSeoRedirect(url("https://golegara.com/california-cpom.html")).location === "https://golegara.com/fqhc-telepsychiatry"
+);
+
+assert(
+  "/cpom → /fqhc-telepsychiatry",
+  resolveSeoRedirect(url("https://golegara.com/cpom")).location === "https://golegara.com/fqhc-telepsychiatry"
+);
+
+assert(
+  "/cpom.html → /fqhc-telepsychiatry",
+  resolveSeoRedirect(url("https://golegara.com/cpom.html")).location === "https://golegara.com/fqhc-telepsychiatry"
+);
+
+assert(
+  "/corporate-practice-of-medicine-fqhc → /fqhc-telepsychiatry",
+  resolveSeoRedirect(url("https://golegara.com/corporate-practice-of-medicine-fqhc")).location === "https://golegara.com/fqhc-telepsychiatry"
+);
+
+assert(
+  "/corporate-practice-of-medicine-fqhc.html → /fqhc-telepsychiatry",
+  resolveSeoRedirect(url("https://golegara.com/corporate-practice-of-medicine-fqhc.html")).location ===
+    "https://golegara.com/fqhc-telepsychiatry"
 );
 
 assert(
