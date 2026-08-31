@@ -26,7 +26,6 @@ const publicPages = [
   ["vs-telepsychiatry.html", "https://golegara.com/vs-telepsychiatry"],
   ["vs-locums.html", "https://golegara.com/vs-locums"],
   ["per-encounter-pps.html", "https://golegara.com/per-encounter-pps"],
-  ["california-cpom.html", "https://golegara.com/california-cpom"],
 ];
 
 const moneyPages = [
@@ -38,7 +37,6 @@ const moneyPages = [
   "vs-telepsychiatry.html",
   "vs-locums.html",
   "per-encounter-pps.html",
-  "california-cpom.html",
 ];
 
 let failed = 0;
@@ -125,7 +123,6 @@ const required = [
   "https://golegara.com/vs-telepsychiatry",
   "https://golegara.com/vs-locums",
   "https://golegara.com/per-encounter-pps",
-  "https://golegara.com/california-cpom",
 ];
 for (const loc of required) {
   assert(`sitemap ${loc}`, sitemap.includes(`<loc>${loc}</loc>`));
@@ -134,6 +131,8 @@ assert("sitemap has no .html locs", !/<loc>https:\/\/golegara\.com\/[^<]+\.html<
 assert("sitemap omits meridian", !sitemap.includes("/meridian"));
 assert("sitemap omits team", !sitemap.includes("/team"));
 assert("sitemap omits /next", !sitemap.includes("/next"));
+assert("sitemap omits california-cpom", !sitemap.includes("/california-cpom"));
+assert("california-cpom.html is gone", !fs.existsSync("california-cpom.html"));
 
 console.log("\nMoney-page titles and H1s");
 const moneyCopy = [
@@ -145,7 +144,6 @@ const moneyCopy = [
   ["vs-telepsychiatry.html", "FQHC Telepsychiatry Companies and a Different Operating Model | Legara", "FQHCs evaluating telepsychiatry companies often find the staffing model does not address scheduling. Legara takes a different approach."],
   ["vs-locums.html", "FQHC Locum Tenens Psychiatry Compared With Durable Capacity | Legara", "Locum tenens psychiatry covers the shift. Patients still wait for the panel."],
   ["per-encounter-pps.html", "FQHC Behavioral Health PPS and a Per-Encounter Operating Model | Legara", "The FQHC already bills behavioral health by the visit. The operating model around that visit is the gap."],
-  ["california-cpom.html", "California CPOM and FQHC Behavioral Health Contracting | Legara", "California CPOM is why we did not build a staffing company."],
 ];
 for (const [file, title, h1] of moneyCopy) {
   const html = fs.readFileSync(file, "utf8");
@@ -242,6 +240,7 @@ console.log("\nForbidden leftovers");
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
   assert(`${file} no 619-251-3131`, !html.includes("619-251-3131"));
+  assert(`${file} no leftover /california-cpom link`, !/href=["'][^"']*california-cpom/i.test(html));
 }
 
 if (failed) {

@@ -275,7 +275,7 @@ ${proof()}
   <p class="section-body"><strong>Does this change how you bill PPS?</strong> See <a href="/per-encounter-pps">per-encounter PPS</a> for visit codes. The health center bills under its own NPI. Platform fees are not published here.</p>
   <p class="section-body"><strong>Who is the employer of record for the clinician?</strong> Clinicians are independent practitioners. The health center keeps clinical authority. Details belong in a conversation with your counsel.</p>
   <p class="section-body"><strong>Can clinicians work on-site?</strong> Yes. On-site, hybrid, and remote are all in use across the California network.</p>
-  <p class="section-body"><strong>How does California CPOM show up in the contract?</strong> Read <a href="/california-cpom">California CPOM</a>.</p>
+  <p class="section-body"><strong>How does California CPOM show up in the contract?</strong> The platform was designed around California rules. The health center keeps clinical authority. Details belong in a conversation with your counsel.</p>
 </section>
 ${cta(assessCta)}`);
 
@@ -485,23 +485,5 @@ ${cta({
   headline: "See the comparison, then bring finance into the room.",
   body: "The comparison is an operational walkthrough. Schedule a conversation when you want finance at the table.",
 })}`);
-
-page("california-cpom.html", {
-  title: "California CPOM and FQHC Behavioral Health Contracting | Legara",
-  meta: "Legara is a behavioral health workforce platform whose three-entity structure was designed around California corporate practice of medicine rules. Your health center keeps clinical authority and billing. See how operations are separated from care.",
-  canonical: "https://golegara.com/california-cpom",
-}, `
-<div class="page-header">
-  <div class="section-label reveal">California CPOM</div>
-  <h1 class="section-headline reveal">California CPOM is why we did not build a staffing company.</h1>
-  <p class="section-body reveal">This is an operating explanation, not a legal opinion. Your general counsel should read the contract.</p>
-</div>
-<section class="content-section">
-  <p class="section-body reveal">Legara is a behavioral health workforce platform whose three-entity structure was designed around California corporate practice of medicine rules.</p>
-  <p class="section-body reveal">The health center keeps clinical authority, billing, privileging, the EHR, and quality review. Independent licensed clinicians practice. Operational infrastructure (scheduling, panel fill, the 4:1 PSR) sits on the operations side. Legara never exercises clinical control.</p>
-  <p class="section-body reveal">If you want counsel on the conversation, say so when you <a href="/contact">schedule a conversation</a>.</p>
-</section>
-${proof()}
-${cta({ ...contactCta, body: "Bring your general counsel if you want them on the conversation." })}`);
 
 console.log("done");
