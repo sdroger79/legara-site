@@ -1,3 +1,10 @@
+import {
+  applySeoHeaders,
+  resolveSeoRedirect,
+  serveFavicon,
+  serveStaticOr404,
+} from "./seo-routing.js";
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -46,23 +53,18 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Redirect www to non-www (SEO: canonical domain)
-    // Skip redirect for API routes — 301 converts POST to GET, dropping request bodies
-    if (url.hostname === "www.golegara.com" && !url.pathname.startsWith("/api/")) {
-      const newUrl = new URL(url);
-      newUrl.hostname = "golegara.com";
-      return Response.redirect(newUrl.toString(), 301);
+    // Host, protocol, extensionless, /next, Wix, and calculator aliases.
+    // API routes are excluded so POST bodies are not dropped by a 301.
+    const seoRedirect = resolveSeoRedirect(url);
+    if (seoRedirect) {
+      return applySeoHeaders(
+        Response.redirect(seoRedirect.location, seoRedirect.status),
+        url
+      );
     }
 
-    // 301 redirects for old Wix site URLs still indexed by Google
-    const wixRedirects = {
-      "/new-page": "/how-it-works.html",
-      "/new-page-3": "/for-health-centers.html",
-      "/new-page-47": "/become-a-provider.html",
-    };
-    const wixTarget = wixRedirects[url.pathname.toLowerCase()];
-    if (wixTarget) {
-      return Response.redirect(`https://golegara.com${wixTarget}`, 301);
+    if (url.pathname === "/favicon.ico") {
+      return applySeoHeaders(await serveFavicon(request, env), url);
     }
 
     // MTA-STS policy file (served from mta-sts.golegara.com)
@@ -163,23 +165,6 @@ export default {
       return new Response("Method Not Allowed", { status: 405, headers: CORS_HEADERS });
     }
 
-    // Short URL redirects for outreach emails
-    if (url.pathname.toLowerCase() === "/next") {
-      return Response.redirect(
-        "https://golegara.com/how-it-works.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=next_link",
-        302
-      );
-    }
-
-    // Assessment redirects (old calculator URLs → new assessment)
-    const assessPath = url.pathname.toLowerCase();
-    if (assessPath === "/roi" || assessPath === "/calculator" || assessPath === "/roi-calculator" || assessPath === "/roi-calculator.html") {
-      return Response.redirect(
-        "https://golegara.com/assessment.html?utm_source=outreach&utm_medium=email&utm_campaign=abm_fqhc&utm_content=assessment_link",
-        301
-      );
-    }
-
     // ── Team Portal Auth + API ──
     if (url.pathname.startsWith("/team/")) {
       // Auth endpoint (no auth required)
@@ -235,7 +220,8 @@ export default {
       return Response.redirect("https://golegara.com", 302);
     }
 
-    return env.ASSETS.fetch(request);
+    const assetResponse = await serveStaticOr404(request, env);
+    return applySeoHeaders(assetResponse, url);
   },
 
   async scheduled(event, env, ctx) {
