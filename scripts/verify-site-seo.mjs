@@ -177,9 +177,9 @@ for (const file of moneyPages) {
   assert(`${file} no Jonathan Wheaton`, !/Jonathan Wheaton/.test(html));
   assert(`${file} no 11 month`, !/11[- ]month/i.test(html));
   assert(`${file} no SYH case-study URL`, !/case-studies\/san-ysidro/i.test(html) && !/case-studies\/syh/i.test(html));
-  const afterHead = html.split(/<\/head>/i)[1] || html;
-  const body = afterHead.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<style[\s\S]*?<\/style>/gi, "");
-  const categoryHits = (body.match(/behavioral health workforce platform/gi) || []).length;
+  const headClose = html.toLowerCase().indexOf("</head>");
+  const afterHead = headClose === -1 ? html : html.slice(headClose + 7);
+  const categoryHits = (afterHead.match(/behavioral health workforce platform/gi) || []).length;
   assert(`${file} category phrase in document`, /behavioral health workforce platform/i.test(html));
   assert(`${file} category phrase not stuffed in body`, categoryHits <= 1, `found ${categoryHits}`);
   if (file !== "case-studies.html") {
