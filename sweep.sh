@@ -115,6 +115,20 @@ else
 fi
 echo ""
 
+# 9. UA-blue inline styles and <u> tags in public HTML
+# Brand-green links only. See docs/visual-style.md.
+# <u[ >] and </u> avoid matching <ul>.
+echo "${BOLD}[9] UA-blue links or <u> tags in public HTML${NC}"
+BLUE_U_HITS=$(grep -rniE 'style=["'"'"'][^"'"'"']*color:\s*blue|<u[ >]|</u>' --include='*.html' . 2>/dev/null | grep -v 'node_modules')
+if [ -n "$BLUE_U_HITS" ]; then
+    echo -e "${RED}FOUND:${NC}"
+    echo "$BLUE_U_HITS"
+    ISSUES=$((ISSUES + $(echo "$BLUE_U_HITS" | wc -l)))
+else
+    echo -e "${GREEN}Clean${NC}"
+fi
+echo ""
+
 # Summary
 echo "================================"
 if [ $ISSUES -gt 0 ]; then
