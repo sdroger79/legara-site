@@ -199,11 +199,19 @@ assert("case-studies Mattson has no SYH URL", !/href="[^"]*san-ysidro/i.test(hub
 const shasta = fs.readFileSync("case-studies/shasta-community-health-center.html", "utf8");
 assert("Shasta does not claim 18-to-2", !/Shasta went from 18 weeks to 2/.test(shasta) || shasta.includes("We do not write that Shasta went from 18 weeks to 2"));
 
-console.log("\nForbidden leftovers");
+console.log("\nCluster is indexed, not chrome");
 const htmlFiles = [
   ...fs.readdirSync(".").filter((f) => f.endsWith(".html")),
   ...fs.readdirSync("case-studies").filter((f) => f.endsWith(".html")).map((f) => `case-studies/${f}`),
 ];
+for (const file of htmlFiles) {
+  const html = fs.readFileSync(file, "utf8");
+  assert(`${file} no For FQHCs nav dropdown`, !/>For FQHCs <span class="nav-login-caret"/.test(html));
+  assert(`${file} no For FQHCs footer heading`, !html.includes("<h4>For FQHCs</h4>"));
+  assert(`${file} no For FQHCs footer link`, !html.includes(">For FQHCs</a>"));
+}
+
+console.log("\nForbidden leftovers");
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
   assert(`${file} no 619-251-3131`, !html.includes("619-251-3131"));
