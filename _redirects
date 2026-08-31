@@ -1,5 +1,7 @@
-# Extensionless canonicals. Worker also 301s these (run_worker_first).
-# This file covers the assets-first path if Worker-first is ever turned off.
+# Asset-layer fallbacks. Worker also handles these when it runs first.
+# Needed on custom domains if not_found_handling serves 404.html before the Worker.
+/next                               /how-it-works                   301
+/next/                              /how-it-works                   301
 /index.html                         /                               301
 /:page.html                         /:page                          301
 /lp/:page.html                      /lp/:page                       301
