@@ -41,6 +41,7 @@ The sweep checks for:
 |-------|----------|-----------------|
 | Em dashes in Roger-attributed content | Error | Em dashes in worker.js emails, pdf-generator.js |
 | Standalone "BH" abbreviation | Error | "BH" instead of "behavioral health" in prospect-facing files |
+| UA-blue links or `<u>` in public HTML | Error | `style="color:blue"` or underline tags instead of brand-green links |
 | Wrong Brevo variables | Error | `{{contact.*}}` instead of `{{params.*}}` |
 | "Co-Founder" title | Error | Roger's title should be "CEO" only |
 | AI filler phrases | Warning | "I hope this email finds you," "I'd be happy to," etc. |
@@ -77,6 +78,7 @@ All emails are sent by the Worker via Brevo's transactional API. There are NO Br
 
 ## Brand Rules in Code
 
+- **Visual:** follow `docs/visual-style.md`. In-content links are brand green, never user-agent blue. SEO pages stay out of the header.
 - **Em dashes:** Zero in worker.js email strings and pdf-generator.js. These are Roger-attributed content.
 - **Brevo variables:** Always `{{params.VARNAME}}`, never `{{contact.VARNAME}}`
 - **Roger's title:** "CEO" only. Never "Co-Founder."

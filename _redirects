@@ -2,8 +2,21 @@
 # Needed on custom domains if not_found_handling serves 404.html before the Worker.
 /next                               /how-it-works                   301
 /next/                              /how-it-works                   301
+/psychiatry-wait-times              /fqhc-psychiatry-wait-times     301
+/psychiatry-wait-times.html         /fqhc-psychiatry-wait-times     301
+/vs-staffing-agency                 /vs-locums                      301
+/vs-staffing-agency.html            /vs-locums                      301
+/fqhc-behavioral-health-pps         /per-encounter-pps              301
+/fqhc-behavioral-health-pps.html    /per-encounter-pps              301
+/cpom                               /california-cpom                301
+/cpom.html                          /california-cpom                301
+/corporate-practice-of-medicine-fqhc /california-cpom               301
+/corporate-practice-of-medicine-fqhc.html /california-cpom          301
+/fqhc-hiring-vs-per-encounter       /vs-hiring                      301
+/fqhc-hiring-vs-per-encounter.html  /vs-hiring                      301
 /index.html                         /                               301
 /:page.html                         /:page                          301
+/case-studies/:page.html            /case-studies/:page             301
 /lp/:page.html                      /lp/:page                       301
 /admin/:page.html                   /admin/:page                    301
 /team/index.html                    /team                           301

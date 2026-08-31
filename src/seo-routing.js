@@ -46,6 +46,21 @@ const ASSESSMENT_ALIASES = new Set([
   "/roi-calculator.html",
 ]);
 
+export const CLUSTER_ALIASES = {
+  "/psychiatry-wait-times": "/fqhc-psychiatry-wait-times",
+  "/psychiatry-wait-times.html": "/fqhc-psychiatry-wait-times",
+  "/vs-staffing-agency": "/vs-locums",
+  "/vs-staffing-agency.html": "/vs-locums",
+  "/fqhc-behavioral-health-pps": "/per-encounter-pps",
+  "/fqhc-behavioral-health-pps.html": "/per-encounter-pps",
+  "/cpom": "/california-cpom",
+  "/cpom.html": "/california-cpom",
+  "/corporate-practice-of-medicine-fqhc": "/california-cpom",
+  "/corporate-practice-of-medicine-fqhc.html": "/california-cpom",
+  "/fqhc-hiring-vs-per-encounter": "/vs-hiring",
+  "/fqhc-hiring-vs-per-encounter.html": "/vs-hiring",
+};
+
 // Files that must keep their extension (none of the marketing HTML pages).
 const KEEP_HTML_AS_FILE = new Set([]);
 
@@ -141,10 +156,18 @@ export function resolveSeoRedirect(url) {
     };
   }
 
-  if (ASSESSMENT_ALIASES.has(pathnameLower)) {
+  if (ASSESSMENT_ALIASES.has(pathnameLower) || ASSESSMENT_ALIASES.has(pathNorm)) {
     return {
       status: 301,
       location: buildLocation(protocol, hostname, "/assessment", search),
+    };
+  }
+
+  const clusterTarget = CLUSTER_ALIASES[pathnameLower] || CLUSTER_ALIASES[pathNorm];
+  if (clusterTarget) {
+    return {
+      status: 301,
+      location: buildLocation(protocol, hostname, clusterTarget, search),
     };
   }
 
