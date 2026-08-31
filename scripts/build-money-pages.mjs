@@ -272,10 +272,10 @@ ${proof()}
 <section class="content-section">
   <div class="section-label reveal">Questions</div>
   <h2 class="section-headline reveal" style="font-size: clamp(26px, 3vw, 36px);">FAQ</h2>
-  <p class="section-body"><strong>Does this change how you bill PPS?</strong> The health center bills under its own NPI. See <a href="/per-encounter-pps">per-encounter PPS</a> for visit codes, then stop. We do not publish a platform fee here.</p>
+  <p class="section-body"><strong>Does this change how you bill PPS?</strong> See <a href="/per-encounter-pps">per-encounter PPS</a> for visit codes. The health center bills under its own NPI. Platform fees are not published here.</p>
   <p class="section-body"><strong>Who is the employer of record for the clinician?</strong> Clinicians are independent practitioners. The health center keeps clinical authority. Details belong in a conversation with your counsel.</p>
   <p class="section-body"><strong>Can clinicians work on-site?</strong> Yes. On-site, hybrid, and remote are all in use across the California network.</p>
-  <p class="section-body"><strong>How does California CPOM show up in the contract?</strong> Read <a href="/california-cpom">California CPOM</a>. That page is an operations explanation, not a legal opinion.</p>
+  <p class="section-body"><strong>How does California CPOM show up in the contract?</strong> Read <a href="/california-cpom">California CPOM</a>.</p>
 </section>
 ${cta(assessCta)}`);
 
@@ -290,10 +290,10 @@ page("fqhc-psychiatry-wait-times.html", {
 </div>
 <section class="content-section">
   <p class="section-body reveal">A long psychiatry queue is what you see when scheduling, fill-in work, and unused clinician time sit inside a primary care front desk. Recruiting another person into that same structure does not by itself change the wait. Dedicated PSRs at 4:1, panels that fill, and pay tied to completed encounters are the operating pieces behind the number.</p>
-  <p class="section-body reveal">Partner baseline psychiatry wait is 15-20 weeks. That is the locked operating figure for this page. It is not a promise that a new partner will land under two weeks.</p>
+  <p class="section-body reveal">Partner baseline psychiatry wait is 15-20 weeks.</p>
   <p class="section-body reveal">For national context, Merritt Hawkins reported a 25-day average wait for a new psychiatry patient in 2022. That figure is not FQHC-specific and is not a California safety-net baseline.</p>
   <p class="section-body reveal">Separately, NACHC reported in 2024 that health centers meet 27% of mental health need. That is a system-access figure, not a Legara wait-time claim.</p>
-  <p class="section-body reveal">The March 18, 2026 PR Newswire release described psychiatry wait moving from 18 weeks to under 2 weeks at partner sites in that announcement. That PR figure is labeled and is not blended here with the 15-20 week baseline. This is not a patient booking page and it does not guarantee an under-two-week wait for a new partner.</p>
+  <p class="section-body reveal">The March 18, 2026 PR Newswire release reported psychiatry wait moving from 18 weeks to under 2 weeks at partner sites in that announcement. That is not a promised wait for a new partner.</p>
   <p class="section-body reveal">HRSA reported in 2024 that about 1 in 3 Americans live in a mental health professional shortage area. The National Council has reported facility-level behavioral health turnover above 35%. Those are industry references, not platform proof.</p>
 </section>
 ${proof()}
@@ -307,7 +307,7 @@ page("case-studies.html", {
 <div class="page-header">
   <div class="section-label reveal">Case results</div>
   <h1 class="section-headline reveal">Nine California FQHCs. Same behavioral health workforce platform. These are the numbers.</h1>
-  <p class="section-body reveal">Two sources are labeled below. Live-site operations are what nine California health centers run today. PR figures come from the March 18, 2026 PR Newswire release, Encinitas, California, attributed to Roger Stellers, CEO. PR wait and volume numbers are aggregates. They are not assigned to San Ysidro Health or to Shasta Community Health Center.</p>
+  <p class="section-body reveal">What nine California health centers run today, and what the <a href="https://www.prnewswire.com/news-releases/legara-inc-transforms-fqhc-mental-health-care-302718136.html">March 18, 2026 PR Newswire</a> reported for pilot clients as a group.</p>
 </div>
 <section class="content-section">
   <div class="section-label reveal">Live-site operations</div>
@@ -316,12 +316,12 @@ page("case-studies.html", {
 </section>
 <section class="content-section-alt">
   <div class="content-section" style="background: transparent;">
-    <div class="section-label reveal">March 18, 2026 PR (labeled aggregate)</div>
+    <div class="section-label reveal">March 18, 2026 PR Newswire</div>
     <h2 class="section-headline reveal" style="font-size: clamp(26px, 3vw, 36px);">What the PR Newswire release reported</h2>
-    <p class="section-body reveal">Psychiatry wait in that release: 18 weeks to under 2 weeks. Psychotherapy wait: 9 weeks to 2 weeks. Those wait figures are labeled as the PR aggregate. They are not a guarantee for a new partner.</p>
-    <p class="section-body reveal">Weekly encounters in that release: +230 combined, not a single center.</p>
+    <p class="section-body reveal">The March 18, 2026 release reported psychiatry wait moving from 18 weeks to under 2 weeks, and psychotherapy wait from 9 weeks to 2 weeks, for those pilots. That is not a promised wait for a new partner.</p>
+    <p class="section-body reveal">Weekly encounters in that release: +230 combined.</p>
     <p class="section-body reveal">No-shows in that release declined more than 30%.</p>
-    <p class="section-body reveal">Pilot clients in that release generated about $700K additional net cash flow. That figure is labeled, applies to plural pilot clients, and is cash generated to serve the mission. It is not pinned to San Ysidro Health or to Shasta.</p>
+    <p class="section-body reveal">Pilot clients in that release generated about $700K additional net cash flow, cash generated to serve the mission.</p>
     <p class="section-body"><a href="https://www.prnewswire.com/news-releases/legara-inc-transforms-fqhc-mental-health-care-302718136.html">Read the March 18, 2026 PR Newswire release</a>.</p>
   </div>
 </section>
@@ -339,7 +339,7 @@ page("case-studies.html", {
     <div class="testimonial-role">COO, Shasta Community Health Center</div>
     <p style="margin-top: 12px; color: var(--green); font-weight: 600;">Read the Shasta page</p>
   </a>
-  <p class="section-body" style="margin-top: 32px;">Madera Community Health Center appears on our blog as a mission conversation with Cheryl Orozco, Chief Operating Officer. That is not a results case and it is not used as a numbered outcome here.</p>
+  <p class="section-body" style="margin-top: 32px;">Madera Community Health Center appears on our blog as a mission conversation with Cheryl Orozco, Chief Operating Officer.</p>
 </section>
 ${cta({ ...contactCta, body: "Ask for a conversation that can include a peer reference call. The assessment is available if you want the operational benchmark first." })}`);
 
@@ -351,7 +351,7 @@ page("case-studies/shasta-community-health-center.html", {
 <div class="page-header">
   <div class="section-label reveal">Shasta Community Health Center</div>
   <h1 class="section-headline reveal">Shasta Community Health Center added a purpose-built operating structure alongside its employed team.</h1>
-  <p class="section-body reveal">Shasta is a rural Northern California FQHC and one of nine California health centers on the platform. This page stays with public context and a named quote. It does not assign network or PR aggregates to Shasta. No street address.</p>
+  <p class="section-body reveal">Shasta is a rural Northern California FQHC and one of nine California health centers on the platform.</p>
 </div>
 <section class="content-section">
   <div class="testimonial-card" style="max-width: 820px; margin: 0 auto;">
@@ -359,14 +359,13 @@ page("case-studies/shasta-community-health-center.html", {
     <div class="testimonial-author">Laura Baynard</div>
     <div class="testimonial-role">COO, Shasta Community Health Center</div>
   </div>
-  <p class="section-body" style="margin-top: 32px;">The quote is about unused capacity carrying no salary burden, and about on-site support that fit Shasta operations. That is the public story we can tell. We do not write that Shasta went from 18 weeks to 2.</p>
 </section>
 <section class="content-section-alt">
   <div class="content-section" style="background: transparent;">
-    <div class="section-label reveal">Network facts (labeled)</div>
-    <h2 class="section-headline reveal" style="font-size: clamp(26px, 3vw, 36px);">What the California network runs, not a Shasta scorecard</h2>
-    <p class="section-body reveal">Nine active FQHC partners across California. 50,000+ encounters/year (about 950/week). 82% utilization. Under 3% provider turnover. Dedicated PSRs at 4:1. Psychiatry wait baseline 15-20 weeks. 14% no-show. These are network figures.</p>
-    <p class="section-body reveal">PR aggregates from March 18, 2026 live on the <a href="/case-studies">case results hub</a>. They are not applied to Shasta on this page.</p>
+    <div class="section-label reveal">California network</div>
+    <h2 class="section-headline reveal" style="font-size: clamp(26px, 3vw, 36px);">Nine California FQHCs run this operating model</h2>
+    <p class="section-body reveal">Nine active FQHC partners across California. 50,000+ encounters/year (about 950/week). 82% utilization. Under 3% provider turnover. Dedicated PSRs at 4:1. Psychiatry wait baseline 15-20 weeks. 14% no-show. These are California network figures.</p>
+    <p class="section-body reveal">Wait-time and volume results for the California network are on the <a href="/case-studies">case results hub</a>.</p>
   </div>
 </section>
 <section class="content-section">
@@ -416,7 +415,7 @@ page("vs-telepsychiatry.html", {
   <h1 class="section-headline reveal">FQHCs evaluating telepsychiatry companies often find the staffing model does not address scheduling. Legara takes a different approach.</h1>
 </div>
 <section class="content-section">
-  <p class="section-body reveal">FQHCs evaluating this category often find they paid for the hour, not the completed visit. We do not name other brands here, invent their utilization, or claim Joint Commission status for anyone.</p>
+  <p class="section-body reveal">FQHCs evaluating this category often find they paid for the hour, not the completed visit. The comparison is by operating model, not by brand.</p>
   <p class="section-body reveal">Three shapes show up in the market. Employed-clinician hourly: you buy time. Staffing overlay: a person arrives and your front desk still owns the panel. PPS-education firms: useful for coding conversations; CFOs who want the visit-unit discussion should read <a href="/per-encounter-pps">per-encounter PPS</a> rather than a code tutorial on this page.</p>
   <div style="overflow-x: auto; margin: 32px 0;">
     <table class="compare-table">
@@ -427,11 +426,11 @@ page("vs-telepsychiatry.html", {
         <tr><td>Where care happens</td><td class="val-old">Screen as the default</td><td class="val-new">On-site, hybrid, or remote</td></tr>
         <tr><td>Who holds authority</td><td class="val-old">Employed or subcontracted clinician patterns vary</td><td class="val-new">Independent clinicians; health center keeps authority and billing</td></tr>
         <tr><td>California CPOM</td><td class="val-old">National template applied later</td><td class="val-new">Designed around CA CPOM from day one</td></tr>
-        <tr><td>Utilization</td><td class="val-old">Not claimed for others</td><td class="val-new">82% on this California network only</td></tr>
+        <tr><td>Utilization</td><td class="val-old">Varies</td><td class="val-new">82% on this California network</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="section-body reveal">We do not say other companies violate CPOM. We say the platform was designed around California rules, and the health center keeps clinical authority.</p>
+  <p class="section-body reveal">The platform was designed around California rules. The health center keeps clinical authority.</p>
 </section>
 ${proof()}
 ${cta(assessCta)}`);
@@ -446,7 +445,7 @@ page("vs-locums.html", {
   <h1 class="section-headline reveal">Locum tenens psychiatry covers the shift. Patients still wait for the panel.</h1>
 </div>
 <section class="content-section">
-  <p class="section-body reveal">Locum tenens psychiatry is a legitimate way to cover a gap week. This page does not invent locums dollar rates, and it does not claim a faster path to a single shift. The comparison is durability: a 4:1 PSR, per-encounter economics, and a California CPOM structure after the week ends.</p>
+  <p class="section-body reveal">Locum tenens psychiatry is a legitimate way to cover a gap week. The comparison is durability: a 4:1 PSR, per-encounter economics, and a California CPOM structure after the week ends.</p>
   <p class="section-body reveal">Legara is not a staffing agency that places a clinician and walks away. Independent clinicians stay inside the platform. When a panel needs continuity, the California network already uses PMHNP capacity with MD supervision, as described on <a href="/partners">Our Impact</a>.</p>
   <div style="overflow-x: auto; margin: 32px 0;">
     <table class="compare-table">
@@ -473,9 +472,9 @@ page("per-encounter-pps.html", {
   <h1 class="section-headline reveal">The FQHC already bills behavioral health by the visit. The operating model around that visit is the gap.</h1>
 </div>
 <section class="content-section">
-  <p class="section-body reveal">This is not a CoCM tutorial. FQHCs already bill behavioral health as a visit. CMS lists G0469 for a new FQHC behavioral health visit and G0470 for an established visit. For the published lists, see the <a href="https://www.nachc.org/wp-content/uploads/2025/05/FQHC-Payment-Guide.pdf">NACHC Payment Guide</a> and the <a href="https://www.cms.gov/medicare/payment/prospective-payment-systems/federally-qualified-health-center-fqhc-pps">CMS FQHC PPS page</a>. We stop there. No locality PPS dollar rates. No platform fee on this page.</p>
+  <p class="section-body reveal">FQHCs already bill behavioral health as a visit. CMS lists G0469 for a new FQHC behavioral health visit and G0470 for an established visit. For the published lists, see the <a href="https://www.nachc.org/wp-content/uploads/2025/05/FQHC-Payment-Guide.pdf">NACHC Payment Guide</a> and the <a href="https://www.cms.gov/medicare/payment/prospective-payment-systems/federally-qualified-health-center-fqhc-pps">CMS FQHC PPS page</a>. Locality PPS dollar rates and platform fees are not published here.</p>
   <p class="section-body reveal">The health center bills under its own NPI. Clinical authority, privileging, and the claim stay with you. The platform is built so the operating unit (a completed visit, with dedicated PSRs at 4:1) can match the unit you already bill.</p>
-  <p class="section-body reveal">Nine California health centers run that structure today. After the differentiation is clear, two labeled models sit last: the therapist hire model near $229K true annual cost (LCSW/LMFT, not a psychiatrist figure, not audited actuals), and average total encounter revenue to the FQHC of about $230 (PPS plus copays plus secondaries). That $230 is not a Legara rate. Both figures are about cash generated to serve the mission, not a subtractive story.</p>
+  <p class="section-body reveal">Nine California health centers run that structure today. A therapist hire model (LCSW/LMFT) sits near $229K true annual cost; that $229K is a model, not every center's actuals. Average total encounter revenue to the FQHC is about $230 (PPS plus copays plus secondaries). That $230 is revenue to the FQHC, not a Legara rate. Both figures are about cash generated to serve the mission.</p>
 </section>
 ${proof()}
 ${cta({
@@ -495,14 +494,14 @@ page("california-cpom.html", {
 <div class="page-header">
   <div class="section-label reveal">California CPOM</div>
   <h1 class="section-headline reveal">California CPOM is why we did not build a staffing company.</h1>
-  <p class="section-body reveal">This page explains an operating choice. It is not a legal opinion, not a guarantee of compliance, and not a do-it-yourself incorporation guide. Your general counsel should read the contract.</p>
+  <p class="section-body reveal">This is an operating explanation, not a legal opinion. Your general counsel should read the contract.</p>
 </div>
 <section class="content-section">
-  <p class="section-body reveal">Legara is a behavioral health workforce platform whose three-entity structure was designed around California corporate practice of medicine rules. We name the idea only. There is no org chart of straw corporations on this page, no MSO legal name, and no predecessor entity.</p>
+  <p class="section-body reveal">Legara is a behavioral health workforce platform whose three-entity structure was designed around California corporate practice of medicine rules.</p>
   <p class="section-body reveal">The health center keeps clinical authority, billing, privileging, the EHR, and quality review. Independent licensed clinicians practice. Operational infrastructure (scheduling, panel fill, the 4:1 PSR) sits on the operations side. Legara never exercises clinical control.</p>
-  <p class="section-body reveal">We do not quote Business and Professions Code sections here. We do not say CPOM does not apply to FQHCs. We do not tell a health center how to incorporate. If you want counsel on the call, say so when you <a href="/contact">schedule a conversation</a>.</p>
+  <p class="section-body reveal">If you want counsel on the conversation, say so when you <a href="/contact">schedule a conversation</a>.</p>
 </section>
 ${proof()}
-${cta({ ...contactCta, body: "Offer to include your general counsel. The assessment is secondary on this page." })}`);
+${cta({ ...contactCta, body: "Bring your general counsel if you want them on the conversation." })}`);
 
 console.log("done");

@@ -193,12 +193,21 @@ for (const file of moneyPages) {
 }
 
 const hub = fs.readFileSync("case-studies.html", "utf8");
-assert("case-studies has $700K labeled", hub.includes("$700K"));
+assert("case-studies has $700K", hub.includes("$700K"));
 assert("case-studies Baynard links to Shasta", hub.includes('href="/case-studies/shasta-community-health-center"'));
 assert("case-studies Mattson has no SYH URL", !/href="[^"]*san-ysidro/i.test(hub));
 
 const shasta = fs.readFileSync("case-studies/shasta-community-health-center.html", "utf8");
-assert("Shasta does not claim 18-to-2", !/Shasta went from 18 weeks to 2/.test(shasta) || shasta.includes("We do not write that Shasta went from 18 weeks to 2"));
+assert("Shasta does not claim 18-to-2", !/18 weeks to (under )?2/.test(shasta));
+
+console.log("\nBuyer-facing voice (no writer-brief locks)");
+const briefVoice = /labeled|scorecard|we do not write|not assigned|not applied|not pinned|straw|predecessor|public story|booking page/i;
+for (const file of moneyPages) {
+  const html = fs.readFileSync(file, "utf8");
+  const headClose = html.toLowerCase().indexOf("</head>");
+  const body = headClose === -1 ? html : html.slice(headClose + 7);
+  assert(`${file} no writer-brief voice`, !briefVoice.test(body));
+}
 
 console.log("\nContent links are theme-styled");
 const css = fs.readFileSync("css/styles.css", "utf8");
