@@ -86,7 +86,7 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
       "sameAs": [
         "https://www.linkedin.com/company/legara"
       ],
-      "founder": { "@id": "https://golegara.com/#roger-stellers" }
+      "employee": { "@id": "https://golegara.com/#roger-stellers" }
     },
     {
       "@type": "Person",
@@ -130,6 +130,15 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
   <ul class="nav-links">
     <li><a href="how-it-works.html">How It Works</a></li>
     <li><a href="for-health-centers.html">For Health Centers</a></li>
+    <li class="nav-login">
+      <a href="/fqhc-telepsychiatry" aria-haspopup="true" aria-expanded="false" onclick="this.closest('.nav-login').classList.toggle('open');return false;">For FQHCs <span class="nav-login-caret" aria-hidden="true">&#9660;</span></a>
+      <ul class="nav-login-menu">
+        <li><a href="/fqhc-telepsychiatry">Telepsychiatry</a></li>
+        <li><a href="/fqhc-psychiatry-wait-times">Psychiatry wait times</a></li>
+        <li><a href="/case-studies">Case results</a></li>
+        <li><a href="/vs-hiring">Hiring comparison</a></li>
+      </ul>
+    </li>
     <li><a href="partners.html">Our Impact</a></li>
 
     <li><a href="about.html">About</a></li>
@@ -240,6 +249,7 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
     <div style="font-size: 11px; font-weight: 500; color: var(--mist); text-transform: uppercase; letter-spacing: 0.08em;">Patient Satisfaction</div>
   </div>
 </div>
+<p class="section-body" style="text-align: center; padding: 20px 48px 0;"><a href="/fqhc-telepsychiatry">See how FQHCs evaluate telepsychiatry</a></p>
 
 <!-- HOW IT WORKS -->
 <section class="how-it-works">
@@ -563,6 +573,7 @@ window._linkedin_data_partner_ids.push(_linkedin_partner_id);
       <a href="become-a-provider.html">Become a Provider</a>
     
       <a href="assessment.html">Capacity Assessment</a>
+      <a href="/fqhc-telepsychiatry">For FQHCs</a>
     </div>
     <div class="footer-col">
       <h4>Company</h4>

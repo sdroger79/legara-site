@@ -144,6 +144,61 @@ assert(
 );
 
 assert(
+  "/fqhc-telepsychiatry.html → extensionless",
+  (() => {
+    const r = resolveSeoRedirect(url("https://golegara.com/fqhc-telepsychiatry.html"));
+    return r && r.location === "https://golegara.com/fqhc-telepsychiatry";
+  })()
+);
+
+assert(
+  "/psychiatry-wait-times → /fqhc-psychiatry-wait-times",
+  (() => {
+    const r = resolveSeoRedirect(url("https://golegara.com/psychiatry-wait-times?ref=1"));
+    return r && r.location === "https://golegara.com/fqhc-psychiatry-wait-times?ref=1";
+  })()
+);
+
+assert(
+  "/psychiatry-wait-times.html → /fqhc-psychiatry-wait-times (not stripped first)",
+  resolveSeoRedirect(url("https://golegara.com/psychiatry-wait-times.html")).location ===
+    "https://golegara.com/fqhc-psychiatry-wait-times"
+);
+
+assert(
+  "/vs-staffing-agency → /vs-locums",
+  resolveSeoRedirect(url("https://golegara.com/vs-staffing-agency")).location === "https://golegara.com/vs-locums"
+);
+
+assert(
+  "/fqhc-behavioral-health-pps → /per-encounter-pps",
+  resolveSeoRedirect(url("https://golegara.com/fqhc-behavioral-health-pps")).location === "https://golegara.com/per-encounter-pps"
+);
+
+assert(
+  "/cpom → /california-cpom",
+  resolveSeoRedirect(url("https://golegara.com/cpom")).location === "https://golegara.com/california-cpom"
+);
+
+assert(
+  "/corporate-practice-of-medicine-fqhc → /california-cpom",
+  resolveSeoRedirect(url("https://golegara.com/corporate-practice-of-medicine-fqhc")).location === "https://golegara.com/california-cpom"
+);
+
+assert(
+  "/fqhc-hiring-vs-per-encounter → /vs-hiring",
+  resolveSeoRedirect(url("https://golegara.com/fqhc-hiring-vs-per-encounter")).location === "https://golegara.com/vs-hiring"
+);
+
+assert(
+  "/case-studies/shasta-community-health-center.html → extensionless",
+  (() => {
+    const r = resolveSeoRedirect(url("https://golegara.com/case-studies/shasta-community-health-center.html"));
+    return r && r.location === "https://golegara.com/case-studies/shasta-community-health-center";
+  })()
+);
+
+assert(
   "API POST paths are not redirected (www or html)",
   resolveSeoRedirect(url("https://www.golegara.com/api/brevo-webhook")) === null
 );
