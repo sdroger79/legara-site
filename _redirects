@@ -21,13 +21,14 @@
 /corporate-practice-of-medicine-fqhc.html /fqhc-telepsychiatry      301
 /fqhc-hiring-vs-per-encounter       /vs-hiring                      301
 /fqhc-hiring-vs-per-encounter.html  /vs-hiring                      301
-/index.html                         /                               301
 /:page.html                         /:page                          301
 /case-studies/:page.html            /case-studies/:page             301
 /lp/:page.html                      /lp/:page                       301
 /admin/:page.html                   /admin/:page                    301
 /team/index.html                    /team                           301
 # Pretty-URL rewrites after html_handling is none (assets-first fallback).
+# /:page does not match "/". Do not 301 / to /. Homepage is index.html.
+/                                   /index.html                     200
 /:page                              /:page.html                     200
 /case-studies/:page                 /case-studies/:page.html        200
 /lp/:page                           /lp/:page.html                  200

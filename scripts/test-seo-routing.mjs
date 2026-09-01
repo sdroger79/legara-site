@@ -317,6 +317,10 @@ assert(
   "htmlAssetCandidates leaves .css alone",
   htmlAssetCandidates("/css/styles.css").join(",") === "/css/styles.css"
 );
+assert(
+  "htmlAssetCandidates(/) is /index.html only",
+  htmlAssetCandidates("/").join(",") === "/index.html"
+);
 
 console.log("\n404 / assets fallthrough");
 
@@ -365,6 +369,45 @@ assert(
   "pretty /about serves about.html when html_handling is none",
   prettyAbout.status === 200 && (await prettyAbout.text()) === "about-ok"
 );
+
+function homepageAssets() {
+  return {
+    ASSETS: {
+      fetch: async (req) => {
+        const path = new URL(req instanceof URL ? req.href : typeof req === "string" ? req : req.url).pathname;
+        if (path === "/" || path === "") {
+          return new Response(null, { status: 301, headers: { Location: "/" } });
+        }
+        if (path === "/index.html") {
+          return new Response("<h1>home</h1>", { status: 200, headers: { "Content-Type": "text/html" } });
+        }
+        if (String(path).includes("/404.html")) {
+          return new Response("<h1>static 404</h1>", { status: 200, headers: { "Content-Type": "text/html" } });
+        }
+        return new Response("missing", { status: 404 });
+      },
+    },
+  };
+}
+
+for (const href of [
+  "https://golegara.com/",
+  "https://golegara.com",
+  "https://staging.golegara.com/",
+  "https://staging.golegara.com",
+]) {
+  const parsed = url(href);
+  assert(
+    `${href} is not a Worker 301 to /`,
+    resolveSeoRedirect(parsed) === null
+  );
+  const page = await serveStaticOr404(new Request(parsed.href), homepageAssets());
+  const loc = page.headers.get("Location");
+  assert(
+    `${href} homepage is 200, never 301 Location: /`,
+    page.status === 200 && page.status !== 301 && loc !== "/" && (await page.text()) === "<h1>home</h1>"
+  );
+}
 
 const headers = applySeoHeaders(new Response("ok"), url("https://golegara.com/"));
 assert(

@@ -132,14 +132,19 @@ function looksLikeStaticFile(pathname) {
 /**
  * Pretty URLs must still find the .html file after html_handling is "none"
  * (so the asset layer no longer 307s /page.html → /page).
+ * Homepage is /index.html only. Fetching "/" can 301 to "/" and loop.
  */
 export function htmlAssetCandidates(pathname) {
   const path = pathname || "/";
-  if (path === "/" || path === "") return ["/", "/index.html"];
+  if (path === "/" || path === "") return ["/index.html"];
   if (looksLikeStaticFile(path)) return [path];
   const trimmed = path.replace(/\/+$/, "") || "/";
-  if (trimmed === "/") return ["/", "/index.html"];
+  if (trimmed === "/") return ["/index.html"];
   return [path, `${trimmed}.html`, `${trimmed}/index.html`];
+}
+
+function isSuccessStatus(status) {
+  return status >= 200 && status < 300;
 }
 
 /**
@@ -259,7 +264,8 @@ export async function serveStaticOr404(request, env) {
       const next = new URL(request.url);
       next.pathname = candidate;
       res = await env.ASSETS.fetch(new Request(next, request));
-      if (res && res.status !== 404) return res;
+      // Never forward ASSETS 3xx. Homepage "/" 301 Location: / is a loop.
+      if (res && isSuccessStatus(res.status)) return res;
     }
     try {
       const page = await env.ASSETS.fetch(new Request(new URL("/404.html", request.url)));
