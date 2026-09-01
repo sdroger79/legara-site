@@ -26,7 +26,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          wranglerVersion: "3.99.0"
+          wranglerVersion: "4.28.0"
           command: deploy --env staging
 
       - name: Post staging URL to PR

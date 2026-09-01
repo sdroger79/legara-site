@@ -24,7 +24,7 @@ Push to `main` only. No `workflow_dispatch`, no PR trigger, no scheduled run. Ev
 | # | Step | What it does | Failure means |
 |---|---|---|---|
 | 1 | `actions/checkout@v4` | Clone the repo. | Token / permissions. Rare. |
-| 2 | `cloudflare/wrangler-action@v3` with `wranglerVersion: "3.99.0"` and `apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}` | Installs wrangler 3.99.0 internally, runs `wrangler deploy` against the repo's `wrangler.jsonc`. Publishes `src/worker.js` and the static asset directory (repo root) to the Cloudflare Workers environment for `golegara.com`. | Auth token expired, Workers quota hit, invalid `wrangler.jsonc`, build failure inside wrangler. See **Failure modes** below. |
+| 2 | `cloudflare/wrangler-action@v3` with `wranglerVersion: "4.28.0"` and `apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}` | Installs wrangler 4.28.0 internally, runs `wrangler deploy` against the repo's `wrangler.jsonc`. Publishes `src/worker.js` and the static asset directory (repo root) to the Cloudflare Workers environment for `golegara.com`. | Auth token expired, Workers quota hit, invalid `wrangler.jsonc`, build failure inside wrangler. See **Failure modes** below. |
 
 There is no Setup Node step, no `npm ci`, no build step, no post-deploy health check. `wrangler-action@v3` handles the full publish internally. The entire `deploy.yml` is 17 lines.
 

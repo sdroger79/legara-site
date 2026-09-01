@@ -1,5 +1,10 @@
 # Asset-layer fallbacks. Worker also handles these when it runs first.
-# Needed on custom domains if not_found_handling serves 404.html before the Worker.
+# Destinations stay host-relative so staging.golegara.com never 301s to prod.
+# Assessment aliases must sit before /:page.html so .html is one hop to /assessment.
+/roi                                /assessment                     301
+/calculator                         /assessment                     301
+/roi-calculator                     /assessment                     301
+/roi-calculator.html                /assessment                     301
 /next                               /how-it-works                   301
 /next/                              /how-it-works                   301
 /psychiatry-wait-times              /fqhc-psychiatry-wait-times     301
@@ -22,3 +27,8 @@
 /lp/:page.html                      /lp/:page                       301
 /admin/:page.html                   /admin/:page                    301
 /team/index.html                    /team                           301
+# Pretty-URL rewrites after html_handling is none (assets-first fallback).
+/:page                              /:page.html                     200
+/case-studies/:page                 /case-studies/:page.html        200
+/lp/:page                           /lp/:page.html                  200
+/admin/:page                        /admin/:page.html               200
