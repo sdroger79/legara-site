@@ -21,6 +21,8 @@
 /corporate-practice-of-medicine-fqhc.html /fqhc-telepsychiatry      301
 /fqhc-hiring-vs-per-encounter       /vs-hiring                      301
 /fqhc-hiring-vs-per-encounter.html  /vs-hiring                      301
+# Do not splat /index.html to /index. Incoming /index.html 301s in the Worker after / is 200.
+/index.html                         /index.html                     200
 /:page.html                         /:page                          301
 /case-studies/:page.html            /case-studies/:page             301
 /lp/:page.html                      /lp/:page                       301

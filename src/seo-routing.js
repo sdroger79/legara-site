@@ -147,6 +147,22 @@ function isSuccessStatus(status) {
   return status >= 200 && status < 300;
 }
 
+function isRedirectStatus(status) {
+  return status >= 300 && status < 400;
+}
+
+function followableAssetPath(requestUrl, location) {
+  if (!location || location === "/" || location === "") return null;
+  try {
+    const dest = new URL(location, requestUrl);
+    const path = dest.pathname || "/";
+    if (path === "/" || path === "") return null;
+    return path;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Decide whether this request should 301/302 before assets or API handlers.
  * Returns { status, location } or null.
@@ -264,8 +280,16 @@ export async function serveStaticOr404(request, env) {
       const next = new URL(request.url);
       next.pathname = candidate;
       res = await env.ASSETS.fetch(new Request(next, request));
-      // Never forward ASSETS 3xx. Homepage "/" 301 Location: / is a loop.
       if (res && isSuccessStatus(res.status)) return res;
+      // Follow one ASSETS 3xx (e.g. /index.html → /index) and return that body.
+      // Never follow Location: / — that loops the homepage.
+      const hop = followableAssetPath(request.url, res && res.headers.get("Location"));
+      if (res && hop && hop !== candidate && isRedirectStatus(res.status)) {
+        const bounced = new URL(request.url);
+        bounced.pathname = hop;
+        const followed = await env.ASSETS.fetch(new Request(bounced, request));
+        if (followed && isSuccessStatus(followed.status)) return followed;
+      }
     }
     try {
       const page = await env.ASSETS.fetch(new Request(new URL("/404.html", request.url)));

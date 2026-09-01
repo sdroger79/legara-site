@@ -370,6 +370,8 @@ assert(
   prettyAbout.status === 200 && (await prettyAbout.text()) === "about-ok"
 );
 
+const HOMEPAGE_H1 = "Your behavioral health demand outgrew the operating model it runs inside.";
+
 function homepageAssets() {
   return {
     ASSETS: {
@@ -378,11 +380,18 @@ function homepageAssets() {
         if (path === "/" || path === "") {
           return new Response(null, { status: 301, headers: { Location: "/" } });
         }
+        // Live splat: /:page.html → /:page turns /index.html into 301 /index.
         if (path === "/index.html") {
-          return new Response("<h1>home</h1>", { status: 200, headers: { "Content-Type": "text/html" } });
+          return new Response(null, { status: 301, headers: { Location: "/index" } });
+        }
+        if (path === "/index") {
+          return new Response(`<h1>${HOMEPAGE_H1}</h1>`, { status: 200, headers: { "Content-Type": "text/html" } });
         }
         if (String(path).includes("/404.html")) {
-          return new Response("<h1>static 404</h1>", { status: 200, headers: { "Content-Type": "text/html" } });
+          return new Response("<h1>Page not found</h1><p>That address is not a page on golegara.com.</p>", {
+            status: 200,
+            headers: { "Content-Type": "text/html" },
+          });
         }
         return new Response("missing", { status: 404 });
       },
@@ -403,9 +412,14 @@ for (const href of [
   );
   const page = await serveStaticOr404(new Request(parsed.href), homepageAssets());
   const loc = page.headers.get("Location");
+  const body = await page.text();
   assert(
     `${href} homepage is 200, never 301 Location: /`,
-    page.status === 200 && page.status !== 301 && loc !== "/" && (await page.text()) === "<h1>home</h1>"
+    page.status === 200 && page.status !== 301 && loc !== "/"
+  );
+  assert(
+    `${href} homepage body is the homepage, not the 404 page`,
+    body.includes(HOMEPAGE_H1) && !/page not found/i.test(body) && !/that address is not a page/i.test(body)
   );
 }
 
