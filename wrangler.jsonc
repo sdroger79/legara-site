@@ -9,12 +9,15 @@
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
-    "html_handling": "drop-trailing-slash",
+    // "none" stops the asset-layer 307 from /page.html → /page (relative Location).
+    // Worker + _redirects own permanent 301s. Pretty URLs are mapped to .html in seo-routing.
+    "html_handling": "none",
     "not_found_handling": "404-page",
     "run_worker_first": true
   },
   "compatibility_flags": [
-    "nodejs_compat"
+    "nodejs_compat",
+    "assets_navigation_has_no_effect"
   ],
   "triggers": {
     "crons": ["0 * * * *"]
@@ -48,10 +51,14 @@
       "assets": {
         "directory": ".",
         "binding": "ASSETS",
-        "html_handling": "drop-trailing-slash",
+        "html_handling": "none",
         "not_found_handling": "404-page",
         "run_worker_first": true
       },
+      "compatibility_flags": [
+        "nodejs_compat",
+        "assets_navigation_has_no_effect"
+      ],
       "route": {
         "pattern": "staging.golegara.com/*",
         "zone_name": "golegara.com"

@@ -1,6 +1,7 @@
 import {
   applySeoHeaders,
   resolveSeoRedirect,
+  seoRedirectResponse,
   serveFavicon,
   serveStaticOr404,
 } from "./seo-routing.js";
@@ -57,10 +58,7 @@ export default {
     // API routes are excluded so POST bodies are not dropped by a 301.
     const seoRedirect = resolveSeoRedirect(url);
     if (seoRedirect) {
-      return applySeoHeaders(
-        Response.redirect(seoRedirect.location, seoRedirect.status),
-        url
-      );
+      return applySeoHeaders(seoRedirectResponse(seoRedirect), url);
     }
 
     if (url.pathname === "/favicon.ico") {

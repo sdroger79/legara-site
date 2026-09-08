@@ -114,6 +114,56 @@ function buildLocation(protocol, hostname, pathname, search) {
 }
 
 /**
+ * Permanent canonical redirect. Always 301 with an absolute Location.
+ * Do not use Response.redirect() here: callers must keep status 301 (not 307).
+ */
+export function seoRedirectResponse(redirect) {
+  return new Response(null, {
+    status: redirect.status || 301,
+    headers: { Location: redirect.location },
+  });
+}
+
+function looksLikeStaticFile(pathname) {
+  const base = String(pathname || "").split("/").pop() || "";
+  return /\.[a-zA-Z0-9]{1,16}$/.test(base);
+}
+
+/**
+ * Pretty URLs must still find the .html file after html_handling is "none"
+ * (so the asset layer no longer 307s /page.html → /page).
+ * Homepage is /index.html only. Fetching "/" can 301 to "/" and loop.
+ */
+export function htmlAssetCandidates(pathname) {
+  const path = pathname || "/";
+  if (path === "/" || path === "") return ["/index.html"];
+  if (looksLikeStaticFile(path)) return [path];
+  const trimmed = path.replace(/\/+$/, "") || "/";
+  if (trimmed === "/") return ["/index.html"];
+  return [path, `${trimmed}.html`, `${trimmed}/index.html`];
+}
+
+function isSuccessStatus(status) {
+  return status >= 200 && status < 300;
+}
+
+function isRedirectStatus(status) {
+  return status >= 300 && status < 400;
+}
+
+function followableAssetPath(requestUrl, location) {
+  if (!location || location === "/" || location === "") return null;
+  try {
+    const dest = new URL(location, requestUrl);
+    const path = dest.pathname || "/";
+    if (path === "/" || path === "") return null;
+    return path;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Decide whether this request should 301/302 before assets or API handlers.
  * Returns { status, location } or null.
  */
@@ -224,22 +274,35 @@ export async function serveStaticOr404(request, env) {
     if (!env || !env.ASSETS || typeof env.ASSETS.fetch !== "function") {
       return notFoundResponse();
     }
-    const res = await env.ASSETS.fetch(request);
-    if (res && res.status === 404) {
-      try {
-        const page = await env.ASSETS.fetch(new Request(new URL("/404.html", request.url)));
-        if (page && page.ok) {
-          return new Response(page.body, {
-            status: 404,
-            headers: { "Content-Type": "text/html;charset=UTF-8" },
-          });
-        }
-      } catch {
-        // Fall through to the inline 404.
+    const url = new URL(request.url);
+    let res = null;
+    for (const candidate of htmlAssetCandidates(url.pathname)) {
+      const next = new URL(request.url);
+      next.pathname = candidate;
+      res = await env.ASSETS.fetch(new Request(next, request));
+      if (res && isSuccessStatus(res.status)) return res;
+      // Follow one ASSETS 3xx (e.g. /index.html → /index) and return that body.
+      // Never follow Location: / — that loops the homepage.
+      const hop = followableAssetPath(request.url, res && res.headers.get("Location"));
+      if (res && hop && hop !== candidate && isRedirectStatus(res.status)) {
+        const bounced = new URL(request.url);
+        bounced.pathname = hop;
+        const followed = await env.ASSETS.fetch(new Request(bounced, request));
+        if (followed && isSuccessStatus(followed.status)) return followed;
       }
-      return notFoundResponse();
     }
-    return res || notFoundResponse();
+    try {
+      const page = await env.ASSETS.fetch(new Request(new URL("/404.html", request.url)));
+      if (page && page.ok) {
+        return new Response(page.body, {
+          status: 404,
+          headers: { "Content-Type": "text/html;charset=UTF-8" },
+        });
+      }
+    } catch {
+      // Fall through to the inline 404.
+    }
+    return notFoundResponse();
   } catch {
     return notFoundResponse();
   }

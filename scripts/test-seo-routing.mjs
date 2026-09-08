@@ -1,8 +1,10 @@
 import {
   applySeoHeaders,
+  htmlAssetCandidates,
   isProdMarketingHost,
   notFoundResponse,
   resolveSeoRedirect,
+  seoRedirectResponse,
   serveFavicon,
   serveStaticOr404,
   shouldSetHsts,
@@ -38,7 +40,15 @@ assert(
   "www → apex 301 preserves path and query",
   (() => {
     const r = resolveSeoRedirect(url("https://www.golegara.com/how-it-works?utm_source=test"));
-    return r && r.status === 301 && r.location === "https://golegara.com/how-it-works?utm_source=test";
+    return r && r.status === 301 && r.status !== 307 && r.location === "https://golegara.com/how-it-works?utm_source=test";
+  })()
+);
+
+assert(
+  "www homepage 301s to https://golegara.com/",
+  (() => {
+    const r = resolveSeoRedirect(url("https://www.golegara.com/"));
+    return r && r.status === 301 && r.location === "https://golegara.com/";
   })()
 );
 
@@ -128,10 +138,18 @@ assert(
 );
 
 assert(
-  "calculator aliases go to /assessment and keep query",
+  "/roi-calculator.html 301s to /assessment in one hop",
   (() => {
     const r = resolveSeoRedirect(url("https://golegara.com/roi-calculator.html?foo=1"));
-    return r && r.location === "https://golegara.com/assessment?foo=1";
+    return r && r.status === 301 && r.status !== 307 && r.location === "https://golegara.com/assessment?foo=1";
+  })()
+);
+
+assert(
+  "/roi-calculator 301s to /assessment in one hop",
+  (() => {
+    const r = resolveSeoRedirect(url("https://golegara.com/roi-calculator?utm=1"));
+    return r && r.status === 301 && r.location === "https://golegara.com/assessment?utm=1";
   })()
 );
 
@@ -236,6 +254,74 @@ assert("HSTS only on https apex/www", shouldSetHsts(url("https://golegara.com/")
 assert("no HSTS on staging", shouldSetHsts(url("https://staging.golegara.com/")) === false);
 assert("no HSTS on http", shouldSetHsts(url("http://golegara.com/")) === false);
 
+console.log("\nCanonical 301s (not 307, absolute Location)");
+for (const [href, dest] of [
+  ["https://golegara.com/press-legara-launch.html", "https://golegara.com/press-legara-launch"],
+  ["https://golegara.com/press.html", "https://golegara.com/press"],
+  ["https://golegara.com/contact.html", "https://golegara.com/contact"],
+  ["https://golegara.com/partners.html", "https://golegara.com/partners"],
+  ["https://golegara.com/about.html", "https://golegara.com/about"],
+]) {
+  const r = resolveSeoRedirect(url(href));
+  assert(
+    `${href} → 301 ${dest}`,
+    r && r.status === 301 && r.status !== 307 && r.location === dest
+  );
+}
+
+assert(
+  "www + .html is one hop to apex pretty URL",
+  (() => {
+    const r = resolveSeoRedirect(url("https://www.golegara.com/contact.html?ref=1"));
+    return r && r.status === 301 && r.location === "https://golegara.com/contact?ref=1";
+  })()
+);
+
+assert(
+  "www + /roi-calculator.html is one hop to apex /assessment",
+  (() => {
+    const r = resolveSeoRedirect(url("https://www.golegara.com/roi-calculator.html"));
+    return r && r.status === 301 && r.location === "https://golegara.com/assessment";
+  })()
+);
+
+assert(
+  "staging .html stays on staging host",
+  (() => {
+    const r = resolveSeoRedirect(url("https://staging.golegara.com/press.html"));
+    return r && r.status === 301 && r.location === "https://staging.golegara.com/press";
+  })()
+);
+
+assert(
+  "staging www-like host is not rewritten to prod",
+  resolveSeoRedirect(url("https://staging.golegara.com/")) === null
+);
+
+const built = seoRedirectResponse({
+  status: 301,
+  location: "https://golegara.com/press",
+});
+assert("seoRedirectResponse is HTTP 301", built.status === 301);
+assert("seoRedirectResponse is not 307", built.status !== 307);
+assert(
+  "seoRedirectResponse Location is absolute",
+  built.headers.get("Location") === "https://golegara.com/press"
+);
+
+assert(
+  "htmlAssetCandidates maps pretty /about to about.html",
+  htmlAssetCandidates("/about").includes("/about.html")
+);
+assert(
+  "htmlAssetCandidates leaves .css alone",
+  htmlAssetCandidates("/css/styles.css").join(",") === "/css/styles.css"
+);
+assert(
+  "htmlAssetCandidates(/) is /index.html only",
+  htmlAssetCandidates("/").join(",") === "/index.html"
+);
+
 console.log("\n404 / assets fallthrough");
 
 const missing = notFoundResponse();
@@ -269,6 +355,73 @@ const asset404 = await serveStaticOr404(new Request("https://golegara.com/faq"),
   },
 });
 assert("ASSETS 404 uses 404.html body", asset404.status === 404 && (await asset404.text()).includes("static 404"));
+
+const prettyAbout = await serveStaticOr404(new Request("https://golegara.com/about"), {
+  ASSETS: {
+    fetch: async (req) => {
+      const path = new URL(req instanceof URL ? req.href : typeof req === "string" ? req : req.url).pathname;
+      if (path === "/about.html") return new Response("about-ok", { status: 200, headers: { "Content-Type": "text/html" } });
+      return new Response("missing", { status: 404 });
+    },
+  },
+});
+assert(
+  "pretty /about serves about.html when html_handling is none",
+  prettyAbout.status === 200 && (await prettyAbout.text()) === "about-ok"
+);
+
+const HOMEPAGE_H1 = "Your behavioral health demand outgrew the operating model it runs inside.";
+
+function homepageAssets() {
+  return {
+    ASSETS: {
+      fetch: async (req) => {
+        const path = new URL(req instanceof URL ? req.href : typeof req === "string" ? req : req.url).pathname;
+        if (path === "/" || path === "") {
+          return new Response(null, { status: 301, headers: { Location: "/" } });
+        }
+        // Live splat: /:page.html → /:page turns /index.html into 301 /index.
+        if (path === "/index.html") {
+          return new Response(null, { status: 301, headers: { Location: "/index" } });
+        }
+        if (path === "/index") {
+          return new Response(`<h1>${HOMEPAGE_H1}</h1>`, { status: 200, headers: { "Content-Type": "text/html" } });
+        }
+        if (String(path).includes("/404.html")) {
+          return new Response("<h1>Page not found</h1><p>That address is not a page on golegara.com.</p>", {
+            status: 200,
+            headers: { "Content-Type": "text/html" },
+          });
+        }
+        return new Response("missing", { status: 404 });
+      },
+    },
+  };
+}
+
+for (const href of [
+  "https://golegara.com/",
+  "https://golegara.com",
+  "https://staging.golegara.com/",
+  "https://staging.golegara.com",
+]) {
+  const parsed = url(href);
+  assert(
+    `${href} is not a Worker 301 to /`,
+    resolveSeoRedirect(parsed) === null
+  );
+  const page = await serveStaticOr404(new Request(parsed.href), homepageAssets());
+  const loc = page.headers.get("Location");
+  const body = await page.text();
+  assert(
+    `${href} homepage is 200, never 301 Location: /`,
+    page.status === 200 && page.status !== 301 && loc !== "/"
+  );
+  assert(
+    `${href} homepage body is the homepage, not the 404 page`,
+    body.includes(HOMEPAGE_H1) && !/page not found/i.test(body) && !/that address is not a page/i.test(body)
+  );
+}
 
 const headers = applySeoHeaders(new Response("ok"), url("https://golegara.com/"));
 assert(
