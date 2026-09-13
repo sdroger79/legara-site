@@ -23,6 +23,12 @@
 /fqhc-hiring-vs-per-encounter.html  /vs-hiring                      301
 # Do not splat /index.html to /index. Incoming /index.html 301s in the Worker after / is 200.
 /index.html                         /index.html                     200
+# /:page matches any single segment, including dotted names. Cloudflare 200
+# rewrites always apply, even when the source asset exists. Without these
+# identity rules, /robots.txt and /sitemap.xml become /robots.txt.html and
+# /sitemap.xml.html and ASSETS returns the custom HTML 404.
+/robots.txt                         /robots.txt                     200
+/sitemap.xml                        /sitemap.xml                    200
 /:page.html                         /:page                          301
 /case-studies/:page.html            /case-studies/:page             301
 /lp/:page.html                      /lp/:page                       301
