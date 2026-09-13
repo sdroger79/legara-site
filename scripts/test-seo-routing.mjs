@@ -1,3 +1,4 @@
+import fs from "fs";
 import {
   applySeoHeaders,
   htmlAssetCandidates,
@@ -11,6 +12,68 @@ import {
   toExtensionlessPath,
   toNonTrailingSlashPath,
 } from "../src/seo-routing.js";
+
+/**
+ * Cloudflare Workers static-assets _redirects matcher (first match wins).
+ * Placeholders match a single path segment, including dots. 200 is a rewrite.
+ */
+function parseRedirects(text) {
+  const rules = [];
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const parts = trimmed.split(/\s+/);
+    if (parts.length < 2) continue;
+    rules.push({
+      source: parts[0],
+      dest: parts[1],
+      status: Number(parts[2] || 302),
+    });
+  }
+  return rules;
+}
+
+function compilePattern(pattern) {
+  const names = [];
+  let regex = "^";
+  for (let i = 0; i < pattern.length; i += 1) {
+    const ch = pattern[i];
+    if (ch === ":" && /[A-Za-z]/.test(pattern[i + 1] || "")) {
+      let name = "";
+      i += 1;
+      while (i < pattern.length && /\w/.test(pattern[i])) {
+        name += pattern[i];
+        i += 1;
+      }
+      i -= 1;
+      names.push(name);
+      regex += "([^/]+)";
+    } else if (ch === "*") {
+      names.push("splat");
+      regex += "(.*)";
+    } else {
+      regex += ch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+  }
+  regex += "$";
+  return { regex: new RegExp(regex), names };
+}
+
+function applyRedirects(rules, pathname) {
+  for (const rule of rules) {
+    const compiled = compilePattern(rule.source);
+    const match = pathname.match(compiled.regex);
+    if (!match) continue;
+    let dest = rule.dest;
+    compiled.names.forEach((name, index) => {
+      dest = dest.replaceAll(`:${name}`, match[index + 1]);
+    });
+    return { source: rule.source, dest, status: rule.status };
+  }
+  return null;
+}
+
+const REDIRECT_RULES = parseRedirects(fs.readFileSync(new URL("../_redirects", import.meta.url), "utf8"));
 
 let passed = 0;
 let failed = 0;
@@ -321,6 +384,74 @@ assert(
   "htmlAssetCandidates(/) is /index.html only",
   htmlAssetCandidates("/").join(",") === "/index.html"
 );
+assert(
+  "htmlAssetCandidates leaves /robots.txt alone (no .html rewrite)",
+  htmlAssetCandidates("/robots.txt").join(",") === "/robots.txt"
+);
+assert(
+  "htmlAssetCandidates leaves /sitemap.xml alone (no .html rewrite)",
+  htmlAssetCandidates("/sitemap.xml").join(",") === "/sitemap.xml"
+);
+
+console.log("\n_redirects must not rewrite robots.txt / sitemap.xml to .html");
+
+const robotsRule = applyRedirects(REDIRECT_RULES, "/robots.txt");
+assert(
+  "/robots.txt is not rewritten to /robots.txt.html",
+  !robotsRule || robotsRule.dest !== "/robots.txt.html",
+  robotsRule ? `${robotsRule.source} → ${robotsRule.dest} ${robotsRule.status}` : "no rule"
+);
+assert(
+  "/robots.txt identity 200 keeps the .txt asset",
+  robotsRule && robotsRule.status === 200 && robotsRule.dest === "/robots.txt"
+);
+
+const sitemapRule = applyRedirects(REDIRECT_RULES, "/sitemap.xml");
+assert(
+  "/sitemap.xml is not rewritten to /sitemap.xml.html",
+  !sitemapRule || sitemapRule.dest !== "/sitemap.xml.html",
+  sitemapRule ? `${sitemapRule.source} → ${sitemapRule.dest} ${sitemapRule.status}` : "no rule"
+);
+assert(
+  "/sitemap.xml identity 200 keeps the .xml asset",
+  sitemapRule && sitemapRule.status === 200 && sitemapRule.dest === "/sitemap.xml"
+);
+
+assert(
+  "pretty /about still rewrites to /about.html 200",
+  (() => {
+    const r = applyRedirects(REDIRECT_RULES, "/about");
+    return r && r.status === 200 && r.dest === "/about.html";
+  })()
+);
+assert(
+  "/about.html still 301s to /about",
+  (() => {
+    const r = applyRedirects(REDIRECT_RULES, "/about.html");
+    return r && r.status === 301 && r.dest === "/about";
+  })()
+);
+assert(
+  "/roi-calculator still 301s to /assessment",
+  (() => {
+    const r = applyRedirects(REDIRECT_RULES, "/roi-calculator");
+    return r && r.status === 301 && r.dest === "/assessment";
+  })()
+);
+assert(
+  "/:page without identity would rewrite dotted files (guard against dropping the carve-out)",
+  (() => {
+    const splatOnly = [{ source: "/:page", dest: "/:page.html", status: 200 }];
+    const robots = applyRedirects(splatOnly, "/robots.txt");
+    const sitemap = applyRedirects(splatOnly, "/sitemap.xml");
+    const css = applyRedirects(splatOnly, "/css/styles.css");
+    return (
+      robots && robots.dest === "/robots.txt.html" &&
+      sitemap && sitemap.dest === "/sitemap.xml.html" &&
+      css === null
+    );
+  })()
+);
 
 console.log("\n404 / assets fallthrough");
 
@@ -368,6 +499,82 @@ const prettyAbout = await serveStaticOr404(new Request("https://golegara.com/abo
 assert(
   "pretty /about serves about.html when html_handling is none",
   prettyAbout.status === 200 && (await prettyAbout.text()) === "about-ok"
+);
+
+function assetsApplyingRedirects(files) {
+  return {
+    ASSETS: {
+      fetch: async (req) => {
+        let path = new URL(req instanceof URL ? req.href : typeof req === "string" ? req : req.url).pathname;
+        const rule = applyRedirects(REDIRECT_RULES, path);
+        if (rule) {
+          if (rule.status === 200) path = rule.dest;
+          else if (rule.status >= 300 && rule.status < 400) {
+            return new Response(null, { status: rule.status, headers: { Location: rule.dest } });
+          }
+        }
+        const hit = files[path];
+        if (hit) {
+          return new Response(hit.body, { status: 200, headers: { "Content-Type": hit.type } });
+        }
+        return new Response(files["/404.html"]?.body || "<h1>Page not found</h1>", {
+          status: 404,
+          headers: { "Content-Type": "text/html" },
+        });
+      },
+    },
+  };
+}
+
+const ROBOTS_BODY = "User-agent: *\nAllow: /\nSitemap: https://golegara.com/sitemap.xml\n";
+const SITEMAP_BODY = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>\n';
+
+const seoAssetFiles = {
+  "/robots.txt": { body: ROBOTS_BODY, type: "text/plain; charset=utf-8" },
+  "/sitemap.xml": { body: SITEMAP_BODY, type: "application/xml" },
+  "/about.html": { body: "about-ok", type: "text/html" },
+  "/404.html": { body: "<h1>Page not found</h1><p>That address is not a page on golegara.com.</p>", type: "text/html" },
+};
+
+const robotsRes = await serveStaticOr404(new Request("https://golegara.com/robots.txt"), assetsApplyingRedirects(seoAssetFiles));
+const robotsBody = await robotsRes.text();
+assert(
+  "/robots.txt must not 404 through ASSETS _redirects",
+  robotsRes.status === 200,
+  `status ${robotsRes.status}`
+);
+assert(
+  "/robots.txt is not rewritten to a missing .html page",
+  robotsBody === ROBOTS_BODY && !/page not found/i.test(robotsBody)
+);
+assert(
+  "/robots.txt keeps a text content-type",
+  (robotsRes.headers.get("Content-Type") || "").includes("text/plain")
+);
+
+const sitemapRes = await serveStaticOr404(new Request("https://golegara.com/sitemap.xml"), assetsApplyingRedirects(seoAssetFiles));
+const sitemapBody = await sitemapRes.text();
+assert(
+  "/sitemap.xml must not 404 through ASSETS _redirects",
+  sitemapRes.status === 200,
+  `status ${sitemapRes.status}`
+);
+assert(
+  "/sitemap.xml is not rewritten to a missing .html page",
+  sitemapBody === SITEMAP_BODY && sitemapBody.includes("<urlset") && !/page not found/i.test(sitemapBody)
+);
+assert(
+  "/sitemap.xml keeps an XML content-type",
+  /xml/i.test(sitemapRes.headers.get("Content-Type") || "")
+);
+
+const prettyViaRedirects = await serveStaticOr404(
+  new Request("https://golegara.com/about"),
+  assetsApplyingRedirects(seoAssetFiles)
+);
+assert(
+  "pretty /about still works when _redirects identity rules are present",
+  prettyViaRedirects.status === 200 && (await prettyViaRedirects.text()) === "about-ok"
 );
 
 const HOMEPAGE_H1 = "Your behavioral health demand outgrew the operating model it runs inside.";
