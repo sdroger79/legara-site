@@ -339,7 +339,6 @@ page("case-studies.html", {
     <div class="testimonial-role">COO, Shasta Community Health Center</div>
     <p style="margin-top: 12px; color: var(--green); font-weight: 600;">Read the Shasta page</p>
   </a>
-  <p class="section-body" style="margin-top: 32px;">Madera Community Health Center appears on our blog as a mission conversation with Cheryl Orozco, Chief Operating Officer.</p>
 </section>
 ${cta({ ...contactCta, body: "Ask for a conversation that can include a peer reference call. The assessment is available if you want the operational benchmark first." })}`);
 
